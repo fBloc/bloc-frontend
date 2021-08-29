@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="130px" height="29px" viewBox="0 0 130 29" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 4</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="pc备份-5" transform="translate(-50.000000, -17.000000)">
+            <g id="编组-4" transform="translate(50.344721, 17.000000)">
+                <text id="Bloc" font-family="PirulenRg-Regular, Pirulen" font-size="24" font-weight="normal" fill="#434140">
+                    <tspan x="40.6552789" y="23">Bloc</tspan>
+                </text>
+                <polygon id="矩形" fill="#5E5E5E" transform="translate(9.971751, 21.356488) rotate(-5.000000) translate(-9.971751, -21.356488) " points="1.72574441 16.3972085 18.7952804 16.3972085 18.2177576 23.1030909 5.47291048 26.315767 1.14822161 23.1030909"></polygon>
+                <polygon id="矩形" fill="#888888" transform="translate(14.419985, 22.579792) rotate(-5.000000) translate(-14.419985, -22.579792) " points="6.17397812 19.2268505 23.2435141 19.2268505 22.6659913 25.9327329 5.59645532 25.9327329"></polygon>
+                <polygon id="路径-8" fill="#706F6F" points="1.3611612 23.8654658 5.9493965 26.6889952 5.9493965 19.9786133 1.3611612 17.1562521"></polygon>
+                <polygon id="路径-9" fill="#797878" points="1.3340243 17.1562521 5.92225959 19.9786133 22.9177099 18.4705882 18.3294746 15.6470588"></polygon>
+                <polygon id="矩形" fill="#2EB9F1" transform="translate(19.069811, 12.678478) rotate(-5.000000) translate(-19.069811, -12.678478) " points="8.66146013 9.03729295 25.7309962 9.03729295 30.055685 12.249969 29.6996329 16.319664 8.08393733 15.7431753"></polygon>
+                <polygon id="矩形" fill="#32C5FF" transform="translate(21.472056, 15.378322) rotate(-5.000000) translate(-21.472056, -15.378322) " points="13.2349881 12.0006851 30.3001332 12.0508734 29.7270013 18.7065675 12.6439781 18.7559599"></polygon>
+                <polygon id="路径-8" fill="#2299C9" points="8.41998473 16.7068691 13.00822 19.5294118 13.00822 12.8213749 8.41998473 10"></polygon>
+                <polygon id="路径-9" fill="#2EBAF2" points="8.41998473 9.98723306 12.9966826 12.8235294 29.9493965 11.3080586 25.3726987 8.47058824"></polygon>
+                <polygon id="矩形" fill="#5E5E5E" transform="translate(11.983680, 6.391522) rotate(-5.000000) translate(-11.983680, -6.391522) " points="1.5775228 3.03858098 18.6470588 3.03858098 22.9673608 6.30139995 22.2550179 9.0117619 1 9.74446333"></polygon>
+                <polygon id="矩形" fill="#888888" transform="translate(14.419985, 9.403321) rotate(-5.000000) translate(-14.419985, -9.403321) " points="6.17397812 6.05037995 23.2435141 6.05037995 22.6659913 12.7562623 5.59645532 12.7562623"></polygon>
+                <polygon id="路径-8" fill="#706F6F" points="1.3611612 10.7068691 5.9493965 13.5294118 5.9493965 6.82137489 1.3611612 4"></polygon>
+                <polygon id="路径-9" fill="#797878" points="1.3611612 3.98723306 5.93785903 6.82352941 22.890573 5.30805858 18.3138751 2.47058824"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>
