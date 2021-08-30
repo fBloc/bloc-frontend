@@ -1,8 +1,6 @@
 import { getFunctions } from "@/api/bloc";
-import { IAppResponse, ServerResponse } from "@/api/client";
-import { getDetail, getDraft, IFlow, getRunningState } from "@/api/flow";
-import { Nullable } from "@/common";
-import { makeObservable, computed, reaction, observable, action, runInAction, IReactionDisposer } from "mobx";
+import { getDetail, getDraft, getLatestRunningState } from "@/api/flow";
+import { makeObservable, observable, runInAction, IReactionDisposer } from "mobx";
 import { Store } from "./index";
 
 export class Request {
@@ -30,7 +28,7 @@ export class Request {
   async getRunningState() {
     const id = this.root.detail?.id;
     if (!id) return;
-    const { isValid, data } = await getRunningState(id);
+    const { isValid, data } = await getLatestRunningState(id);
     if (isValid) {
       this.root.setRunningState(data?.status ? data : null);
     }

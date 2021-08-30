@@ -1,5 +1,5 @@
 import { ISearchOptions, transformPosition } from "@/api/arrangement";
-import { Nullable, ParamTypeOptions } from "@/common";
+import { Nullable, ParamTypeOptions, RunningEnum } from "@/common";
 import request from "@/api/client";
 import { login } from "@/store";
 
@@ -26,7 +26,7 @@ export interface IFlow {
   super: boolean;
   create_time: string;
   latest_run?: {
-    status: string;
+    status: RunningEnum;
     time: string;
   };
 }
@@ -171,6 +171,9 @@ export interface FlowRunningState {
 /**
  * 获取最近一次运行状况
  */
-export function getRunningState(flowId: string) {
-  return request.get<FlowRunningState>(`/api/v1/flow_history?flow_id=${flowId}`);
+export function getLatestRunningState(flowId: string) {
+  return request.get<FlowRunningState[]>(`/api/v1/flow_history?flow_id=${flowId}&offset=0&limit=1`).then((res) => ({
+    ...res,
+    data: res.data?.[0] || null,
+  }));
 }

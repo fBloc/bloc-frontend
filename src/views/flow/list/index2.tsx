@@ -1,13 +1,21 @@
-import React, { useMemo, useEffect, useCallback } from "react";
+import React, { useMemo, useEffect, useCallback, useContext } from "react";
 import { observer } from "mobx-react-lite";
-import { ListStore } from "./store/list";
-import { reaction } from "mobx";
-import { Tab, Spinner, Icon, Tooltip2, spinnerPlugin, SearchInput } from "@/components";
 import classNames from "classnames";
-import Board from "./Board";
 import { useHistory } from "react-router-dom";
-import { TabEnums, tabs } from "@/common";
+import { reaction } from "mobx";
+import { ListStore } from "./store/list";
+import { RunningEnum, TabEnums, tabs } from "@/common";
+import { Tab, Spinner, Icon, Tooltip2, spinnerPlugin, SearchInput } from "@/components";
+import Board from "./Board";
+import { RouterContext } from "@/router";
 
+const classes: Record<RunningEnum, string> = {
+  [RunningEnum.created]: "",
+  [RunningEnum.failed]: "bg-red-50 text-red-400",
+  [RunningEnum.queue]: "bg-yellow-50 text-yellow-400",
+  [RunningEnum.running]: "bg-yellow-50 text-yellow-400",
+  [RunningEnum.success]: "bg-green-50 text-green-400",
+};
 const Items: React.FC<{ store: ListStore }> = observer(({ store }) => {
   useEffect(() => {
     return reaction(
@@ -38,7 +46,14 @@ const Items: React.FC<{ store: ListStore }> = observer(({ store }) => {
           }}
         >
           {item.latest_run ? (
-            <span className="px-2 py-1 rounded-full text-xs bg-green-50 text-green-400 font-medium">运行中</span>
+            <span
+              className={classNames(
+                "px-2 py-1 rounded-full text-xs  font-medium",
+                classNames(classes[item.latest_run.status]),
+              )}
+            >
+              {item.latest_run.status}
+            </span>
           ) : (
             <span className="px-2 py-1 rounded-full text-xs bg-gray-50 text-gray-500 font-medium">
               {store.tab === TabEnums.draft ? "草稿" : "从未运行"}
@@ -50,8 +65,10 @@ const Items: React.FC<{ store: ListStore }> = observer(({ store }) => {
     </div>
   );
 });
+
 const List = observer(() => {
   const store = useMemo(() => new ListStore(), []);
+  const reload = useContext(RouterContext);
   const history = useHistory();
   const createDraft = useCallback(async () => {
     spinnerPlugin.show({
@@ -62,9 +79,10 @@ const List = observer(() => {
     if (isValid) {
       if (data?.origin_id) {
         history.push(`/flow/${data.origin_id}`);
+        reload.setKey();
       }
     }
-  }, [history, store]);
+  }, [store, reload, history]);
   return (
     <div className="flex-grow flex items-stretch">
       <div className="list w-72 border-r border-solid border-gray-100 h-screen flex flex-col flex-shrink-0">

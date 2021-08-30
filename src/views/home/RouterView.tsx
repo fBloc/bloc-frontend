@@ -1,4 +1,4 @@
-import React, { memo, lazy } from "react";
+import React, { lazy } from "react";
 import SideNav from "@/components/SideNav";
 import { BrowserRouter, Switch } from "react-router-dom";
 import { AuthorizedRoute } from "@/router/helper";

@@ -1,11 +1,11 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
+import { observer } from "mobx-react-lite";
+import { NavLink } from "react-router-dom";
+import classNames from "classnames";
+import { Colors, ContainButton, Divider, Icon, PlainButton, Spinner, Tooltip2 } from "@/components";
 import { Nullable, RunningEnum } from "@/common";
 import { Store } from "./store/";
-import { useMemo } from "react";
-import { Colors, ContainButton, Divider, Icon, PlainButton, Spinner } from "@/components";
-import { observer } from "mobx-react-lite";
-import classNames from "classnames";
-import { NavLink } from "react-router-dom";
+
 export interface BoardProps extends React.HTMLProps<HTMLDivElement> {
   originId: string;
 }
@@ -35,7 +35,12 @@ const Board: React.FC<BoardProps> = observer(({ originId }) => {
             <Icon icon="tick-circle" color={Colors.GREEN4} size={20} />
             <div className="ml-3">
               <p className="text-xs font-bold">{store.runningState?.status}</p>
-              <p className="mt-1 text-xs text-gray-500">{store.runningState?.end_time}</p>
+              {/* <p className="mt-1 text-xs text-gray-500"></p> */}
+              <p className="mt-1 text-xs text-gray-500">
+                <Tooltip2 content={store.runningState?.end_time} placement="bottom">
+                  <span>最近一次运行</span>
+                </Tooltip2>
+              </p>
             </div>
             <Divider className="mx-8 h-6" />
           </>
