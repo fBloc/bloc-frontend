@@ -17,7 +17,7 @@ import {
   Tooltip2,
 } from "@/components";
 import { ListContext, ListStore } from "./store/list";
-import { TabEnums, tabs } from "@/common";
+import { DetailType, tabs } from "@/common";
 import { Arrangement } from "@/api/arrangement";
 
 const ArrangementItemContainer: React.FC<React.HTMLProps<HTMLDivElement>> = memo(
@@ -135,7 +135,7 @@ const Main = observer(() => {
   const store = useMemo(() => new ListStore(), []);
   useEffect(() => {
     const disposer = autorun(() => {
-      store.tab === TabEnums.launched ? store.getList() : store.getDraftList();
+      store.tab === DetailType.launched ? store.getList() : store.getDraftList();
     });
     return () => {
       disposer();
@@ -150,7 +150,7 @@ const Main = observer(() => {
             options={tabs}
             value={store.tab}
             onValueChange={(value) => {
-              store.switchTab(value as TabEnums);
+              store.switchTab(value as DetailType);
             }}
           />
           <div className="flex items-center">

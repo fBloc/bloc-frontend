@@ -4,11 +4,11 @@ import request from "@/api/client";
 import { login } from "@/store";
 
 export const getFlowList = () => {
-  return request.get<IFlow[]>("/api/v1/flow");
+  return request.get<FlowDetailT[]>("/api/v1/flow");
 };
 export type ValueType = Nullable<string | number | boolean | undefined>;
 
-export interface IFlow {
+export interface FlowDetailT {
   id: string;
   origin_id: string;
   name: string;
@@ -17,7 +17,7 @@ export interface IFlow {
     top: number;
     zoom: number;
   };
-  blocs: Record<string, IBloc>;
+  blocs: Record<string, BlocItem>;
   is_draft: boolean;
   create_user_name: string;
   read: boolean;
@@ -31,7 +31,7 @@ export interface IFlow {
   };
 }
 
-export interface IBloc {
+export interface BlocItem {
   /**
    * 节点id
    */
@@ -44,10 +44,10 @@ export interface IBloc {
   };
   upstream_bloc_ids: string[];
   downstream_bloc_ids: string[];
-  param_ipts: IParamIpt[][];
+  param_ipts?: ParamIpt[][];
 }
 
-export type IParamIpt = {
+export type ParamIpt = {
   blank: boolean;
   ipt_way: IptWay;
   value_type: ParamTypeOptions;
@@ -88,18 +88,18 @@ export function getFlow() {
   });
 }
 
-export function createDraft(conf: Partial<Pick<IFlow, "position" | "blocs" | "name">> & { origin_id: string }) {
-  return request.post<IFlow>("/api/v1/flow_draft", {
+export function createDraft(conf: Partial<Pick<FlowDetailT, "position" | "blocs" | "name">> & { origin_id: string }) {
+  return request.post<FlowDetailT>("/api/v1/flow_draft", {
     name: conf.name || `未命名${Date.now().toString().slice(-4)}`,
     ...conf,
     create_user_id: login.token,
   });
 }
-export function updateDraft(params: Partial<IFlow>) {
+export function updateDraft(params: Partial<FlowDetailT>) {
   return request.patch<Patch>("/api/v1/flow_draft", params);
 }
 export function getDraft(originId: string) {
-  return request.get<IFlow>(`/api/v1/flow_draft/${originId}`).then((res) => {
+  return request.get<FlowDetailT>(`/api/v1/flow_draft/${originId}`).then((res) => {
     if (res.data) {
       res.data.position = transformPosition(res.data.position);
       for (const id in res.data.blocs || {}) {
@@ -113,7 +113,7 @@ export function getDraft(originId: string) {
   });
 }
 export function getDetail(originId: string) {
-  return request.get<IFlow>(`/api/v1/flow/${originId}`).then((res) => {
+  return request.get<FlowDetailT>(`/api/v1/flow/${originId}`).then((res) => {
     if (res.data) {
       res.data.position = transformPosition(res.data.position);
       for (const id in res.data.blocs || {}) {
@@ -127,10 +127,10 @@ export function getDetail(originId: string) {
   });
 }
 export function getList({ contains = "" }: Partial<ISearchOptions>) {
-  return request.get<IFlow[]>(`/api/v1/flow?name__contains=${contains}`);
+  return request.get<FlowDetailT[]>(`/api/v1/flow?name__contains=${contains}`);
 }
 export function getDraftList({ contains = "" }: Partial<ISearchOptions>) {
-  return request.get<IFlow[]>(`/api/v1/flow_draft?name__contains=${contains}`);
+  return request.get<FlowDetailT[]>(`/api/v1/flow_draft?name__contains=${contains}`);
 }
 
 export function deleteItem(originId: string) {
@@ -146,7 +146,7 @@ export function deleteDraft(originId: string) {
 export function launch(draftId: string) {
   return request.get(`/api/v1/flow_draft/${draftId}/commit`);
 }
-export const atomSetterTemplate: IParamIpt = {
+export const atomSetterTemplate: ParamIpt = {
   blank: true,
   ipt_way: IptWay.UserIpt,
   value: "",

@@ -31,7 +31,7 @@ const Login = observer(() => {
     appStore.setToken({ token: data?.token || "", rememberme });
     setLoading(false);
     if (isValid && data) {
-      history.replace((location.state as LocationState)?.from || { pathname: "/" });
+      history.replace((location.state as LocationState)?.from || { pathname: "/flow" });
     } else {
       if (message) {
         setErrorMessage(message);

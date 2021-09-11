@@ -1,13 +1,16 @@
 import React, { useMemo, useEffect, useCallback, useContext } from "react";
+import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
-import { reaction } from "mobx";
-import { ListStore } from "./store/list";
-import { RunningEnum, TabEnums, tabs } from "@/common";
-import { Tab, Spinner, Icon, Tooltip2, spinnerPlugin, SearchInput } from "@/components";
-import Board from "./Board";
 import { RouterContext } from "@/router";
+import { Tab, Spinner, Icon, Tooltip2, spinnerPlugin, SearchInput } from "@/components";
+import { Loading } from "@/components/Loading";
+import { RunningEnum, DetailType, tabs } from "@/common";
+import { ListStore } from "./store/list";
+import { FlowItemStore as Store, StoreProvider } from "../item/store";
+import HeaderBar from "./HeaderBar";
+import Board from "../board";
 
 const classes: Record<RunningEnum, string> = {
   [RunningEnum.created]: "",
@@ -56,17 +59,48 @@ const Items: React.FC<{ store: ListStore }> = observer(({ store }) => {
             </span>
           ) : (
             <span className="px-2 py-1 rounded-full text-xs bg-gray-50 text-gray-500 font-medium">
-              {store.tab === TabEnums.draft ? "草稿" : "从未运行"}
+              {store.tab === DetailType.draft ? "草稿" : "从未运行"}
             </span>
           )}
-          <p className="mt-4">{item.name}</p>
+          <p className="mt-4">{item.name || "未命名"}</p>
         </div>
       ))}
     </div>
   );
 });
 
-const List = observer(() => {
+const SelectFlow = (
+  <div className="h-full flex justify-center items-center">
+    <p className="text-gray-500 text-sm">选择一个Flow进行查看</p>
+  </div>
+);
+
+const PreviewBoard: React.FC<{ originId: string; detailType: DetailType }> = observer(({ originId, detailType }) => {
+  const store = useMemo(() => new Store(), []);
+  const { request } = store;
+  useEffect(() => {
+    return () => {
+      store.onDestroy();
+    };
+  }, [store]);
+  return (
+    <StoreProvider value={store}>
+      <div className="flex-grow relative bg-gray-100">
+        {originId ? (
+          <>
+            <HeaderBar />
+            <Board originId={originId} store={store} detailType={detailType} />
+          </>
+        ) : (
+          SelectFlow
+        )}
+        {request.fetching && <Loading className="absolute" />}
+      </div>
+    </StoreProvider>
+  );
+});
+
+const ListPage = observer(() => {
   const store = useMemo(() => new ListStore(), []);
   const reload = useContext(RouterContext);
   const history = useHistory();
@@ -97,7 +131,7 @@ const List = observer(() => {
             value={store.tab}
             options={tabs}
             onValueChange={(value) => {
-              store.switchTab(value as TabEnums);
+              store.switchTab(value as DetailType);
             }}
           />
           <div className="flex items-center">
@@ -114,11 +148,9 @@ const List = observer(() => {
         </div>
         <Items store={store} />
       </div>
-      <div className="flex-grow relative bg-gray-100">
-        <Board originId={store.currentFlow?.origin_id} />
-      </div>
+      <PreviewBoard originId={store.currentFlow?.origin_id} detailType={store.tab} />
     </div>
   );
 });
 
-export default List;
+export default ListPage;

@@ -4,7 +4,7 @@ import { observer } from "mobx-react-lite";
 import { autorun } from "mobx";
 import { Tab, Tabs, Button, Menu, MenuItem, MenuDivider, Colors, Icon, Popover2, LogoRoute, List } from "@/components";
 import { ListContext, ListStore } from "./store/list";
-import { TabEnums } from "@/common";
+import { DetailType } from "@/common";
 import { Arrangement } from "@/api/arrangement";
 const ArrangementItemContainer: React.FC<React.HTMLProps<HTMLDivElement>> = memo(
   ({ className, children, style, ...rest }) => {
@@ -127,7 +127,7 @@ const Main = observer(() => {
   const store = useMemo(() => new ListStore(), []);
   useEffect(() => {
     const disposer = autorun(() => {
-      store.tab === TabEnums.launched ? store.getList() : store.getDraftList();
+      store.tab === DetailType.launched ? store.getList() : store.getDraftList();
     });
     return () => {
       disposer();
@@ -155,11 +155,11 @@ const Main = observer(() => {
             <Tabs
               selectedTabId={store.tab}
               onChange={(tab) => {
-                store.switchTab(tab as TabEnums);
+                store.switchTab(tab as DetailType);
               }}
             >
-              <Tab panel={<OnlineItems />} id={TabEnums.launched} title="已发布" />
-              <Tab panel={<DraftItems />} id={TabEnums.draft} title="未发布" />
+              {/* <Tab panel={<OnlineItems />} id={DetailType.launched} title="已发布" /> */}
+              {/* <Tab id={DetailType.draft} title="未发布" /> */}
             </Tabs>
           </main>
         </div>

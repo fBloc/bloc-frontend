@@ -111,10 +111,10 @@ export class ConnectionLine extends fabric.Polyline {
     return this.canvas && findLogicNodeById(this.canvas as Canvas, id);
   }
   registerNodes() {
-    if (this.upstream) {
+    if (this.upstream && !this.upstreamNode) {
       this.upstreamNode = this.findNode(this.upstream);
     }
-    if (this.downstream) {
+    if (this.downstream && !this.downstreamNode) {
       this.downstreamNode = this.findNode(this.downstream);
     }
   }
@@ -182,6 +182,7 @@ export class ConnectionLine extends fabric.Polyline {
     this.updateEndPoint(x, y);
   }
   normalizePoints() {
+    this.registerNodes();
     if (!this.upstreamNode || !this.downstreamNode) return;
     const { left: uLeft = 0, top: uTop = 0 } = this.upstreamNode;
     const { left: dLeft = 0, top: dTop = 0 } = this.downstreamNode;
@@ -258,8 +259,8 @@ export class ConnectionLine extends fabric.Polyline {
     this.upstreamNode?.registerDownstream(this);
   }
   destroy() {
-    this.upstreamNode?.removeOutline(this);
-    this.downstreamNode?.removeInline(this);
+    this.upstreamNode?.unregisterDownstream(this);
+    this.downstreamNode?.unregisterUpstream(this);
     this?.canvas?.remove(this);
   }
   focus() {

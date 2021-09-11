@@ -5,11 +5,15 @@ specifiers:
   '@blueprintjs/core': ^3.47.0
   '@blueprintjs/icons': ^3.28.0
   '@blueprintjs/popover2': ^0.11.1
+  '@blueprintjs/select': ^3.18.1
   '@types/fabric': ^4.5.2
+  '@types/jsoneditor': ^8.6.1
   '@types/node': ^16.6.2
+  '@types/ramda': ^0.27.44
   '@types/react': ^17.0.0
   '@types/react-dom': ^17.0.0
   '@types/react-router-dom': ^5.1.8
+  '@types/react-window': ^1.8.5
   '@types/uuid': ^8.3.1
   '@typescript-eslint/eslint-plugin': ^4.28.1
   '@typescript-eslint/parser': ^4.28.1
@@ -34,17 +38,21 @@ specifiers:
   fabric: ^4.5.1
   history: 4.10.1
   hotkeys-js: ^3.8.7
+  jsoneditor: ^9.5.5
   mobx: ^6.3.2
   mobx-react-lite: ^3.2.0
   normalize.css: ^8.0.1
   postcss: ^8.3.5
   prettier: ^2.3.2
+  ramda: ^0.27.1
   react: ^17.0.0
   react-dom: ^17.0.0
   react-router-dom: ^5.2.0
+  react-window: ^1.8.6
   sass: ^1.38.0
   stylelint: ^13.13.1
   stylelint-config-standard: ^22.0.0
+  swiper: ^7.0.3
   tailwindcss: ^2.2.4
   typescript: ^4.3.2
   uuid: ^8.3.2
@@ -55,8 +63,10 @@ dependencies:
   '@blueprintjs/core': registry.nlark.com/@blueprintjs/core/3.47.0_react-dom@17.0.2+react@17.0.2
   '@blueprintjs/icons': registry.nlark.com/@blueprintjs/icons/3.28.0
   '@blueprintjs/popover2': registry.nlark.com/@blueprintjs/popover2/0.11.1_react-dom@17.0.2+react@17.0.2
+  '@blueprintjs/select': registry.nlark.com/@blueprintjs/select/3.18.1_react-dom@17.0.2+react@17.0.2
   '@types/fabric': registry.nlark.com/@types/fabric/4.5.2
   '@types/node': registry.nlark.com/@types/node/16.6.2
+  '@types/ramda': registry.nlark.com/@types/ramda/0.27.44
   '@types/react-router-dom': registry.nlark.com/@types/react-router-dom/5.1.8
   add: registry.nlark.com/add/2.0.6
   axios: 0.21.1
@@ -65,17 +75,23 @@ dependencies:
   fabric: registry.nlark.com/fabric/4.5.1
   history: registry.nlark.com/history/4.10.1
   hotkeys-js: registry.nlark.com/hotkeys-js/3.8.7
+  jsoneditor: registry.nlark.com/jsoneditor/9.5.5
   mobx: registry.nlark.com/mobx/6.3.2
   mobx-react-lite: registry.nlark.com/mobx-react-lite/3.2.0_7e8915efb8617305a7bfbed08f2cda09
   normalize.css: registry.nlark.com/normalize.css/8.0.1
+  ramda: 0.27.1
   react: registry.nlark.com/react/17.0.2
   react-dom: registry.nlark.com/react-dom/17.0.2_react@17.0.2
   react-router-dom: registry.nlark.com/react-router-dom/5.2.0_react@17.0.2
+  react-window: registry.nlark.com/react-window/1.8.6_react-dom@17.0.2+react@17.0.2
+  swiper: registry.nlark.com/swiper/7.0.3
   uuid: registry.nlark.com/uuid/8.3.2
 
 devDependencies:
+  '@types/jsoneditor': registry.nlark.com/@types/jsoneditor/8.6.1
   '@types/react': registry.nlark.com/@types/react/17.0.19
   '@types/react-dom': registry.nlark.com/@types/react-dom/17.0.9
+  '@types/react-window': registry.nlark.com/@types/react-window/1.8.5
   '@types/uuid': registry.nlark.com/@types/uuid/8.3.1
   '@typescript-eslint/eslint-plugin': registry.nlark.com/@typescript-eslint/eslint-plugin/4.29.2_b01b7137116ac50f0745961d9cf72d34
   '@typescript-eslint/parser': registry.nlark.com/@typescript-eslint/parser/4.29.2_eslint@7.32.0+typescript@4.3.5
@@ -411,6 +427,7 @@ packages:
 
   /fast-deep-equal/3.1.3:
     resolution: {integrity: sha1-On1WtVnWy8PrUSMlJE5hmmXGxSU=, tarball: fast-deep-equal/download/fast-deep-equal-3.1.3.tgz}
+    dev: true
 
   /fast-diff/1.2.0:
     resolution: {integrity: sha1-c+4RmC2Gyq95WYKNUZz+kn+sXwM=, tarball: fast-diff/download/fast-diff-1.2.0.tgz}
@@ -1047,10 +1064,6 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
-  /punycode/2.1.1:
-    resolution: {integrity: sha1-tYsBCsQMIsVldhbI0sLALHv0eew=, tarball: punycode/download/punycode-2.1.1.tgz}
-    engines: {node: '>=6'}
-
   /qs/6.5.2:
     resolution: {integrity: sha1-yzroBuh0BERYTvFUzo7pjUA/PjY=, tarball: qs/download/qs-6.5.2.tgz}
     engines: {node: '>=0.6'}
@@ -1060,6 +1073,10 @@ packages:
   /queue-microtask/1.2.3:
     resolution: {integrity: sha1-SSkii7xyTfrEPg77BYyve2z7YkM=, tarball: queue-microtask/download/queue-microtask-1.2.3.tgz}
     dev: true
+
+  /ramda/0.27.1:
+    resolution: {integrity: sha1-Zvwt8++HOHT/wtpqqJhGWKus9ck=, tarball: ramda/download/ramda-0.27.1.tgz}
+    dev: false
 
   /react-lifecycles-compat/3.0.4:
     resolution: {integrity: sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=, tarball: react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz}
@@ -1597,7 +1614,7 @@ packages:
     dev: true
 
   registry.nlark.com/@babel/runtime/7.15.3:
-    resolution: {integrity: sha1-LhwogMoRjlsvmYgyK9inZWoyUCs=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@babel/runtime/download/@babel/runtime-7.15.3.tgz?cache=0&sync_timestamp=1628670212461&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.15.3.tgz}
+    resolution: {integrity: sha1-LhwogMoRjlsvmYgyK9inZWoyUCs=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@babel/runtime/download/@babel/runtime-7.15.3.tgz}
     name: '@babel/runtime'
     version: 7.15.3
     engines: {node: '>=6.9.0'}
@@ -1650,6 +1667,12 @@ packages:
     version: 1.0.0
     dev: false
 
+  registry.nlark.com/@blueprintjs/colors/3.0.0:
+    resolution: {integrity: sha1-8SHcG8JMw2dmikJZEfqP9S6HAUo=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@blueprintjs/colors/download/@blueprintjs/colors-3.0.0.tgz}
+    name: '@blueprintjs/colors'
+    version: 3.0.0
+    dev: false
+
   registry.nlark.com/@blueprintjs/core/3.47.0_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha1-vzMVXSJLdCulHG4c9b5FIykDN6c=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@blueprintjs/core/download/@blueprintjs/core-3.47.0.tgz?cache=0&sync_timestamp=1629382692194&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40blueprintjs%2Fcore%2Fdownload%2F%40blueprintjs%2Fcore-3.47.0.tgz}
     id: registry.nlark.com/@blueprintjs/core/3.47.0
@@ -1675,6 +1698,32 @@ packages:
       tslib: registry.nlark.com/tslib/1.13.0
     dev: false
 
+  registry.nlark.com/@blueprintjs/core/3.49.1_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha1-aCTdsRzihY8LAJyK4Md0VH4+2wo=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@blueprintjs/core/download/@blueprintjs/core-3.49.1.tgz}
+    id: registry.nlark.com/@blueprintjs/core/3.49.1
+    name: '@blueprintjs/core'
+    version: 3.49.1
+    hasBin: true
+    peerDependencies:
+      react: ^15.3.0 || 16 || 17
+      react-dom: ^15.3.0 || 16 || 17
+    dependencies:
+      '@blueprintjs/colors': registry.nlark.com/@blueprintjs/colors/3.0.0
+      '@blueprintjs/icons': registry.nlark.com/@blueprintjs/icons/3.29.0
+      '@types/dom4': registry.nlark.com/@types/dom4/2.0.2
+      classnames: registry.nlark.com/classnames/2.3.1
+      dom4: registry.nlark.com/dom4/2.1.6
+      normalize.css: registry.nlark.com/normalize.css/8.0.1
+      popper.js: registry.nlark.com/popper.js/1.16.1
+      react: registry.nlark.com/react/17.0.2
+      react-dom: registry.nlark.com/react-dom/17.0.2_react@17.0.2
+      react-lifecycles-compat: registry.nlark.com/react-lifecycles-compat/3.0.4
+      react-popper: registry.nlark.com/react-popper/1.3.11_react@17.0.2
+      react-transition-group: registry.nlark.com/react-transition-group/2.9.0_react-dom@17.0.2+react@17.0.2
+      resize-observer-polyfill: registry.nlark.com/resize-observer-polyfill/1.5.1
+      tslib: registry.nlark.com/tslib/1.13.0
+    dev: false
+
   registry.nlark.com/@blueprintjs/icons/3.27.0:
     resolution: {integrity: sha1-9MA+i8L5MQ9+rvqrJt2R9lk12kM=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@blueprintjs/icons/download/@blueprintjs/icons-3.27.0.tgz?cache=0&sync_timestamp=1629382693059&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40blueprintjs%2Ficons%2Fdownload%2F%40blueprintjs%2Ficons-3.27.0.tgz}
     name: '@blueprintjs/icons'
@@ -1688,6 +1737,15 @@ packages:
     resolution: {integrity: sha1-0GUo30qtwOpoWws74Y/TsZ3s6eU=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@blueprintjs/icons/download/@blueprintjs/icons-3.28.0.tgz}
     name: '@blueprintjs/icons'
     version: 3.28.0
+    dependencies:
+      classnames: registry.nlark.com/classnames/2.3.1
+      tslib: registry.nlark.com/tslib/1.13.0
+    dev: false
+
+  registry.nlark.com/@blueprintjs/icons/3.29.0:
+    resolution: {integrity: sha1-LnhsYmSheD8t+UI3SSNhiahMQ24=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@blueprintjs/icons/download/@blueprintjs/icons-3.29.0.tgz}
+    name: '@blueprintjs/icons'
+    version: 3.29.0
     dependencies:
       classnames: registry.nlark.com/classnames/2.3.1
       tslib: registry.nlark.com/tslib/1.13.0
@@ -1711,6 +1769,22 @@ packages:
       tslib: registry.nlark.com/tslib/1.13.0
     transitivePeerDependencies:
       - react-dom
+    dev: false
+
+  registry.nlark.com/@blueprintjs/select/3.18.1_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha1-ZVIZMmwJyArfJxHA3RcZEDTJIkg=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@blueprintjs/select/download/@blueprintjs/select-3.18.1.tgz}
+    id: registry.nlark.com/@blueprintjs/select/3.18.1
+    name: '@blueprintjs/select'
+    version: 3.18.1
+    peerDependencies:
+      react: ^15.3.0 || 16 || 17
+      react-dom: ^15.3.0 || 16 || 17
+    dependencies:
+      '@blueprintjs/core': registry.nlark.com/@blueprintjs/core/3.49.1_react-dom@17.0.2+react@17.0.2
+      classnames: registry.nlark.com/classnames/2.3.1
+      react: registry.nlark.com/react/17.0.2
+      react-dom: registry.nlark.com/react-dom/17.0.2_react@17.0.2
+      tslib: registry.nlark.com/tslib/1.13.0
     dev: false
 
   registry.nlark.com/@commitlint/execute-rule/13.0.0:
@@ -1876,6 +1950,12 @@ packages:
       picomatch: registry.nlark.com/picomatch/2.3.0
     dev: true
 
+  registry.nlark.com/@sphinxxxx/color-conversion/2.2.2:
+    resolution: {integrity: sha1-A+zCknnjwMgy9hhaW/o0l4WKyMo=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@sphinxxxx/color-conversion/download/@sphinxxxx/color-conversion-2.2.2.tgz}
+    name: '@sphinxxxx/color-conversion'
+    version: 2.2.2
+    dev: false
+
   registry.nlark.com/@stylelint/postcss-css-in-js/0.37.2_2b33a41d320e3e2012e5b3b0fadc703b:
     resolution: {integrity: sha1-flqErRgfQjSiSAgDQipHuHSa89I=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@stylelint/postcss-css-in-js/download/@stylelint/postcss-css-in-js-0.37.2.tgz}
     id: registry.nlark.com/@stylelint/postcss-css-in-js/0.37.2
@@ -1890,6 +1970,12 @@ packages:
       postcss-syntax: registry.nlark.com/postcss-syntax/0.36.2_postcss@7.0.36
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  registry.nlark.com/@types/ace/0.0.47:
+    resolution: {integrity: sha1-UZdZoi2K+Zn6EtZPaJGEf5894Tk=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/ace/download/@types/ace-0.0.47.tgz}
+    name: '@types/ace'
+    version: 0.0.47
     dev: true
 
   registry.nlark.com/@types/dom4/2.0.2:
@@ -1914,6 +2000,15 @@ packages:
     resolution: {integrity: sha1-l+3JA36gw4WFMgsolk3eOznkZg0=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/json-schema/download/@types/json-schema-7.0.9.tgz}
     name: '@types/json-schema'
     version: 7.0.9
+    dev: true
+
+  registry.nlark.com/@types/jsoneditor/8.6.1:
+    resolution: {integrity: sha1-lW6WTkv/oeFGLR3lQmGqA0rPRXQ=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/jsoneditor/download/@types/jsoneditor-8.6.1.tgz}
+    name: '@types/jsoneditor'
+    version: 8.6.1
+    dependencies:
+      '@types/ace': registry.nlark.com/@types/ace/0.0.47
+      ajv: registry.nlark.com/ajv/6.12.6
     dev: true
 
   registry.nlark.com/@types/mdast/3.0.7:
@@ -1953,6 +2048,14 @@ packages:
     name: '@types/prop-types'
     version: 15.7.4
 
+  registry.nlark.com/@types/ramda/0.27.44:
+    resolution: {integrity: sha1-uiKD1n/P82b35ovVEkoEZuRnln8=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/ramda/download/@types/ramda-0.27.44.tgz}
+    name: '@types/ramda'
+    version: 0.27.44
+    dependencies:
+      ts-toolbelt: registry.nlark.com/ts-toolbelt/6.15.5
+    dev: false
+
   registry.nlark.com/@types/react-dom/17.0.9:
     resolution: {integrity: sha1-RBqYHanXvhFwQuGm/T2sSzD1Wt0=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/react-dom/download/@types/react-dom-17.0.9.tgz?cache=0&sync_timestamp=1625711858866&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Freact-dom%2Fdownload%2F%40types%2Freact-dom-17.0.9.tgz}
     name: '@types/react-dom'
@@ -1979,6 +2082,14 @@ packages:
       '@types/history': registry.nlark.com/@types/history/4.7.9
       '@types/react': registry.nlark.com/@types/react/17.0.19
     dev: false
+
+  registry.nlark.com/@types/react-window/1.8.5:
+    resolution: {integrity: sha1-KF/MXOpwPu942Q9JnhRX6bXAL8E=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/react-window/download/@types/react-window-1.8.5.tgz}
+    name: '@types/react-window'
+    version: 1.8.5
+    dependencies:
+      '@types/react': registry.nlark.com/@types/react/17.0.19
+    dev: true
 
   registry.nlark.com/@types/react/17.0.19:
     resolution: {integrity: sha1-jyqF6BgKQ7V5ZrI30mopSB2syZE=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/@types/react/download/@types/react-17.0.19.tgz}
@@ -2158,6 +2269,12 @@ packages:
     dev: false
     optional: true
 
+  registry.nlark.com/ace-builds/1.4.12:
+    resolution: {integrity: sha1-iI76OG429DRfQLUjP8xP5MWI+uc=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/ace-builds/download/ace-builds-1.4.12.tgz}
+    name: ace-builds
+    version: 1.4.12
+    dev: false
+
   registry.nlark.com/acorn-globals/4.3.4:
     resolution: {integrity: sha1-n6GSat3BHJcwjE5m163Q1Awycuc=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/acorn-globals/download/acorn-globals-4.3.4.tgz}
     name: acorn-globals
@@ -2239,11 +2356,11 @@ packages:
     optional: true
 
   registry.nlark.com/ajv/6.12.6:
-    resolution: {integrity: sha1-uvWmLoArB9l3A0WG+MO69a3ybfQ=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/ajv/download/ajv-6.12.6.tgz}
+    resolution: {integrity: sha1-uvWmLoArB9l3A0WG+MO69a3ybfQ=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/ajv/download/ajv-6.12.6.tgz?cache=0&sync_timestamp=1626403662642&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fajv%2Fdownload%2Fajv-6.12.6.tgz}
     name: ajv
     version: 6.12.6
     dependencies:
-      fast-deep-equal: 3.1.3
+      fast-deep-equal: registry.nlark.com/fast-deep-equal/3.1.3
       fast-json-stable-stringify: registry.nlark.com/fast-json-stable-stringify/2.1.0
       json-schema-traverse: registry.nlark.com/json-schema-traverse/0.4.1
       uri-js: registry.nlark.com/uri-js/4.4.1
@@ -3025,6 +3142,14 @@ packages:
     version: 2.1.6
     dev: false
 
+  registry.nlark.com/dom7/4.0.0:
+    resolution: {integrity: sha1-acj7mxcMktZPOF/cN/gUVugrgKE=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/dom7/download/dom7-4.0.0.tgz}
+    name: dom7
+    version: 4.0.0
+    dependencies:
+      ssr-window: registry.nlark.com/ssr-window/4.0.0
+    dev: false
+
   registry.nlark.com/domexception/1.0.1:
     resolution: {integrity: sha1-k3RCZEymoxJh7zbj7Gd/6AVYLJA=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/domexception/download/domexception-1.0.1.tgz}
     name: domexception
@@ -3510,6 +3635,11 @@ packages:
       - supports-color
       - utf-8-validate
     dev: false
+
+  registry.nlark.com/fast-deep-equal/3.1.3:
+    resolution: {integrity: sha1-On1WtVnWy8PrUSMlJE5hmmXGxSU=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/fast-deep-equal/download/fast-deep-equal-3.1.3.tgz}
+    name: fast-deep-equal
+    version: 3.1.3
 
   registry.nlark.com/fast-glob/3.2.7:
     resolution: {integrity: sha1-/Wy3otfpqnp4RhEehaGW1rL3ZqE=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/fast-glob/download/fast-glob-3.2.7.tgz}
@@ -4153,6 +4283,19 @@ packages:
     dev: false
     optional: true
 
+  registry.nlark.com/javascript-natural-sort/0.7.1:
+    resolution: {integrity: sha1-+eIwPUUH9tdDVac2ZNFED7Wg71k=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/javascript-natural-sort/download/javascript-natural-sort-0.7.1.tgz}
+    name: javascript-natural-sort
+    version: 0.7.1
+    dev: false
+
+  registry.nlark.com/jmespath/0.15.0:
+    resolution: {integrity: sha1-o/Iiqarp+Wb10nx5ZRDigJF2Qhc=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/jmespath/download/jmespath-0.15.0.tgz}
+    name: jmespath
+    version: 0.15.0
+    engines: {node: '>= 0.6.0'}
+    dev: false
+
   registry.nlark.com/js-tokens/4.0.0:
     resolution: {integrity: sha1-GSA/tZmR35jjoocFDUZHzerzJJk=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/js-tokens/download/js-tokens-4.0.0.tgz}
     name: js-tokens
@@ -4228,6 +4371,35 @@ packages:
     name: json-schema-traverse
     version: 1.0.0
     dev: true
+
+  registry.nlark.com/json-source-map/0.6.1:
+    resolution: {integrity: sha1-4LH29M4Tqa1X4q4WWiTQbmLHmg8=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/json-source-map/download/json-source-map-0.6.1.tgz}
+    name: json-source-map
+    version: 0.6.1
+    dev: false
+
+  registry.nlark.com/jsoneditor/9.5.5:
+    resolution: {integrity: sha1-MnW0syfVHF1tMOOG0ya+1NoBKgs=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/jsoneditor/download/jsoneditor-9.5.5.tgz}
+    name: jsoneditor
+    version: 9.5.5
+    dependencies:
+      ace-builds: registry.nlark.com/ace-builds/1.4.12
+      ajv: registry.nlark.com/ajv/6.12.6
+      javascript-natural-sort: registry.nlark.com/javascript-natural-sort/0.7.1
+      jmespath: registry.nlark.com/jmespath/0.15.0
+      json-source-map: registry.nlark.com/json-source-map/0.6.1
+      jsonrepair: registry.nlark.com/jsonrepair/2.2.1
+      mobius1-selectr: registry.nlark.com/mobius1-selectr/2.4.13
+      picomodal: registry.nlark.com/picomodal/3.0.0
+      vanilla-picker: registry.nlark.com/vanilla-picker/2.11.2
+    dev: false
+
+  registry.nlark.com/jsonrepair/2.2.1:
+    resolution: {integrity: sha1-fGJXw2VQoxAVDEGrfV1Mq3GChFY=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/jsonrepair/download/jsonrepair-2.2.1.tgz}
+    name: jsonrepair
+    version: 2.2.1
+    hasBin: true
+    dev: false
 
   registry.nlark.com/jsprim/1.4.1:
     resolution: {integrity: sha1-MT5mvB5cwG5Di8G3SZwuXFastqI=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/jsprim/download/jsprim-1.4.1.tgz}
@@ -4368,6 +4540,12 @@ packages:
     version: 2.0.0
     dev: true
 
+  registry.nlark.com/memoize-one/5.2.1:
+    resolution: {integrity: sha1-gzeqPEM1WBg57AHD1ZQJDOvo8A4=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/memoize-one/download/memoize-one-5.2.1.tgz}
+    name: memoize-one
+    version: 5.2.1
+    dev: false
+
   registry.nlark.com/meow/9.0.0:
     resolution: {integrity: sha1-zZUQvFysne59A8c+4fmtlZ9Oo2Q=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/meow/download/meow-9.0.0.tgz?cache=0&sync_timestamp=1627561599336&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fmeow%2Fdownload%2Fmeow-9.0.0.tgz}
     name: meow
@@ -4471,6 +4649,12 @@ packages:
       yallist: registry.nlark.com/yallist/4.0.0
     dev: false
     optional: true
+
+  registry.nlark.com/mobius1-selectr/2.4.13:
+    resolution: {integrity: sha1-ABnf2fmEhA1uQPcGg6s+x4zjtd8=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/mobius1-selectr/download/mobius1-selectr-2.4.13.tgz}
+    name: mobius1-selectr
+    version: 2.4.13
+    dev: false
 
   registry.nlark.com/mobx-react-lite/3.2.0_7e8915efb8617305a7bfbed08f2cda09:
     resolution: {integrity: sha1-Mx1zZaawUzeN/pwIcxW05Bxd9p8=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/mobx-react-lite/download/mobx-react-lite-3.2.0.tgz}
@@ -4838,6 +5022,12 @@ packages:
     engines: {node: '>=8.6'}
     dev: true
 
+  registry.nlark.com/picomodal/3.0.0:
+    resolution: {integrity: sha1-+s0w9PvzSoCcHgTqUl8ATzmcC4I=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/picomodal/download/picomodal-3.0.0.tgz}
+    name: picomodal
+    version: 3.0.0
+    dev: false
+
   registry.nlark.com/pify/3.0.0:
     resolution: {integrity: sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/pify/download/pify-3.0.0.tgz}
     name: pify
@@ -4851,6 +5041,13 @@ packages:
     version: 1.1.0
     dev: false
     optional: true
+
+  registry.nlark.com/popper.js/1.16.1:
+    resolution: {integrity: sha1-KiI8s9x7YhPXQOQDcr5A3kPmWxs=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/popper.js/download/popper.js-1.16.1.tgz}
+    name: popper.js
+    version: 1.16.1
+    deprecated: You can find the new Popper v2 at @popperjs/core, this package is dedicated to the legacy v1
+    dev: false
 
   registry.nlark.com/postcss-html/0.36.0_2b33a41d320e3e2012e5b3b0fadc703b:
     resolution: {integrity: sha1-tAkT+U6qzCRT/TChMnrW7h+IsgQ=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/postcss-html/download/postcss-html-0.36.0.tgz}
@@ -5040,8 +5237,6 @@ packages:
     name: punycode
     version: 2.1.1
     engines: {node: '>=6'}
-    dev: false
-    optional: true
 
   registry.nlark.com/purgecss/4.0.3:
     resolution: {integrity: sha1-gUe0KfnAnbcZ4F1kkI6otnKRN0I=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/purgecss/download/purgecss-4.0.3.tgz}
@@ -5093,6 +5288,12 @@ packages:
     resolution: {integrity: sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/react-is/download/react-is-16.13.1.tgz}
     name: react-is
     version: 16.13.1
+
+  registry.nlark.com/react-lifecycles-compat/3.0.4:
+    resolution: {integrity: sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz}
+    name: react-lifecycles-compat
+    version: 3.0.4
+    dev: false
 
   registry.nlark.com/react-popper/1.3.11_react@17.0.2:
     resolution: {integrity: sha1-osw/Cme3W2bPpi0sQJ+d0fzHH/0=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/react-popper/download/react-popper-1.3.11.tgz}
@@ -5188,6 +5389,22 @@ packages:
       react: registry.nlark.com/react/17.0.2
       react-dom: registry.nlark.com/react-dom/17.0.2_react@17.0.2
       react-lifecycles-compat: 3.0.4
+    dev: false
+
+  registry.nlark.com/react-window/1.8.6_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha1-0BGVCsZDqZQRhjJmWq0MY4LioRI=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/react-window/download/react-window-1.8.6.tgz}
+    id: registry.nlark.com/react-window/1.8.6
+    name: react-window
+    version: 1.8.6
+    engines: {node: '>8.0.0'}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      '@babel/runtime': registry.nlark.com/@babel/runtime/7.15.3
+      memoize-one: registry.nlark.com/memoize-one/5.2.1
+      react: registry.nlark.com/react/17.0.2
+      react-dom: registry.nlark.com/react-dom/17.0.2_react@17.0.2
     dev: false
 
   registry.nlark.com/react/17.0.2:
@@ -5371,6 +5588,12 @@ packages:
       uuid: registry.nlark.com/uuid/3.4.0
     dev: false
     optional: true
+
+  registry.nlark.com/resize-observer-polyfill/1.5.1:
+    resolution: {integrity: sha1-DpAg3T0hAkRY1OvSfiPkAmmBBGQ=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/resize-observer-polyfill/download/resize-observer-polyfill-1.5.1.tgz}
+    name: resize-observer-polyfill
+    version: 1.5.1
+    dev: false
 
   registry.nlark.com/resolve-global/1.0.0:
     resolution: {integrity: sha1-oqed9K8so/Sb93753azTItrRklU=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/resolve-global/download/resolve-global-1.0.0.tgz}
@@ -5645,6 +5868,12 @@ packages:
     dev: false
     optional: true
 
+  registry.nlark.com/ssr-window/4.0.0:
+    resolution: {integrity: sha1-Tugvw2DF+IoCLzIXQLz+xZraGmE=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/ssr-window/download/ssr-window-4.0.0.tgz}
+    name: ssr-window
+    version: 4.0.0
+    dev: false
+
   registry.nlark.com/stealthy-require/1.1.1:
     resolution: {integrity: sha1-NbCYdbT/SfJqd35QmzCQoyJr8ks=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/stealthy-require/download/stealthy-require-1.1.1.tgz}
     name: stealthy-require
@@ -5882,6 +6111,17 @@ packages:
       has-flag: registry.nlark.com/has-flag/4.0.0
     dev: true
 
+  registry.nlark.com/swiper/7.0.3:
+    resolution: {integrity: sha1-kdtyqUjXL84LsxYToqSjAjVwoB0=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/swiper/download/swiper-7.0.3.tgz}
+    name: swiper
+    version: 7.0.3
+    engines: {node: '>= 4.7.0'}
+    requiresBuild: true
+    dependencies:
+      dom7: registry.nlark.com/dom7/4.0.0
+      ssr-window: registry.nlark.com/ssr-window/4.0.0
+    dev: false
+
   registry.nlark.com/symbol-tree/3.2.4:
     resolution: {integrity: sha1-QwY30ki6d+B4iDlR+5qg7tfGP6I=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/symbol-tree/download/symbol-tree-3.2.4.tgz}
     name: symbol-tree
@@ -6048,6 +6288,12 @@ packages:
     version: 1.0.5
     dev: true
 
+  registry.nlark.com/ts-toolbelt/6.15.5:
+    resolution: {integrity: sha1-yztD7XJctjZEeCxk+8rX2PKMCoM=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/ts-toolbelt/download/ts-toolbelt-6.15.5.tgz}
+    name: ts-toolbelt
+    version: 6.15.5
+    dev: false
+
   registry.nlark.com/tsconfig-paths/3.10.1:
     resolution: {integrity: sha1-ea5npowVKJ/fXFHLdPOXUi15Xtc=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/tsconfig-paths/download/tsconfig-paths-3.10.1.tgz?cache=0&sync_timestamp=1626778390426&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ftsconfig-paths%2Fdownload%2Ftsconfig-paths-3.10.1.tgz}
     name: tsconfig-paths
@@ -6196,11 +6442,11 @@ packages:
     dev: true
 
   registry.nlark.com/uri-js/4.4.1:
-    resolution: {integrity: sha1-mxpSWVIlhZ5V9mnZKPiMbFfyp34=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/uri-js/download/uri-js-4.4.1.tgz}
+    resolution: {integrity: sha1-mxpSWVIlhZ5V9mnZKPiMbFfyp34=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/uri-js/download/uri-js-4.4.1.tgz?cache=0&sync_timestamp=1622694296052&other_urls=https%3A%2F%2Fregistry.nlark.com%2Furi-js%2Fdownload%2Furi-js-4.4.1.tgz}
     name: uri-js
     version: 4.4.1
     dependencies:
-      punycode: 2.1.1
+      punycode: registry.nlark.com/punycode/2.1.1
 
   registry.nlark.com/util-deprecate/1.0.2:
     resolution: {integrity: sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/util-deprecate/download/util-deprecate-1.0.2.tgz}
@@ -6234,6 +6480,14 @@ packages:
     resolution: {integrity: sha1-Hgt5THNMXAyt4XnEN9NW2TGjTWw=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/value-equal/download/value-equal-1.0.1.tgz}
     name: value-equal
     version: 1.0.1
+    dev: false
+
+  registry.nlark.com/vanilla-picker/2.11.2:
+    resolution: {integrity: sha1-6qJO+mjCfn7p4Hdt9V1pE7hV8TM=, registry: https://registry.npm.taobao.org/, tarball: https://registry.nlark.com/vanilla-picker/download/vanilla-picker-2.11.2.tgz}
+    name: vanilla-picker
+    version: 2.11.2
+    dependencies:
+      '@sphinxxxx/color-conversion': registry.nlark.com/@sphinxxxx/color-conversion/2.2.2
     dev: false
 
   registry.nlark.com/verror/1.10.0:

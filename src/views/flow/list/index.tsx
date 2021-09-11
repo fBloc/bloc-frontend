@@ -14,7 +14,7 @@ import {
   List,
   Colors,
 } from "@/components";
-import { TabEnums } from "@/common";
+import { DetailType } from "@/common";
 import { observer } from "mobx-react-lite";
 import { useHistory } from "react-router-dom";
 import { ListContext, ListStore } from "./store/list";
@@ -25,11 +25,11 @@ import { AppStoreContext } from "@/store";
 
 const tabs = [
   {
-    value: TabEnums.launched,
+    value: DetailType.launched,
     label: "已发布",
   },
   {
-    value: TabEnums.draft,
+    value: DetailType.draft,
     label: "未发布",
   },
 ];
@@ -40,7 +40,7 @@ const Header = observer(() => {
 
   const { tab } = store;
   const switchTab = useCallback(
-    (tab: TabEnums) => {
+    (tab: DetailType) => {
       store.switchTab(tab);
     },
     [store],
@@ -128,7 +128,7 @@ const ItemMenu: React.FC<{
                 history.push(`/flow/${list[index].origin_id}`);
               }}
             />
-            {store.tab === TabEnums.draft && (
+            {store.tab === DetailType.draft && (
               <>
                 <MenuDivider />
                 {confirmed ? (

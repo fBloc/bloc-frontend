@@ -12,7 +12,7 @@ const Index = observer(() => {
       <div className="text-center">
         <img src={Logo} alt="" className="w-40" />
         <p className="mb-20 text-2xl font-medium">BLOC</p>
-        <NavLink to={appStore.isLogin ? "/arrangement" : "/login"}>
+        <NavLink to={appStore.isLogin ? "/flow" : "/login"}>
           <Button intent="primary">开始使用</Button>
         </NavLink>
       </div>

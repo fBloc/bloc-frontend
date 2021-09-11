@@ -1,17 +1,21 @@
 import request from "@/api/client";
 import { ValueType } from "@/api/flow";
-import { BlocGroup, ParamTypeOptions } from "@/common";
+import { ParamTypeOptions } from "@/common";
 
 export function getFunctions() {
-  return request.get<BlocGroup[]>("/api/v1/bloc");
+  return request.get<FunctionGroup[]>("/api/v1/bloc");
 }
 
-export interface IFunctionItem {
+export interface FunctionItem {
   description: string;
   id: string;
   ipt: Ipt[];
   name: string;
   opt: IOpt[];
+}
+export interface FunctionGroup {
+  blocs: FunctionItem[];
+  group_name: string;
 }
 
 export interface Ipt {

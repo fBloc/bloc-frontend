@@ -1,6 +1,7 @@
 import { IRectOptions, LogicNode, NodeType } from "./node";
 import { nodeSettings, primaryColor } from "@/fabric/settings";
 import playIcon from "@/assets/images/play-icon.png";
+import { BlocItem, ParamIpt } from "@/api/flow";
 
 type BlocOptions = {
   blocId: string;
@@ -14,6 +15,7 @@ export abstract class BasicBloc extends LogicNode {
   blocId: string;
   abstract renderName(): void;
   context?: CanvasRenderingContext2D;
+  paramIpts?: ParamIpt[][] = [];
   constructor({ blocId, id, name, upstream = [], downstream = [], ...rest }: BlocOptions) {
     super({
       ...rest,
@@ -31,8 +33,11 @@ export abstract class BasicBloc extends LogicNode {
     this.context = context;
     this.renderName();
   }
-  getJson() {
-    const { downstream, upstream, blocId, left = 0, top = 0, id } = this;
+  setParamIpts(paramIpts: BlocItem["param_ipts"]) {
+    this.paramIpts = paramIpts;
+  }
+  getJson(): BlocItem {
+    const { downstream, upstream, blocId, left = 0, top = 0, id, paramIpts } = this;
     return {
       id,
       bloc_id: blocId,
@@ -43,6 +48,7 @@ export abstract class BasicBloc extends LogicNode {
       note: this.name,
       upstream_bloc_ids: upstream,
       downstream_bloc_ids: downstream,
+      param_ipts: paramIpts,
     };
   }
 }

@@ -1,0 +1,19 @@
+.root {
+  &.error {
+    border-color: rgba(var(--bloc-error), 1);
+    background-color: rgba(var(--bloc-error), 0.1);
+    color: rgba(var(--bloc-error), 1);
+  }
+
+  &.will-drop {
+    border-color: rgba(var(--bloc-success), 1);
+    background-color: rgba(var(--bloc-success), 0.1);
+    color: rgba(var(--bloc-success), 1);
+  }
+
+  &.allow-drop {
+    border-color: rgba(var(--bloc-primary), 1);
+    background-color: rgba(var(--bloc-primary), 0.1);
+    color: rgba(var(--bloc-primary), 1);
+  }
+}

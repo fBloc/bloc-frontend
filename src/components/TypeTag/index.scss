@@ -1,0 +1,50 @@
+@use "sass:math";
+
+@function r($size) {
+  $r: math.div($size, 20);
+
+  @return #{$size}px;
+}
+
+/** color with opacity */
+@function oc($color, $opacity: 1) {
+  @return rgba(var(--#{$color}), $opacity);
+}
+
+:root {
+  --ia-type-string: 255, 178, 0;
+  --ia-type-int: 0, 176, 183;
+  --ia-type-float: 156, 156, 221;
+  --ia-type-list: 116, 152, 200;
+  --ia-type-json: 23, 142, 150;
+  --ia-type-bool: 75, 169, 108;
+}
+
+$types: int, float, string, json, list, bool;
+
+.type-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  text-transform: uppercase;
+  border-radius: r(4);
+  transform-origin: left center;
+  font-weight: 500;
+  font-family: 'Monaco';
+  font-size: var(--bloc-caption);
+  line-height: 1;
+  transform: scale(0.83);
+  background-color: oc(bloc-surface);
+
+  @each $type in $types {
+    &.#{$type} {
+      border: 1px solid oc(ia-type-#{$type});
+      background-color: oc(ia-type-#{$type}, 0.1);
+      color: oc(ia-type-#{$type});
+    }
+  }
+
+  &.ghost {
+    border-color: transparent;
+    background-color: transparent;
+  }
+}

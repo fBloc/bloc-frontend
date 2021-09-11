@@ -67,10 +67,11 @@ export abstract class LogicNode extends fabric.Rect {
   }
   onDeselect() {
     const canvas = this.canvas as Canvas;
-    if (this.nodeType === NodeType.system) return false;
     this.selected = false;
     if (canvas.trigger?.host === this) {
-      this.updateState();
+      if (this.nodeType === NodeType.feature) {
+        this.updateState();
+      }
       this.destroyTrigger();
     }
     return false;
@@ -173,11 +174,11 @@ export abstract class LogicNode extends fabric.Rect {
   private addDownstream(...ids: string[]) {
     this.downstream = Array.from(new Set([...this.downstream, ...ids]));
   }
-  removeInline(line: ConnectionLine) {
+  unregisterUpstream(line: ConnectionLine) {
     line.upstream && this.removeUpstream(line.upstream);
     this.inlines = this.inlines.filter((l) => l !== line);
   }
-  removeOutline(line: ConnectionLine) {
+  unregisterDownstream(line: ConnectionLine) {
     line.downstream && this.removeDownstream(line.downstream);
     this.outlines = this.outlines.filter((l) => l !== line);
   }

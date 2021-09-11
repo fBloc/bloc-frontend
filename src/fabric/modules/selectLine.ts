@@ -1,10 +1,9 @@
-import { CanvasEvents } from "../common";
-import { defaultCoordinate, ICoordinate } from "../../../common";
-import { Canvas, isType, ConnectionLine } from "../objects";
-import { connectionLineSettings } from "../objects/settings";
+import { defaultCoordinate, ICoordinate, CanvasEvents } from "@/fabric/common";
+import { Canvas, isConnectionLine } from "@/fabric/objects";
+import { connectionLineSettings } from "@/fabric/settings";
 
 function getLineObjects(canvas: Canvas) {
-  return canvas._objects.filter((object) => isType(object, ConnectionLine)) as ConnectionLine[];
+  return canvas._objects.filter(isConnectionLine);
 }
 
 function findActiveLine(canvas: Canvas, coordinate: ICoordinate) {
@@ -45,7 +44,9 @@ const selectLine = {
         line.blur();
       });
 
-      const focusedLine = lines.find((line) => line.hotZone && canvasContext.isPointInStroke(line.hotZone, x * ratio, y * ratio));
+      const focusedLine = lines.find(
+        (line) => line.hotZone && canvasContext.isPointInStroke(line.hotZone, x * ratio, y * ratio),
+      );
       if (focusedLine && !canvas.hoveringTarget) {
         canvas.fire(CanvasEvents.LINE_CLICKED, {
           ...e,

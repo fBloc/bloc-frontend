@@ -56,24 +56,6 @@ export interface InputParam extends Omit<ParamDescriptor, "type"> {
 /** 函数的出参类型定义 */
 export type OutputParam = ParamDescriptor;
 
-/** 函数定义 */
-export interface FunctionItem {
-  id: number;
-  name: string;
-  brief: string;
-  /** 所在组的名称 */
-  groupName: string;
-  input: InputParam[];
-  output: OutputParam[];
-}
-
-export type BlocGroup = {
-  groupName: string;
-  groupId: number;
-  children: FunctionItem[];
-};
-/** 函数列表 */
-export type BlocList = BlocGroup[];
 /**
  * 类型一：通过配对
  */
@@ -92,19 +74,4 @@ export interface Input {
 export enum AppAtomSetMethod {
   input = "input",
   pair = "pair",
-}
-
-export interface BlocNode {
-  id: string;
-  name: string;
-  position: {
-    left: number;
-    top: number;
-  };
-  connections: {
-    upstream: string[];
-    downstream: string[];
-  };
-  inputParamConf: ((Pair | Input | null)[] | null)[];
-  function: FunctionItem;
 }

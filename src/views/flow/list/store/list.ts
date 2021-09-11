@@ -1,19 +1,19 @@
 import { createContext } from "react";
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
-import { createDraft, deleteDraft, deleteItem, getDraftList, getList, IFlow } from "@/api/flow";
+import { createDraft, deleteDraft, deleteItem, getDraftList, getList, FlowDetailT } from "@/api/flow";
 import { ToastPlugin } from "@/components/plugins";
-import { TabEnums } from "@/common";
+import { DetailType } from "@/common";
 
 export class ListStore {
-  @observable list: IFlow[] = [];
-  @observable draftList: IFlow[] = [];
-  @observable currentList: IFlow[] = [];
-  @observable tab = TabEnums.launched;
+  @observable list: FlowDetailT[] = [];
+  @observable draftList: FlowDetailT[] = [];
+  @observable currentList: FlowDetailT[] = [];
+  @observable tab = DetailType.launched;
   @observable index = -1;
   @observable name = "";
   @observable loading = false;
   @computed get data() {
-    return this.tab === TabEnums.launched ? this.list : this.draftList;
+    return this.tab === DetailType.launched ? this.list : this.draftList;
   }
   @computed get canUserDelete() {
     return false;
@@ -27,7 +27,7 @@ export class ListStore {
   createDraft() {
     return createDraft({ origin_id: "" });
   }
-  @action switchTab(tab: TabEnums) {
+  @action switchTab(tab: DetailType) {
     this.index = -1;
     this.tab = tab;
   }
@@ -84,13 +84,13 @@ export class ListStore {
     runInAction(() => {
       this.loading = true;
     });
-    this.tab === TabEnums.launched ? await this.getList() : await this.getDraftList();
+    this.tab === DetailType.launched ? await this.getList() : await this.getDraftList();
     runInAction(() => {
       this.loading = false;
     });
   }
   async delete(id: string) {
-    await (this.tab === TabEnums.launched ? this.deleteItem(id) : this.deleteDraft(id));
+    await (this.tab === DetailType.launched ? this.deleteItem(id) : this.deleteDraft(id));
     this.setCurrentList();
   }
   onInputName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,10 +102,10 @@ export class ListStore {
     }
   };
   @action setCurrentList() {
-    this.currentList = this.tab === TabEnums.draft ? this.draftList : this.list;
+    this.currentList = this.tab === DetailType.draft ? this.draftList : this.list;
   }
   @action filterList(name: string) {
-    const source = this.tab === TabEnums.draft ? this.draftList : this.list;
+    const source = this.tab === DetailType.draft ? this.draftList : this.list;
     this.currentList = source.filter((item) => item.name.includes(name));
   }
   viewIndex(index: number) {

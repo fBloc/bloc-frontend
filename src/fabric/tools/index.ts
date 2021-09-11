@@ -3,9 +3,20 @@ import { v4 as uuidv4 } from "uuid";
 import hotkeys from "hotkeys-js";
 import { Position } from "@/common";
 import { nodeSettings } from "../settings";
-import { BasicFlow, Canvas, Flow, FlowStartNode, isFlowNode, isLogicNode, LogicNode } from "@/fabric/objects";
+import {
+  BasicFlow,
+  Bloc,
+  BlocStartNode,
+  Canvas,
+  Flow,
+  FlowStartNode,
+  isFlowNode,
+  isLogicNode,
+  LogicNode,
+} from "@/fabric/objects";
 import { IArrangementFlow } from "@/api/arrangement";
 import { CanvasEvents, defaultPosition, ICoordinate } from "../common";
+import { BlocItem } from "@/api/flow";
 
 const X_GAP = 40;
 const Y_GAP = 80;
@@ -47,7 +58,7 @@ export function getMaxRightBottom({ left, top }: Position) {
 export function generateUniFlowIdentifier() {
   return uuidv4(); // TODO
 }
-export function isSelection(object: unknown) {
+export function isSelection(object: unknown): object is fabric.ActiveSelection {
   return object instanceof fabric.ActiveSelection;
 }
 export function getNodeAbsoluteCoordinate(node: LogicNode) {
@@ -200,3 +211,67 @@ export function makeCanvasZoomable(canvas: Canvas) {
 export function getLogicNodes(canvas?: Canvas) {
   return canvas?._objects.filter(isLogicNode) || [];
 }
+
+export const queryElement = <T>(selector: string | T) =>
+  typeof selector === "string" ? (document.querySelector(selector) as any as T) : selector;
+
+export function isStartNode<T extends { id: string }>(item: T) {
+  return item.id === "0";
+}
+function findStatNode<T extends { id: string }>(nodes: T[]) {
+  return nodes.find(isStartNode);
+}
+
+function findLogicNodes<T extends { id: string }>(nodes: T[]) {
+  return nodes.filter((item) => !isStartNode(item));
+}
+
+export function toBlocNodes(list: BlocItem[]) {
+  // this.addStartNode();
+  const result = [];
+  const startNode = findStatNode(list);
+  if (startNode) {
+    const node = new BlocStartNode({
+      downstream: [...startNode.downstream_bloc_ids],
+      upstream: [...startNode.upstream_bloc_ids],
+      left: startNode.position.left || 500, //TODO
+      top: startNode.position.top || 200, //TODO
+    });
+    result.push(node);
+  }
+  const nodes = findLogicNodes(list).map((bloc) => {
+    const {
+      id,
+      bloc_id,
+      downstream_bloc_ids,
+      upstream_bloc_ids,
+      note,
+      position: { left, top },
+    } = bloc;
+    const node = new Bloc({
+      blocId: bloc_id,
+      name: note,
+      id,
+      downstream: [...downstream_bloc_ids],
+      upstream: [...upstream_bloc_ids],
+      left,
+      top,
+      lockMovementX: false,
+      lockMovementY: false,
+      // lockMovementX: this.canvas.viewOnly,
+      // lockMovementY: this.canvas.viewOnly,
+    });
+    return node;
+  });
+  result.push(...nodes);
+  return result;
+}
+
+export const resize = (canvas: Canvas) => {
+  const el = canvas.getElement().parentElement as HTMLDivElement;
+  if (!el) return;
+  el.style.width = "100%";
+  el.style.height = "100%";
+  canvas.setWidth(el.offsetWidth);
+  canvas.setHeight(el.offsetHeight);
+};

@@ -1,19 +1,19 @@
 import { observable, action, makeObservable, computed, runInAction } from "mobx";
 import { ConfirmPlugin, ToastPlugin } from "@/components/plugins";
 import { Arrangement, getList, getDraftList, deleteItem, deleteDraft, createDraft } from "@/api/arrangement";
-import { TabEnums } from "@/common";
+import { DetailType } from "@/common";
 import { createContext } from "react";
 
 export class ListStore {
   @observable list: Arrangement[] = [];
   @observable draftList: Arrangement[] = [];
-  @observable tab = TabEnums.launched;
+  @observable tab = DetailType.launched;
   @observable index = -1;
   @observable name = "";
   @observable anchorEl?: HTMLButtonElement;
   @observable loading = false;
   @computed get data() {
-    return this.tab === TabEnums.launched ? this.list : this.draftList;
+    return this.tab === DetailType.launched ? this.list : this.draftList;
   }
   @computed get canUserDelete() {
     return this.index >= 0 ? this.data[this.index]?.super : false;
@@ -26,7 +26,7 @@ export class ListStore {
       origin_id: "",
     });
   }
-  @action switchTab(tab: TabEnums) {
+  @action switchTab(tab: DetailType) {
     this.index = -1;
     this.tab = tab;
   }
@@ -90,7 +90,7 @@ export class ListStore {
     }
   }
   search() {
-    return this.tab === TabEnums.launched ? this.getList() : this.getDraftList();
+    return this.tab === DetailType.launched ? this.getList() : this.getDraftList();
   }
   delete = async () => {
     this.handleClose();
@@ -98,7 +98,7 @@ export class ListStore {
       title: "确认删除这个编排吗？",
     });
     if (confirmed) {
-      return this.tab === TabEnums.launched ? this.deleteItem() : this.deleteDraft();
+      return this.tab === DetailType.launched ? this.deleteItem() : this.deleteDraft();
     }
   };
   onInputName = (e: React.ChangeEvent<HTMLInputElement>) => {

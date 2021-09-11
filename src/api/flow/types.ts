@@ -1,4 +1,4 @@
-import { FunctionItem, AtomValue } from "@/common";
+import { AtomValue } from "@/common";
 
 export interface SourceFlow {
   _id: string;
@@ -148,20 +148,3 @@ export interface Input {
   type: AppAtomSetMethod.input;
   value: AtomValue;
 }
-
-export interface BlocNode {
-  id: string;
-  name: string;
-  position: {
-    left: number;
-    top: number;
-  };
-  connections: {
-    upstream: string[];
-    downstream: string[];
-  };
-  inputParamConf: ((Pair | Input | null)[] | null)[];
-  function: FunctionItem;
-}
-
-export type BlocId = BlocNode["id"];
