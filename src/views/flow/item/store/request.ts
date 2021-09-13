@@ -1,5 +1,13 @@
 import { getFunctions } from "@/api/bloc";
-import { BlocItem, FlowDetailT, getDetail, getDraft, getLatestRunningState, updateDraft, createDraft } from "@/api/flow";
+import {
+  BlocItem,
+  FlowDetailT,
+  getDetail,
+  getDraft,
+  getLatestRunningState,
+  updateDraft,
+  createDraft,
+} from "@/api/flow";
 import { debounce, DetailType } from "@/common";
 import { isBlocNode } from "@/fabric/objects";
 import { makeObservable, observable, runInAction } from "mobx";

@@ -1,10 +1,11 @@
+import { SelectOption } from "@/api/bloc";
 import { noop } from "@/common";
 import { Button, ContainButton, Divider, MenuItem, Switch } from "@/components";
 import { ItemRenderer, Select, MultiSelect } from "@blueprintjs/select";
 import classNames from "classnames";
 import React, { useState } from "react";
 import { FixedSizeList } from "react-window";
-
+import { CommonSelect } from "./Editor/Select";
 interface OptionItem {
   label: string | number;
   value: string | number;
@@ -54,18 +55,12 @@ for (let i = 1; i < 8; i++) {
   });
 }
 
-// const Renderer: ItemRenderer<OptionItem> = (option, { handleClick, modifiers }) => {
-//   return <MenuItem active={modifiers.active} label={option.label.toString()} onClick={handleClick} text={option.value}></MenuItem>;
-// };
-
-// const CommonSelect = () => {
-//   return (
-//     <MultiSelect tagRenderer={(option) => option.label} items={weekDayOptions} itemRenderer={Renderer} onItemSelect={noop}></MultiSelect>
-//   );
-// };
 const Card: React.FC<React.HTMLProps<HTMLDivElement>> = ({ className, children, ...rest }) => {
   return (
-    <div className={classNames("bg-gray-50 flex-grow h-12 rounded border border-solid border-gray-100", className)} {...rest}>
+    <div
+      className={classNames("bg-gray-50 flex-grow h-12 rounded border border-solid border-gray-100", className)}
+      {...rest}
+    >
       {children}
     </div>
   );
@@ -73,9 +68,12 @@ const Card: React.FC<React.HTMLProps<HTMLDivElement>> = ({ className, children, 
 const Settings: React.FC<React.HTMLProps<HTMLDivElement>> = () => {
   const [value, setValue] = useState("input");
   const [checked, setChecked] = useState(false);
+  const [a, setA] = useState<SelectOption[]>([]);
+  const [selected, setSelected] = useState<(string | number)[]>([]);
   return (
     <div className="p-5 w-96 max-h-[700px] overflow-y-auto">
       <p className="text-lg font-medium">触发设置</p>
+      <CommonSelect value={selected} items={weekDayOptions} />
       <div>
         <div className="mt-4 flex items-center justify-between text-sm">
           <span>crontab触发</span>

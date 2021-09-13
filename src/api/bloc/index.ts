@@ -41,7 +41,7 @@ export interface IAtom {
 }
 
 export interface SelectOption {
-  label: string;
+  label: string | number;
   value: ValueType;
 }
 

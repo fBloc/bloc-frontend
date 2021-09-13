@@ -22,6 +22,7 @@ import { prettierCoordinates } from "@/fabric/tools/prettierCoordinates";
 import { getReadableTime } from "@/utils";
 import Settings from "./Settings";
 import History from "./History";
+
 const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
   (props, ref) => {
     const store = useContext(StoreContext);
@@ -85,7 +86,9 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
               <span>更新中...</span>
             </>
           ) : (
-            store.request.updateTime > 0 && <span className="opacity-40">{getReadableTime(store.request.updateTime)} 更新</span>
+            store.request.updateTime > 0 && (
+              <span className="opacity-40">{getReadableTime(store.request.updateTime)} 更新</span>
+            )
           )
         ) : null}
 
