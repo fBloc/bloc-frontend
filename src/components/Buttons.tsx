@@ -2,12 +2,18 @@ import React, { memo } from "react";
 import { Button, ButtonProps } from "@blueprintjs/core";
 import classNames from "classnames";
 
-export const ContainButton: React.FC<Omit<ButtonProps, "intent">> = memo(({ className, children, ...rest }) => {
+export const ContainButton: React.FC<Omit<ButtonProps, "intent">> = memo(({ className, children, loading, disabled, ...rest }) => {
   return (
     <Button
       intent="primary"
       minimal
-      className={classNames("!bg-blue-400 hover:!bg-blue-500 !rounded-md transition-bg !text-white", className)}
+      loading={loading}
+      disabled={disabled}
+      className={classNames(
+        "!rounded-md transition-bg !text-white",
+        className,
+        loading || disabled ? "!bg-gray-200" : "!bg-blue-400 hover:!bg-blue-500",
+      )}
       {...rest}
     >
       {children}

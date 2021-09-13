@@ -20,7 +20,8 @@ import {
 import { StoreContext } from "./store";
 import { prettierCoordinates } from "@/fabric/tools/prettierCoordinates";
 import { getReadableTime } from "@/utils";
-
+import Settings from "./Settings";
+import History from "./History";
 const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
   (props, ref) => {
     const store = useContext(StoreContext);
@@ -40,13 +41,13 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
       const entry = store.startNode;
       if (store.canvas && entry) {
         prettierCoordinates(store.canvas, entry);
+        store.request.onNodesChange();
       }
     }, [store]);
     useEffect(() => {
       return reaction(
         () => store.detail?.name,
         (name) => {
-          console.log(name);
           setName(typeof name === "string" ? name || "未命名" : "内容为空");
         },
         {
@@ -70,42 +71,53 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
           <span className="font-medium text-xs">Flow</span>
         </span>
         <EditableText
-          className="ml-6 w-40"
+          className="ml-6 mr-4 w-40"
           value={name}
           placeholder="输入名称"
           disabled={!store.editable}
           onChange={setName}
           onConfirm={updateName}
         />
-        {store.request.updating ? (
-          <>
-            <Spinner size={14} />
-            <span>更新中...</span>
-          </>
-        ) : (
-          store.request.updateTime > 0 && (
-            <span className="opacity-40">{getReadableTime(store.request.updateTime)} 更新</span>
+        {store.editable ? (
+          store.request.updating ? (
+            <>
+              <Spinner size={14} />
+              <span>更新中...</span>
+            </>
+          ) : (
+            store.request.updateTime > 0 && <span className="opacity-40">{getReadableTime(store.request.updateTime)} 更新</span>
           )
-        )}
-        {store.canRun && !store.editable && (
-          <Tooltip2 content="立即运行" placement="bottom">
-            <Button icon="play" className="mr-4 !bg-transparent rounded-md px-4 font-medium">
-              立即运行
-            </Button>
-          </Tooltip2>
-        )}
+        ) : null}
+
         <div className="ml-auto flex items-center">
           {store.canEdit && !store.editable && (
-            <>
+            <Popover2 interactionKind="click" usePortal content={<History />} position={Position.BOTTOM_RIGHT}>
               <Tooltip2 content="运行历史" placement="bottom">
-                <Button icon="history" minimal className="mr-4" />
+                <Button icon="history" minimal />
               </Tooltip2>
-
-              <ContainButton icon="edit" onClick={edit}>
-                编辑
-              </ContainButton>
-            </>
+            </Popover2>
           )}
+          {!store.detail?.is_draft && (
+            <Popover2 interactionKind="click" usePortal content={<Settings />} position={Position.BOTTOM_RIGHT}>
+              <Tooltip2 content="运行设置" placement="bottom-end" className="mx-4">
+                <Button icon="cog" minimal />
+              </Tooltip2>
+            </Popover2>
+          )}
+
+          {store.canRun && !store.editable && (
+            <Tooltip2 content="立即运行" placement="bottom">
+              <Button icon="play" className="mr-4 !bg-transparent rounded-md px-4 font-medium">
+                立即运行
+              </Button>
+            </Tooltip2>
+          )}
+          {store.canEdit && !store.editable && (
+            <ContainButton icon="edit" onClick={edit}>
+              编辑
+            </ContainButton>
+          )}
+
           {store.canEdit && store.editable && (
             <>
               <Tooltip2 content="自动规整" placement="bottom">
@@ -134,20 +146,6 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
               </Popover2>
             </>
           )}
-          <Popover2
-            interactionKind="click"
-            usePortal
-            content={
-              <Menu>
-                <MenuItem icon="trash" text="删除" intent="danger" />
-              </Menu>
-            }
-            position={Position.BOTTOM_RIGHT}
-          >
-            <Tooltip2 content="运行设置" placement="bottom-end">
-              <Button icon="cog" minimal className="ml-4" />
-            </Tooltip2>
-          </Popover2>
         </div>
       </header>
     );

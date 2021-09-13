@@ -4,10 +4,10 @@ import { DetailType, Nullable } from "@/common";
 import { LogicNode } from "@/fabric/objects";
 import { isStartNode } from "@/fabric/tools";
 
-interface dd {
+interface WithRequest {
   request: { realFetching: boolean };
 }
-export abstract class Store<T extends { id: string } = any> extends Board implements dd {
+export abstract class Store<T extends { id: string } = any> extends Board implements WithRequest {
   disposers: IReactionDisposer[] = [];
   @observable detail: Nullable<T> = null;
   @observable originId = "";

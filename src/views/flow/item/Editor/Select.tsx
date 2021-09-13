@@ -61,7 +61,6 @@ const MultipleSelectRow = observer<{ index: number; style: React.CSSProperties }
   );
 
   const active = Array.isArray(atomValue) && atomValue.includes(value?.value);
-  console.log(active);
   return (
     <MenuItem
       key={index}
@@ -118,8 +117,7 @@ export const MultipleSelect = observer(() => {
   if (!atomDescriptor) return null;
   const { hint, select_options } = atomDescriptor;
   const selectOptions = select_options || [];
-  const activeItems =
-    select_options?.filter((item) => (Array.isArray(atomValue) ? atomValue.includes(item.value) : false)) || [];
+  const activeItems = select_options?.filter((item) => (Array.isArray(atomValue) ? atomValue.includes(item.value) : false)) || [];
   return (
     <MultiSelect
       items={selectOptions}

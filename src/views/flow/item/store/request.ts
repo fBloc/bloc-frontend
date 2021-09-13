@@ -1,13 +1,5 @@
 import { getFunctions } from "@/api/bloc";
-import {
-  BlocItem,
-  FlowDetailT,
-  getDetail,
-  getDraft,
-  getLatestRunningState,
-  updateDraft,
-  createDraft,
-} from "@/api/flow";
+import { BlocItem, FlowDetailT, getDetail, getDraft, getLatestRunningState, updateDraft, createDraft } from "@/api/flow";
 import { debounce, DetailType } from "@/common";
 import { isBlocNode } from "@/fabric/objects";
 import { makeObservable, observable, runInAction } from "mobx";
@@ -24,10 +16,11 @@ export class Request {
   }
   async fetchDetail(type: DetailType) {
     const originId = this.root.originId;
-    if (!originId) return;
+    if (!originId || this.realFetching) return;
     this.root.setOriginId(originId);
     runInAction(() => {
       this.realFetching = true;
+      this.updateTime = 0;
     });
     setTimeout(() => {
       if (this.realFetching) {
@@ -102,8 +95,8 @@ export class Request {
       position: info,
     });
   }
-  createDraft() {
-    const detail = this.root.detail;
+  async createDraft() {
+    const { data: detail } = await getDetail(this.root.originId);
     return createDraft({
       origin_id: this.root.originId,
       blocs: detail?.blocs,

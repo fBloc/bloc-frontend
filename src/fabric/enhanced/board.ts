@@ -25,6 +25,7 @@ export interface BoardT {
   onAddNode: (node: LogicNode) => void;
   onConnect: (line: ConnectionLine) => void;
   onZoomed: (e: fabric.IEvent) => void;
+  onNodeMoved: (e: fabric.IEvent) => void;
   onLineClick: (line: ConnectionLine) => void;
   onTransformed: () => void;
   generateNode(): LogicNode | undefined;
@@ -48,6 +49,7 @@ export abstract class Board
   abstract onZoomed: (e: fabric.IEvent) => void;
   abstract onLineClick: (line: ConnectionLine) => void;
   abstract onTransformed: () => void;
+  abstract onNodeMoved: (e: fabric.IEvent) => void;
   abstract generateNode(): LogicNode | undefined;
   abstract isShowDropHelper(e: fabric.IEvent): {
     result: boolean;
@@ -79,8 +81,7 @@ export abstract class Board
   }
   private onMouseMove = (e: fabric.IEvent) => {
     if (!this.connectingLine || !this.instance) return;
-    const circular =
-      isLogicNode(e.target) && isCircular(this.instance, e.target.id, this.connectingLine.upstreamNode?.id || "");
+    const circular = isLogicNode(e.target) && isCircular(this.instance, e.target.id, this.connectingLine.upstreamNode?.id || "");
     const isDestSystemNode = isLogicNode(e.target) && e.target.nodeType === NodeType.system;
     this.updateConnectingLine(e);
     // const { result, left, top } = this.root.bridge.isShowLineDropHelper(e);
@@ -361,6 +362,7 @@ export abstract class Board
     canvas.on(CanvasEvents.DRAG_OVER, this.onDragOver);
     canvas.on(CanvasEvents.CANVAS_MOUSE_MOVE, this.onMouseMove);
     canvas.on(CanvasEvents.CANVAS_OBJECT_MOVING, this.onObjectMove);
+    canvas.on(CanvasEvents.CANVAS_OBJECT_MOVED, this.onNodeMoved);
     canvas.on(CanvasEvents.OBJECT_REMOVED, this.onObjectRemoved);
     canvas.on(CanvasEvents.SELECTION_CREATED, this.onSelectionCreated);
     canvas.on(CanvasEvents.SELECTION_UPDATED, this.onSelectionUpdated);
@@ -375,6 +377,7 @@ export abstract class Board
     canvas.off(CanvasEvents.DRAG_OVER, this.onDragOver);
     canvas.off(CanvasEvents.CANVAS_MOUSE_MOVE, this.onMouseMove);
     canvas.off(CanvasEvents.CANVAS_OBJECT_MOVING, this.onObjectMove);
+    canvas.off(CanvasEvents.CANVAS_OBJECT_MOVED, this.onNodeMoved);
     canvas.off(CanvasEvents.OBJECT_REMOVED, this.onObjectRemoved);
     canvas.off(CanvasEvents.SELECTION_CREATED, this.onSelectionCreated);
     canvas.off(CanvasEvents.SELECTION_UPDATED, this.onSelectionUpdated);

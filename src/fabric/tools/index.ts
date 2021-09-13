@@ -3,17 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import hotkeys from "hotkeys-js";
 import { Position } from "@/common";
 import { nodeSettings } from "../settings";
-import {
-  BasicFlow,
-  Bloc,
-  BlocStartNode,
-  Canvas,
-  Flow,
-  FlowStartNode,
-  isFlowNode,
-  isLogicNode,
-  LogicNode,
-} from "@/fabric/objects";
+import { BasicFlow, Bloc, BlocStartNode, Canvas, Flow, FlowStartNode, isFlowNode, isLogicNode, LogicNode } from "@/fabric/objects";
 import { IArrangementFlow } from "@/api/arrangement";
 import { CanvasEvents, defaultPosition, ICoordinate } from "../common";
 import { BlocItem } from "@/api/flow";
@@ -36,9 +26,7 @@ export function calculateSubTreeNodesPosition({ x, y }: ICoordinate, childNodesC
 }
 
 export function calculateEdgeSubNodePosition(flow: BasicFlow) {
-  const nodes = flow.downstream.map((id) =>
-    flow.canvas?._objects.find((node) => isFlowNode(node) && node.id === id),
-  ) as BasicFlow[];
+  const nodes = flow.downstream.map((id) => flow.canvas?._objects.find((node) => isFlowNode(node) && node.id === id)) as BasicFlow[];
   const coordinates = nodes.map(({ left = 0, top = 0 }) => ({ left, top }));
   const maxLeft = coordinates.sort((a, b) => a.left - b.left).pop();
 
@@ -90,11 +78,7 @@ export function isCircular(canvas: Canvas, destination: string, source: string):
   return destNode?.downstream.some((id) => isCircular(canvas, id, source));
 }
 
-export function renderFlows(
-  canvas: Canvas,
-  flows: Map<string, IArrangementFlow & { id: string }>,
-  nameMap?: Map<string, string>,
-) {
+export function renderFlows(canvas: Canvas, flows: Map<string, IArrangementFlow & { id: string }>, nameMap?: Map<string, string>) {
   if (!canvas) return;
   const startFlow = flows.get("0");
   const restFlows = Array.from(flows.entries())
@@ -234,8 +218,8 @@ export function toBlocNodes(list: BlocItem[]) {
     const node = new BlocStartNode({
       downstream: [...startNode.downstream_bloc_ids],
       upstream: [...startNode.upstream_bloc_ids],
-      left: startNode.position.left || 500, //TODO
-      top: startNode.position.top || 200, //TODO
+      left: startNode.position.left ?? 400,
+      top: startNode.position.top ?? 200,
     });
     result.push(node);
   }

@@ -60,9 +60,7 @@ export class FlowItemStore extends Store<FlowDetailT> {
   private setCanvasTransform() {
     const detail = this.detail;
     if (!detail) return;
-    const {
-      position: { left, top, zoom = 1 },
-    } = detail;
+    const { left = 0, top = 0, zoom = 1 } = detail.position || { left: 0, top: 0, zoom: 1 };
     this.canvas?.setViewportTransform([zoom, 0, 0, zoom, left, top]);
   }
   renderNodes() {
@@ -112,6 +110,9 @@ export class FlowItemStore extends Store<FlowDetailT> {
   onAddNode = (node: LogicNode) => {
     this.request.onNodesChange();
   };
+  onNodeMoved = () => {
+    this.request.onNodesChange();
+  };
   onDetailChange = () => {
     this.request.disableSync = true;
     this.reset();
@@ -123,9 +124,7 @@ export class FlowItemStore extends Store<FlowDetailT> {
     if (isBlocNode(node)) {
       const { downstream_bloc_ids } = node.getJson();
       const downsreamBlocIds = downstream_bloc_ids.filter(isTruthyValue) || [];
-      const downstreamBlocNodes = downsreamBlocIds
-        .map((item) => findLogicNodeById(this.canvas, item))
-        .filter(isBlocNode);
+      const downstreamBlocNodes = downsreamBlocIds.map((item) => findLogicNodeById(this.canvas, item)).filter(isBlocNode);
       downstreamBlocNodes.forEach((item) => {
         item.paramIpts?.forEach((atoms) => {
           atoms.forEach((atom) => {
@@ -170,16 +169,16 @@ export class FlowItemStore extends Store<FlowDetailT> {
     this.listenSecureEvents();
   }
   async toEditMode() {
+    await this.request.fetchDetail(DetailType.draft);
     runInAction(() => {
       this.editable = true;
     });
-    await this.request.fetchDetail(DetailType.draft);
   }
   async toReadMode() {
+    await this.request.fetchDetail(DetailType.launched);
     runInAction(() => {
       this.editable = false;
     });
-    await this.request.fetchDetail(DetailType.launched);
   }
 }
 

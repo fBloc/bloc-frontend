@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { ContainButton, Icon, PlainButton } from "@/components";
 import { DetailType, Nullable } from "@/common";
 import { Store } from "./store";
+import { Loading } from "@/components/Loading";
 
 type ZoomProps = React.HTMLProps<HTMLDivElement> & {
   store: Store;
@@ -12,10 +13,7 @@ type ZoomProps = React.HTMLProps<HTMLDivElement> & {
 const Zoom: React.FC<ZoomProps> = observer(({ className, store, ...rest }) => {
   return (
     <div
-      className={classNames(
-        "absolute right-6 bottom-6 bg-white rounded shadow px-2 flex items-center select-none",
-        className,
-      )}
+      className={classNames("absolute right-6 bottom-6 bg-white rounded shadow px-2 flex items-center select-none", className)}
       {...rest}
     >
       <Icon
@@ -83,6 +81,7 @@ const Board: React.FC<BoardProps> = observer(({ originId, store, detailType, loa
           </div>
         </div>
       )}
+      {store.request.realFetching && <Loading className="absolute" />}
     </>
   );
 });
