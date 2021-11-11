@@ -1,7 +1,7 @@
 import { FunctionGroup, FunctionItem, getFunctions } from "@/api/bloc";
-import { FlowDetailT, FlowRunningState } from "@/api/flow";
+import { FlowDetailT, FlowRunningState, getHistoryFlow } from "@/api/flow";
 import { DetailType, EditType, isTruthyValue, Nullable } from "@/common";
-import { BasicBloc, Bloc, BlocStartNode, ConnectionLine, isBlocNode, LogicNode } from "@/fabric/objects";
+import { BasicBloc, Bloc, BlocStartNode, ConnectionLine, isBlocNode, isLogicNode, LogicNode } from "@/fabric/objects";
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
 import { Store } from "../../board/store";
 import { Param } from "./param";
@@ -9,13 +9,22 @@ import { RunningEnum } from "@/common";
 import { Request } from "./request";
 import { findLogicNodeById, generateUniFlowIdentifier, toBlocNodes } from "@/fabric/tools";
 import { createContext } from "react";
+import { useQuery } from "@/hooks";
 
 export class FlowItemStore extends Store<FlowDetailT> {
   param!: Param;
   request!: Request;
   private sourceFunctionId = "";
-  @observable runningState: Nullable<FlowRunningState> = null;
   @observable functions: FunctionGroup[] = [];
+  @observable runningHistory: FlowRunningState[] = [];
+  @observable currentHistory: Nullable<FlowRunningState> = null;
+  @observable menuPopover = {
+    open: false,
+    left: 0,
+    top: 0,
+  };
+  @observable nodeDrawerId = "";
+  @observable nodeDrawerVisible = false;
   @computed get flattenFunctions() {
     return this.functions.reduce((acc: FunctionItem[], item) => [...acc, ...item.blocs], []);
   }
@@ -28,25 +37,28 @@ export class FlowItemStore extends Store<FlowDetailT> {
     return map;
   }
   @computed get canRun() {
-    return !!this.detail?.execute && !this.detail.is_draft;
+    return !!this.detail?.execute && !this.detail.is_draft && this.detail.pub_while_running;
   }
   @computed get canEdit() {
-    return !!this.detail?.write;
+    return !!this.detail?.write && !this.detail.is_draft;
   }
   @computed get isSuccess() {
-    return this.runningState?.status === RunningEnum.success;
+    return this.currentHistory?.status === RunningEnum.success;
   }
   @computed get isRunning() {
-    return this.runningState?.status === RunningEnum.running;
+    return this.currentHistory?.status === RunningEnum.running;
   }
   @computed get isFailed() {
-    return this.runningState?.status === RunningEnum.failed;
+    return this.currentHistory?.status === RunningEnum.failed;
+  }
+  @computed get canUpdateSettings() {
+    return this.detail?.super && !this.detail.is_draft && this.detail.version === 1; // 最新版
   }
   /**
    * 当前是否空闲
    */
   @computed get isIdle() {
-    return this.isSuccess || this.runningState?.status === RunningEnum.created || !this.runningState;
+    return this.isSuccess || this.currentHistory?.status === RunningEnum.created || !this.currentHistory;
   }
   constructor() {
     super();
@@ -64,7 +76,7 @@ export class FlowItemStore extends Store<FlowDetailT> {
     this.canvas?.setViewportTransform([zoom, 0, 0, zoom, left, top]);
   }
   renderNodes() {
-    const blocs = Object.entries(this.detail?.blocs || {}).map(([id, item]) => ({
+    const blocs = Object.entries(this.detail?.flowFunctionID_map_flowFunction || {}).map(([id, item]) => ({
       ...item,
       id,
     }));
@@ -86,10 +98,46 @@ export class FlowItemStore extends Store<FlowDetailT> {
     }
   }
   onLineClick = (line: ConnectionLine) => {
+    if (this.canvas?.spacebarPressed) return;
     this.param.show(line, EditType.edit);
   };
-  @action setRunningState(state: FlowItemStore["runningState"]) {
-    this.runningState = state;
+  onMouseUp = (e: fabric.IEvent) => {
+    if (isLogicNode(e.target)) {
+      const id = e.target.id;
+      this.setNodeId(id);
+      if (!this.editing) {
+        this.showNodeDrawer();
+        return;
+      }
+      const { left, width, top } = e.target.getBoundingRect();
+      this.showMenuPopover({
+        left: left + width / 2 - 50,
+        top: top - 50,
+      });
+    }
+    if (!isLogicNode(e.target)) {
+      this.setNodeId("");
+    }
+  };
+  onMouseDown = (e: fabric.IEvent) => {
+    //
+    this.hideMenuPopover();
+  };
+  @action setRunningHistory(history: FlowRunningState[]) {
+    this.runningHistory = history;
+    this.updateCurrentHistory();
+  }
+  updateCurrentHistory() {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { version } = useQuery<{ version: string | undefined }>();
+    if (version) {
+      this.setCurrentHistory(this.runningHistory.find((item) => item.id === version));
+    } else {
+      this.setCurrentHistory(this.runningHistory.length > 0 ? this.runningHistory[0] : undefined);
+    }
+  }
+  @action setCurrentHistory(history: FlowRunningState | undefined) {
+    this.currentHistory = history || null;
   }
   generateNode() {
     const functionSource = this.flattenFunctions.find((item) => item.id === this.sourceFunctionId);
@@ -117,14 +165,16 @@ export class FlowItemStore extends Store<FlowDetailT> {
     this.request.disableSync = true;
     this.reset();
     this.render();
-    this.setEvents(!this.editable);
+    this.setEvents(!this.editing);
     this.request.disableSync = false;
   };
   onRemoveNode = (node: fabric.IEvent["target"] | undefined) => {
     if (isBlocNode(node)) {
-      const { downstream_bloc_ids } = node.getJson();
+      const { downstream_flowfunction_ids: downstream_bloc_ids } = node.getJson();
       const downsreamBlocIds = downstream_bloc_ids.filter(isTruthyValue) || [];
-      const downstreamBlocNodes = downsreamBlocIds.map((item) => findLogicNodeById(this.canvas, item)).filter(isBlocNode);
+      const downstreamBlocNodes = downsreamBlocIds
+        .map((item) => findLogicNodeById(this.canvas, item))
+        .filter(isBlocNode);
       downstreamBlocNodes.forEach((item) => {
         item.paramIpts?.forEach((atoms) => {
           atoms.forEach((atom) => {
@@ -145,6 +195,7 @@ export class FlowItemStore extends Store<FlowDetailT> {
   onZoomed = () => {
     const zoom = this.canvas?.getZoom() || 1;
     this.setZoom(zoom);
+    this.request.onTransform();
   };
   isShowDropHelper(e: fabric.IEvent) {
     const sourceFunction = this.flattenFunctions.find((item) => item.id === this.sourceFunctionId);
@@ -162,23 +213,64 @@ export class FlowItemStore extends Store<FlowDetailT> {
   }
   onOriginIdChange = async () => {
     await this.request.fetchDetail(this.detailType);
-    this.request.getRunningState();
+    this.request.getRunningHistory();
   };
   async setup(el: HTMLCanvasElement | null) {
     this.createInstance(el);
     this.listenSecureEvents();
   }
   async toEditMode() {
-    await this.request.fetchDetail(DetailType.draft);
     runInAction(() => {
-      this.editable = true;
+      this.editing = true;
     });
+    await this.request.fetchDetail(DetailType.draft);
   }
   async toReadMode() {
-    await this.request.fetchDetail(DetailType.launched);
     runInAction(() => {
-      this.editable = false;
+      this.editing = false;
     });
+    await this.request.fetchDetail(DetailType.launched);
+  }
+  async switchHistory(flowId: string) {
+    if (flowId === this.detail?.id) return;
+    const { data } = await getHistoryFlow(flowId);
+    runInAction(() => {
+      this.detail = data;
+    });
+  }
+  @action patchDetail<T extends keyof FlowDetailT>(key: T, value: FlowDetailT[T]) {
+    if (this.detail) {
+      this.detail[key] = value;
+    }
+  }
+  @action setNodeId(id: string) {
+    this.nodeDrawerId = id;
+  }
+  @action showMenuPopover(info: Partial<Omit<FlowItemStore["menuPopover"], "open">>) {
+    this.menuPopover = {
+      ...this.menuPopover,
+      ...info,
+      open: true,
+    };
+  }
+  @action hideMenuPopover() {
+    this.menuPopover.open = false;
+  }
+  onMenuClosed = () => {
+    runInAction(() => {
+      this.nodeDrawerId = "";
+      this.menuPopover = {
+        open: false,
+        left: 0,
+        top: 0,
+      };
+    });
+  };
+  @action showNodeDrawer() {
+    this.nodeDrawerVisible = true;
+  }
+  @action closeNodeDrawer() {
+    this.nodeDrawerVisible = false;
   }
 }
 

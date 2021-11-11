@@ -22,6 +22,7 @@ import { prettierCoordinates } from "@/fabric/tools/prettierCoordinates";
 import { getReadableTime } from "@/utils";
 import Settings from "./Settings";
 import History from "./History";
+import Run from "./Run";
 
 const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
   (props, ref) => {
@@ -45,6 +46,7 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
         store.request.onNodesChange();
       }
     }, [store]);
+
     useEffect(() => {
       return reaction(
         () => store.detail?.name,
@@ -72,14 +74,14 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
           <span className="font-medium text-xs">Flow</span>
         </span>
         <EditableText
-          className="ml-6 mr-4 w-40"
+          className="ml-6 mr-4 w-40 px-1"
           value={name}
           placeholder="输入名称"
-          disabled={!store.editable}
+          disabled={!store.editing}
           onChange={setName}
           onConfirm={updateName}
         />
-        {store.editable ? (
+        {store.editing ? (
           store.request.updating ? (
             <>
               <Spinner size={14} />
@@ -93,35 +95,16 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
         ) : null}
 
         <div className="ml-auto flex items-center">
-          {store.canEdit && !store.editable && (
-            <Popover2 interactionKind="click" usePortal content={<History />} position={Position.BOTTOM_RIGHT}>
-              <Tooltip2 content="运行历史" placement="bottom">
-                <Button icon="history" minimal />
-              </Tooltip2>
-            </Popover2>
-          )}
-          {!store.detail?.is_draft && (
-            <Popover2 interactionKind="click" usePortal content={<Settings />} position={Position.BOTTOM_RIGHT}>
-              <Tooltip2 content="运行设置" placement="bottom-end" className="mx-4">
-                <Button icon="cog" minimal />
-              </Tooltip2>
-            </Popover2>
-          )}
-
-          {store.canRun && !store.editable && (
-            <Tooltip2 content="立即运行" placement="bottom">
-              <Button icon="play" className="mr-4 !bg-transparent rounded-md px-4 font-medium">
-                立即运行
-              </Button>
-            </Tooltip2>
-          )}
-          {store.canEdit && !store.editable && (
+          <History />
+          <Settings />
+          <Run />
+          {store.canEdit && !store.editing && (
             <ContainButton icon="edit" onClick={edit}>
               编辑
             </ContainButton>
           )}
 
-          {store.canEdit && store.editable && (
+          {store.editing && (
             <>
               <Tooltip2 content="自动规整" placement="bottom">
                 <Button icon="diagram-tree" className="mr-2" minimal onClick={prettier} />

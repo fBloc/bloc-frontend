@@ -24,11 +24,12 @@ export enum NodeType {
 export abstract class LogicNode extends fabric.Rect {
   id = "";
   trigger?: Trigger;
+  canvas?: Canvas;
   upstream: string[] = [];
   downstream: string[] = [];
   name = "";
-  hoverCursor = "default";
-  moveCursor = "default";
+  hoverCursor = "cursor";
+  moveCursor = "cursor";
   abstract nodeType: NodeType;
   private inlines: ConnectionLine[] = [];
   private outlines: ConnectionLine[] = [];
@@ -60,6 +61,7 @@ export abstract class LogicNode extends fabric.Rect {
     }
   }
   onSelect() {
+    if (this.canvas?.spacebarPressed) return true;
     this.selected = true;
     this.updateState();
     this.setTrigger();
@@ -110,6 +112,7 @@ export abstract class LogicNode extends fabric.Rect {
     collectNodes(this.id, "down");
   }
   private onMouseOver = () => {
+    if (this.canvas?.spacebarPressed) return;
     this.markHighlight();
     (this.canvas as Canvas).hoveringTarget = this;
     if (this.stroke !== primaryColor) {

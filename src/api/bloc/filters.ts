@@ -1,8 +1,9 @@
 /* eslint-disable indent */
-import { AppAtomSetMethod, BlocNode } from "@/common";
+import { AppAtomSetMethod } from "@/common";
 import { AtomSetMethod, SourceBlocNodes } from "./types";
 
-type FilterSurceNodes = (sourceNodes: SourceBlocNodes) => BlocNode[];
+type FilterSurceNodes = (sourceNodes: SourceBlocNodes) => any[]; // TODO
+
 export const filterBlocs: FilterSurceNodes = (sourceNodes) => {
   return Object.entries(sourceNodes).map(([blocId, blocDetail]) => {
     const { name, gorup_name, ipt_opt_config, brief } = blocDetail.full_bloc_info;
@@ -10,7 +11,7 @@ export const filterBlocs: FilterSurceNodes = (sourceNodes) => {
       id: blocId,
       name: blocDetail.user_custom_name,
       connections: {
-        upstream: blocDetail.connections.upstream_bloc_ids,
+        upstream: blocDetail.connections.upstream_flowfunction_ids,
         downstream: blocDetail.connections.downstream_bloc_ids,
       },
       inputParamConf: blocDetail.param_ipts.map((atoms) =>

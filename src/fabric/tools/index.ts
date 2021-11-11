@@ -3,7 +3,17 @@ import { v4 as uuidv4 } from "uuid";
 import hotkeys from "hotkeys-js";
 import { Position } from "@/common";
 import { nodeSettings } from "../settings";
-import { BasicFlow, Bloc, BlocStartNode, Canvas, Flow, FlowStartNode, isFlowNode, isLogicNode, LogicNode } from "@/fabric/objects";
+import {
+  BasicFlow,
+  Bloc,
+  BlocStartNode,
+  Canvas,
+  Flow,
+  FlowStartNode,
+  isFlowNode,
+  isLogicNode,
+  LogicNode,
+} from "@/fabric/objects";
 import { IArrangementFlow } from "@/api/arrangement";
 import { CanvasEvents, defaultPosition, ICoordinate } from "../common";
 import { BlocItem } from "@/api/flow";
@@ -26,7 +36,9 @@ export function calculateSubTreeNodesPosition({ x, y }: ICoordinate, childNodesC
 }
 
 export function calculateEdgeSubNodePosition(flow: BasicFlow) {
-  const nodes = flow.downstream.map((id) => flow.canvas?._objects.find((node) => isFlowNode(node) && node.id === id)) as BasicFlow[];
+  const nodes = flow.downstream.map((id) =>
+    flow.canvas?._objects.find((node) => isFlowNode(node) && node.id === id),
+  ) as BasicFlow[];
   const coordinates = nodes.map(({ left = 0, top = 0 }) => ({ left, top }));
   const maxLeft = coordinates.sort((a, b) => a.left - b.left).pop();
 
@@ -43,6 +55,7 @@ export function getMaxRightBottom({ left, top }: Position) {
   };
 }
 
+export const DEFAULT_START_NODE_ID = "4c0e909e-4176-4ce2-a3f6-f30dab71c936";
 export function generateUniFlowIdentifier() {
   return uuidv4(); // TODO
 }
@@ -78,11 +91,15 @@ export function isCircular(canvas: Canvas, destination: string, source: string):
   return destNode?.downstream.some((id) => isCircular(canvas, id, source));
 }
 
-export function renderFlows(canvas: Canvas, flows: Map<string, IArrangementFlow & { id: string }>, nameMap?: Map<string, string>) {
+export function renderFlows(
+  canvas: Canvas,
+  flows: Map<string, IArrangementFlow & { id: string }>,
+  nameMap?: Map<string, string>,
+) {
   if (!canvas) return;
-  const startFlow = flows.get("0");
+  const startFlow = flows.get(DEFAULT_START_NODE_ID);
   const restFlows = Array.from(flows.entries())
-    .filter(([id]) => id !== "0")
+    .filter(([id]) => id !== DEFAULT_START_NODE_ID)
     .map(([_, item]) => item);
   const starter = new FlowStartNode({
     upstream: startFlow?.upstream_flow_ids || [],
@@ -200,7 +217,7 @@ export const queryElement = <T>(selector: string | T) =>
   typeof selector === "string" ? (document.querySelector(selector) as any as T) : selector;
 
 export function isStartNode<T extends { id: string }>(item: T) {
-  return item.id === "0";
+  return item.id === "DEFAULT_START_NODE_ID";
 }
 function findStatNode<T extends { id: string }>(nodes: T[]) {
   return nodes.find(isStartNode);
@@ -216,8 +233,8 @@ export function toBlocNodes(list: BlocItem[]) {
   const startNode = findStatNode(list);
   if (startNode) {
     const node = new BlocStartNode({
-      downstream: [...startNode.downstream_bloc_ids],
-      upstream: [...startNode.upstream_bloc_ids],
+      downstream: [...startNode.downstream_flowfunction_ids],
+      upstream: [...startNode.upstream_flowfunction_ids],
       left: startNode.position.left ?? 400,
       top: startNode.position.top ?? 200,
     });
@@ -226,22 +243,24 @@ export function toBlocNodes(list: BlocItem[]) {
   const nodes = findLogicNodes(list).map((bloc) => {
     const {
       id,
-      bloc_id,
-      downstream_bloc_ids,
-      upstream_bloc_ids,
+      function_id: bloc_id,
+      downstream_flowfunction_ids,
+      upstream_flowfunction_ids,
       note,
+      param_ipts,
       position: { left, top },
     } = bloc;
     const node = new Bloc({
       blocId: bloc_id,
       name: note,
       id,
-      downstream: [...downstream_bloc_ids],
-      upstream: [...upstream_bloc_ids],
+      downstream: [...downstream_flowfunction_ids],
+      upstream: [...upstream_flowfunction_ids],
       left,
       top,
       lockMovementX: false,
       lockMovementY: false,
+      paramIpts: param_ipts,
       // lockMovementX: this.canvas.viewOnly,
       // lockMovementY: this.canvas.viewOnly,
     });

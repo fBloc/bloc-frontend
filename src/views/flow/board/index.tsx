@@ -5,6 +5,7 @@ import { ContainButton, Icon, PlainButton } from "@/components";
 import { DetailType, Nullable } from "@/common";
 import { Store } from "./store";
 import { Loading } from "@/components/Loading";
+import { useSpace } from "@/hooks";
 
 type ZoomProps = React.HTMLProps<HTMLDivElement> & {
   store: Store;
@@ -13,7 +14,10 @@ type ZoomProps = React.HTMLProps<HTMLDivElement> & {
 const Zoom: React.FC<ZoomProps> = observer(({ className, store, ...rest }) => {
   return (
     <div
-      className={classNames("absolute right-6 bottom-6 bg-white rounded shadow px-2 flex items-center select-none", className)}
+      className={classNames(
+        "absolute right-6 bottom-6 bg-white rounded shadow px-2 flex items-center select-none",
+        className,
+      )}
       {...rest}
     >
       <Icon
@@ -43,6 +47,7 @@ type BoardProps = React.HTMLProps<HTMLDivElement> & {
 
 const Board: React.FC<BoardProps> = observer(({ originId, store, detailType, loading }) => {
   const ref = useRef<Nullable<HTMLCanvasElement>>(null);
+  const { active: isSpacePressed } = useSpace();
   useEffect(() => {
     store.setup(ref.current);
     return () => {
@@ -57,6 +62,14 @@ const Board: React.FC<BoardProps> = observer(({ originId, store, detailType, loa
   useEffect(() => {
     store.setOriginId(originId);
   }, [store, originId, detailType]);
+  useEffect(() => {
+    if (!store.editing) return;
+    if (store.canvas?.defaultCursor) {
+      const cursor = isSpacePressed ? "grab" : "default";
+      store.canvas.defaultCursor = cursor;
+      store.canvas.setCursor(cursor);
+    }
+  }, [isSpacePressed, store]);
   return (
     <>
       <div className="h-full">

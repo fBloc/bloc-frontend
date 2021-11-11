@@ -4,42 +4,13 @@ export interface SourceFlow {
   _id: string;
   user: string;
   name: string;
-  config: Config[];
+  config: any[]; // TODO 类型完善
   front: Front;
   flow_type: string;
   perms: Perms;
   create_time: string;
   status: string;
   run_history: unknown[];
-}
-
-export interface Config {
-  "成绩来源-手动输入"?: 成绩来源手动输入;
-  "成绩特征计算-平均值"?: 成绩特征计算平均值;
-  "成绩特征计算-特定值统计"?: 成绩特征计算特定值统计;
-  "成绩过滤-排名过滤"?: 成绩过滤排名过滤;
-  "结果通知-电话通知"?: 结果通知;
-  "结果通知-短信通知"?: 结果通知;
-}
-
-export interface 成绩来源手动输入 {
-  numbers: string;
-}
-
-export interface 成绩特征计算平均值 {
-  calcu_way: string;
-}
-
-export interface 成绩特征计算特定值统计 {
-  calcu_base: string;
-}
-
-export interface 成绩过滤排名过滤 {
-  condition: string;
-}
-
-export interface 结果通知 {
-  content: string;
 }
 
 export interface Front {

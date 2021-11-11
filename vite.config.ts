@@ -2,15 +2,10 @@ import { defineConfig } from "vite";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import path from "path";
 
-console.log(path.resolve(__dirname, "./src/"));
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [reactRefresh()],
   resolve: {
-    // alias: {
-    //   "@": path.resolve(__dirname, "./src"),
-    //   "~": path.resolve(__dirname, "./node_modules/"),
-    // },
     alias: [
       {
         find: /@\/(.+)/,
@@ -27,7 +22,7 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/api": "http://82.157.98.91",
+      "/api": "http://82.157.98.91/",
     },
   },
 });

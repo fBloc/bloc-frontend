@@ -260,7 +260,7 @@ const ListView = observer(() => {
                 className="p-3 flex items-center text-current hover:text-current hover:no-underline"
               >
                 <div className="flex-grow overflow-hidden flex items-center">
-                  <RunningState record={item.latest_run} />
+                  {/* <RunningState status={item.s} /> */}
                   <span className="text-ellipsis" title={item.name || "未命名"}>
                     {item.name || "未命名"}
                   </span>

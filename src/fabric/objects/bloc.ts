@@ -9,6 +9,7 @@ type BlocOptions = {
   name: string;
   upstream?: string[];
   downstream?: string[];
+  paramIpts?: ParamIpt[][];
 } & IRectOptions;
 
 export abstract class BasicBloc extends LogicNode {
@@ -16,7 +17,7 @@ export abstract class BasicBloc extends LogicNode {
   abstract renderName(): void;
   context?: CanvasRenderingContext2D;
   paramIpts?: ParamIpt[][] = [];
-  constructor({ blocId, id, name, upstream = [], downstream = [], ...rest }: BlocOptions) {
+  constructor({ blocId, id, name, upstream = [], downstream = [], paramIpts = [], ...rest }: BlocOptions) {
     super({
       ...rest,
       rx: nodeSettings.radius,
@@ -27,6 +28,7 @@ export abstract class BasicBloc extends LogicNode {
     this.name = name;
     this.upstream = upstream;
     this.downstream = downstream;
+    this.paramIpts = paramIpts;
   }
   _render(context: CanvasRenderingContext2D) {
     super._render(context);
@@ -40,14 +42,14 @@ export abstract class BasicBloc extends LogicNode {
     const { downstream, upstream, blocId, left = 0, top = 0, id, paramIpts } = this;
     return {
       id,
-      bloc_id: blocId,
+      function_id: blocId,
       position: {
         left,
         top,
       },
       note: this.name,
-      upstream_bloc_ids: upstream,
-      downstream_bloc_ids: downstream,
+      upstream_flowfunction_ids: upstream,
+      downstream_flowfunction_ids: downstream,
       param_ipts: paramIpts,
     };
   }
@@ -55,15 +57,15 @@ export abstract class BasicBloc extends LogicNode {
 
 export class BlocStartNode extends BasicBloc {
   readonly nodeType = NodeType.system;
-  constructor(options?: Omit<BlocOptions, "id" | "blocId" | "name">) {
+  constructor(options?: Omit<BlocOptions, "id" | "blocId" | "name" | "paramIpts">) {
     super({
       ...options,
       fill: `${primaryColor}22`,
       stroke: primaryColor,
       lockMovementX: true,
       lockMovementY: true,
-      blocId: "0",
-      id: "0",
+      blocId: "4c0e909e-4176-4ce2-a3f6-f30dab71c936", //  固定写死
+      id: "START_NODE",
       name: "开始节点",
     });
   }

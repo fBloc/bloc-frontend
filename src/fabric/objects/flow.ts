@@ -1,5 +1,5 @@
 import { nodeSettings, primaryColor } from "@/fabric/settings";
-import { getNodeAbsoluteCoordinate } from "@/fabric/tools";
+import { DEFAULT_START_NODE_ID, getNodeAbsoluteCoordinate } from "@/fabric/tools";
 import { IRectOptions, LogicNode, NodeType } from "./node";
 import playIcon from "@/assets/images/play-icon.png";
 
@@ -59,8 +59,8 @@ export class FlowStartNode extends BasicFlow {
       ...options,
       fill: `${primaryColor}22`,
       stroke: primaryColor,
-      flowId: "0", // TODO FLOW ID
-      id: "0",
+      flowId: DEFAULT_START_NODE_ID, // TODO FLOW ID
+      id: "START_NODE",
       name: "开始节点",
       lockMovementX: true,
       lockMovementY: true,

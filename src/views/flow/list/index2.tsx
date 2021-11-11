@@ -6,19 +6,22 @@ import { useHistory } from "react-router-dom";
 import { RouterContext } from "@/router";
 import { Tab, Spinner, Icon, Tooltip2, spinnerPlugin, SearchInput } from "@/components";
 import { Loading } from "@/components/Loading";
-import { RunningEnum, DetailType, tabs } from "@/common";
+import { RunningEnum, DetailType, tabs, runningStateTexts } from "@/common";
 import { ListStore } from "./store/list";
 import { FlowItemStore as Store, StoreProvider } from "../item/store";
 import HeaderBar from "./HeaderBar";
 import Board from "../board";
 
 const classes: Record<RunningEnum, string> = {
-  [RunningEnum.created]: "",
-  [RunningEnum.failed]: "bg-red-50 text-red-400",
+  [RunningEnum.created]: "bg-yellow-50 text-yellow-400",
   [RunningEnum.queue]: "bg-yellow-50 text-yellow-400",
   [RunningEnum.running]: "bg-yellow-50 text-yellow-400",
   [RunningEnum.success]: "bg-green-50 text-green-400",
+  [RunningEnum.systemCancel]: "bg-red-50 text-red-400",
+  [RunningEnum.userCancel]: "bg-red-50 text-red-400",
+  [RunningEnum.failed]: "bg-red-50 text-red-400",
 };
+
 const Items: React.FC<{ store: ListStore }> = observer(({ store }) => {
   useEffect(() => {
     return reaction(
@@ -55,7 +58,7 @@ const Items: React.FC<{ store: ListStore }> = observer(({ store }) => {
                 classNames(classes[item.latest_run.status]),
               )}
             >
-              {item.latest_run.status}
+              {runningStateTexts[item.latest_run.status]}
             </span>
           ) : (
             <span className="px-2 py-1 rounded-full text-xs bg-gray-50 text-gray-500 font-medium">

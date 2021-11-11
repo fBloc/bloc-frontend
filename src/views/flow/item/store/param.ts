@@ -62,7 +62,7 @@ export class Param {
     return Array.isArray(this.atomValue) ? this.atomValue[index] : this.atomValue;
   }
   @computed get readonly() {
-    return !this.root.editable;
+    return !this.root.editing;
   }
   constructor(private root: RootStore) {
     makeObservable(this);
@@ -293,17 +293,11 @@ export class Param {
   }
   @action updateSelectValue(value: unknown) {
     if (isValidValue(value)) {
-      if (Array.isArray(this.atomValue) && !Array.isArray(value)) {
-        if (this.atomValue.indexOf(value) > -1) {
-          this.atomValue = this.atomValue.filter((item) => item !== value);
-        } else {
-          this.atomValue.push(value);
-        }
-      }
-      if (!Array.isArray(this.atomValue)) {
-        this.atomValue = value;
-      }
+      this.atomValue = value;
     }
+  }
+  @action updateMultiSelectValue(value: ValueType[]) {
+    this.atomValue = value;
   }
   @action updateInputFieldValue(value: ValueType, index: number) {
     if (Array.isArray(this.atomValue) && index === -1) {
@@ -440,6 +434,7 @@ export class Param {
     this.downstreamParamIndex = paramIndex;
     this.downstreamAtomIndex = atomIndex;
     this.editorVisible = true;
+    this.initAtomValue();
   }
   setEditorEditable = () => {
     runInAction(() => {

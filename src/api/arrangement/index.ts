@@ -42,8 +42,9 @@ export interface IArrangementFlow {
   position: Position;
 }
 export const transformPosition = (source: DangerousAny) => {
-  if (source && "left" in source && "top" in source) return source;
-  if (!Array.isArray(source)) return { left: 0, top: 0 };
+  const isObject = Object.prototype.toString.call(source);
+  if (!Array.isArray(source) && !isObject) return { left: 0, top: 0 };
+  if (isObject) return source;
   return source.reduce(
     (acc: Record<ISourcePositionInfo["Key"], ISourcePositionInfo["Value"]>, item: ISourcePositionInfo) => {
       return {
@@ -82,7 +83,6 @@ export function getDetail(id: string) {
 export function createArrangement() {
   const params = {
     name: "未命名编排",
-    create_user_id: login.token,
     crontab: "",
     trigger_key: "",
     position: {
@@ -125,7 +125,6 @@ export function createDraft(
 ) {
   const params = {
     name: "未命名编排",
-    create_user_id: login.token,
     crontab: "",
     trigger_key: "",
     position: {

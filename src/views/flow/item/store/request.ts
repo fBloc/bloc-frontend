@@ -52,13 +52,12 @@ export class Request {
       this.realFetching = false;
     });
   }
-
-  async getRunningState() {
+  async getRunningHistory() {
     const id = this.root.detail?.id;
     if (!id) return;
     const { isValid, data } = await getLatestRunningState(id);
     if (isValid) {
-      this.root.setRunningState(data?.status ? data : null);
+      this.root.setRunningHistory(data || []);
     }
   }
   toViewMode() {
@@ -90,7 +89,7 @@ export class Request {
   }
   async onNodesChange() {
     await this.update({
-      blocs: this.getNodes(),
+      flowFunctionID_map_flowFunction: this.getNodes(),
     });
   }
   async onTransform() {
@@ -107,14 +106,14 @@ export class Request {
     const { data: detail } = await getDetail(this.root.originId);
     return createDraft({
       origin_id: this.root.originId,
-      blocs: detail?.blocs,
+      flowFunctionID_map_flowFunction: detail?.flowFunctionID_map_flowFunction,
       position: detail?.position,
       name: detail?.name,
     });
   }
   @debounce(1000)
   async update(params: Partial<FlowDetailT>) {
-    if (!this.root.editable) return;
+    if (!this.root.editing) return;
     runInAction(() => {
       this.updating = true;
     });

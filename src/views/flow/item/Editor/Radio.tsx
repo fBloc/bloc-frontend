@@ -15,7 +15,6 @@ const ScopeRadio = observer(() => {
     },
     [param, options],
   );
-
   return (
     <RadioGroup
       label={atomDescriptor?.hint || "请选择"}

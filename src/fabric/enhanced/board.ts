@@ -27,6 +27,8 @@ export interface BoardT {
   onZoomed: (e: fabric.IEvent) => void;
   onNodeMoved: (e: fabric.IEvent) => void;
   onLineClick: (line: ConnectionLine) => void;
+  onMouseUp: (e: fabric.IEvent) => void;
+  onMouseDown: (e: fabric.IEvent) => void;
   onTransformed: () => void;
   generateNode(): LogicNode | undefined;
   isShowDropHelper(e: fabric.IEvent): {
@@ -48,6 +50,8 @@ export abstract class Board
   abstract onConnect: (line: ConnectionLine) => void;
   abstract onZoomed: (e: fabric.IEvent) => void;
   abstract onLineClick: (line: ConnectionLine) => void;
+  abstract onMouseUp: (e: fabric.IEvent) => void;
+  abstract onMouseDown: (e: fabric.IEvent) => void;
   abstract onTransformed: () => void;
   abstract onNodeMoved: (e: fabric.IEvent) => void;
   abstract generateNode(): LogicNode | undefined;
@@ -81,7 +85,8 @@ export abstract class Board
   }
   private onMouseMove = (e: fabric.IEvent) => {
     if (!this.connectingLine || !this.instance) return;
-    const circular = isLogicNode(e.target) && isCircular(this.instance, e.target.id, this.connectingLine.upstreamNode?.id || "");
+    const circular =
+      isLogicNode(e.target) && isCircular(this.instance, e.target.id, this.connectingLine.upstreamNode?.id || "");
     const isDestSystemNode = isLogicNode(e.target) && e.target.nodeType === NodeType.system;
     this.updateConnectingLine(e);
     // const { result, left, top } = this.root.bridge.isShowLineDropHelper(e);
@@ -159,6 +164,8 @@ export abstract class Board
       height: el.offsetHeight,
       ...options,
     });
+    this.instance.hoverCursor = "grab";
+    this.instance.defaultCursor = "grab";
     this.instance.use(mapModule).use(selectLine).use(hotkeysPlugin).use(onResize);
     resize(this.instance!);
   }
@@ -177,15 +184,16 @@ export abstract class Board
   reset() {
     this.instance?.reset();
   }
-  private onMouseUp = (e: fabric.IEvent) => {
+  private onPrivateMouseUp = (e: fabric.IEvent) => {
     this.doneConnectingLine(e);
+    this.onMouseUp(e);
   };
   private onLineClicked = (e: fabric.IEvent) => {
     if (isConnectionLine(e.target)) {
       this.onLineClick(e.target);
     }
   };
-  private onMouseDown = (e: fabric.IEvent) => {
+  private onPrivateMouseDown = (e: fabric.IEvent) => {
     const target = e.target;
     if (isTriggerNode(target)) {
       this.instance?.setActiveObject(target.host);
@@ -193,7 +201,8 @@ export abstract class Board
       this.instance?.on(CanvasEvents.CANVAS_MOUSE_UP, this.removeOnMouseMove);
       this.prepareDrawLine(target);
     }
-    if (target) return;
+    this.onMouseDown(e);
+    if (target) return; // TODO explain why return
     this.instance?.discardActiveObject();
   };
   onBoardDestroy() {
@@ -205,14 +214,14 @@ export abstract class Board
   listenSecureEvents() {
     const instance = this.instance;
     if (!instance) return;
-    instance.on(CanvasEvents.CANVAS_MOUSE_UP, this.onMouseUp);
+    instance.on(CanvasEvents.CANVAS_MOUSE_UP, this.onPrivateMouseUp);
     instance.on(CanvasEvents.LINE_CLICKED, this.onLineClicked);
     instance.on(CanvasEvents.ZOOMED, this.onZoomed);
   }
   offSecureEvents() {
     const instance = this.instance;
     if (!instance) return;
-    instance.off(CanvasEvents.CANVAS_MOUSE_UP, this.onMouseUp);
+    instance.off(CanvasEvents.CANVAS_MOUSE_UP, this.onPrivateMouseUp);
     instance.off(CanvasEvents.LINE_CLICKED, this.onLineClicked);
     instance.off(CanvasEvents.ZOOMED, this.onZoomed);
   }
@@ -367,7 +376,7 @@ export abstract class Board
     canvas.on(CanvasEvents.SELECTION_CREATED, this.onSelectionCreated);
     canvas.on(CanvasEvents.SELECTION_UPDATED, this.onSelectionUpdated);
     canvas.on(CanvasEvents.SELECTION_CLEARED, this.onSelectionCleared);
-    canvas.on(CanvasEvents.CANVAS_MOUSE_DOWN, this.onMouseDown);
+    canvas.on(CanvasEvents.CANVAS_MOUSE_DOWN, this.onPrivateMouseDown);
   }
   offEffectiveEvents() {
     const canvas = this.instance;
@@ -382,7 +391,7 @@ export abstract class Board
     canvas.off(CanvasEvents.SELECTION_CREATED, this.onSelectionCreated);
     canvas.off(CanvasEvents.SELECTION_UPDATED, this.onSelectionUpdated);
     canvas.off(CanvasEvents.SELECTION_CLEARED, this.onSelectionCleared);
-    canvas.off(CanvasEvents.CANVAS_MOUSE_DOWN, this.onMouseDown);
+    canvas.off(CanvasEvents.CANVAS_MOUSE_DOWN, this.onPrivateMouseDown);
   }
   getReadableTransformInfo() {
     const { x: left, y: top } = this.instance?.viewportTranslate || defaultCoordinate;

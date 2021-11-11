@@ -1,6 +1,8 @@
+import { SelectOption } from "@/api/bloc";
+import { ValueType } from "@/api/flow";
 import classNames from "classnames";
 import React, { memo } from "react";
-
+import { NumericInput, NumericInputProps } from "@blueprintjs/core";
 export const SearchInput: React.FC<React.HTMLProps<HTMLInputElement>> = memo(({ className, ...rest }) => {
   return (
     <input
@@ -14,3 +16,50 @@ export const SearchInput: React.FC<React.HTMLProps<HTMLInputElement>> = memo(({ 
     />
   );
 });
+
+export const NativeSelect: React.FC<{ options: SelectOption[]; value: ValueType; name?: string }> = ({
+  options,
+  value,
+  name,
+}) => {
+  return (
+    <div className="relative">
+      <label htmlFor="s" className="z-10 relative">
+        点我出现
+      </label>
+      <select className="absolute left-0 top-0" id="s" name={name} value={value?.toString()}>
+        {options.map((item) => (
+          <option value={item.value?.toString()} key={item.value?.toString()}>
+            {item.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+const getValue = (value: number, { min, max }: { min?: number; max?: number }) => {
+  let result = value;
+  if (min) {
+    result = Math.max(min, value);
+  }
+  if (max) {
+    result = Math.min(max, value);
+  }
+  return result;
+};
+
+export const EnhancedNumberInput: React.FC<NumericInputProps> = ({ min, max, onValueChange, ...rest }) => {
+  return (
+    <NumericInput
+      {...rest}
+      min={min}
+      max={max}
+      onValueChange={(v, ...rest) => {
+        const vx = getValue(v, { min, max });
+        if (!isNaN(v)) {
+          onValueChange?.(vx, ...rest);
+        }
+      }}
+    />
+  );
+};

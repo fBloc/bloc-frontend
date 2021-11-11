@@ -279,6 +279,7 @@ export class ConnectionLine extends fabric.Polyline {
     });
   }
   setOnHover() {
+    if ((this.canvas as Canvas).spacebarPressed) return;
     this.hotZoneColor = `${this.settings.activeColor}18`;
     this.dirty = true;
   }

@@ -6,6 +6,8 @@ import { StoreProvider, FlowItemStore as Store } from "./store";
 import Board from "../board";
 import { LazyComponent, Spinner } from "@/components";
 import Portal from "@/components/Portal";
+import Contextmenu from "./Contextmenu";
+// import Info from "./Info";
 const Setter = React.lazy(() => import("./Setter"));
 const Functions = React.lazy(() => import("./Functions"));
 
@@ -29,9 +31,10 @@ const Item = observer(() => {
     <StoreProvider value={store}>
       <div className="h-screen bg-gray-100 flex flex-col">
         <Header />
+
         <main className="flex-grow relative">
           <div className="absolute left-0 top-0 bottom-0 z-10">
-            <LazyComponent open={store.editable} fallback={Loading}>
+            <LazyComponent open={store.editing} fallback={Loading}>
               <Functions className="h-full p-3" />
             </LazyComponent>
           </div>
@@ -39,6 +42,7 @@ const Item = observer(() => {
           <LazyComponent open={store.param.open} fallback={Loading}>
             <Setter />
           </LazyComponent>
+          <Contextmenu />
         </main>
       </div>
     </StoreProvider>

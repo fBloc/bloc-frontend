@@ -12,6 +12,7 @@ export type ServerResponse<T> = {
 
 const instance = axios.create({
   timeout: 60000,
+  baseURL: "http://82.157.98.91/",
 });
 instance.interceptors.request.use((request) => {
   const token = login.token;
@@ -34,7 +35,7 @@ instance.interceptors.response.use((response) => {
   }
   return response;
 });
-export type IAppResponse<T = null> = {
+export type RequestResult<T = null> = {
   isValid: boolean;
   message: string;
   data: T;
@@ -44,7 +45,7 @@ class Request {
   private isSameParams(config: AxiosRequestConfig) {
     return JSON.stringify(config) === this.lastConfig;
   }
-  request<T>(config: AxiosRequestConfig): Promise<IAppResponse<Nullable<T>>> {
+  request<T>(config: AxiosRequestConfig): Promise<RequestResult<Nullable<T>>> {
     this.lastConfig = JSON.stringify(config);
     return instance
       .request<ServerResponse<T>>(config)
@@ -107,7 +108,7 @@ class Request {
 export default new Request();
 
 export function interceptRequest({ message }: { message: string }) {
-  return Promise.resolve<IAppResponse>({
+  return Promise.resolve<RequestResult>({
     isValid: false,
     message,
     data: null,

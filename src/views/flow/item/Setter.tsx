@@ -32,7 +32,7 @@ const EditorDialog: React.FC = observer(() => {
       onClosed={store.onEditorExited}
       isCloseButtonShown={true}
       canOutsideClickClose={false}
-      title="设置参数输入值"
+      title="参数输入值"
       style={{
         width: 600,
       }}

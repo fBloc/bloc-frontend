@@ -42,52 +42,57 @@ const Login = observer(() => {
 
   return (
     <div className="h-screen">
-      <header className="p-6 flex items-center justify-between">
-        <img src={Logo} alt="logo" className="w-12" />
-        <p>
-          <span className="mr-2 text-gray-400">第一次来到Bloc?</span>
-          <Link to="/about" target="_blank">
-            查看简介
-          </Link>
-        </p>
-      </header>
-      <main className="mt-8 mx-auto w-96">
-        <p className="mb-10 text-3xl text-center">登录</p>
-        <Label>
-          <InputGroup
-            placeholder="账号"
-            value={name}
-            onInput={clearError}
-            onChange={handleStringChange(setName)}
-            large={true}
-          />
-        </Label>
-        <Label className="mt-10">
-          <InputGroup
-            type="password"
-            placeholder="密码"
-            onInput={clearError}
-            maxLength={20}
-            onChange={handleStringChange(setPassword)}
-            large={true}
-          />
-        </Label>
-        <div className="flex items-center justify-between">
-          <Checkbox checked={rememberme} label="记住登录状态" onChange={handleBooleanChange(setRememberme)} />
-          <p className="text-xs text-red-500">{errorMessage}</p>
-        </div>
+      <form action="">
+        <header className="p-6 flex items-center justify-between">
+          <img src={Logo} alt="logo" className="w-12" />
+          <p>
+            <span className="mr-2 text-gray-400">第一次来到Bloc?</span>
+            <Link to="/about" target="_blank">
+              查看简介
+            </Link>
+          </p>
+        </header>
+        <main className="mt-8 mx-auto w-96">
+          <p className="mb-10 text-3xl text-center">登录</p>
+          <Label>
+            <InputGroup
+              placeholder="账号"
+              value={name}
+              onInput={clearError}
+              autoComplete="username"
+              onChange={handleStringChange(setName)}
+              large={true}
+            />
+          </Label>
+          <Label className="mt-10">
+            <InputGroup
+              type="password"
+              placeholder="密码"
+              onInput={clearError}
+              maxLength={20}
+              autoComplete="current-password"
+              onChange={handleStringChange(setPassword)}
+              large={true}
+            />
+          </Label>
+          <div className="flex items-center justify-between">
+            <Checkbox checked={rememberme} label="记住登录状态" onChange={handleBooleanChange(setRememberme)} />
+            <p className="text-xs text-red-500">{errorMessage}</p>
+          </div>
 
-        <Button
-          color="primary"
-          onClick={onSubmit}
-          className="mt-5 w-full"
-          large={true}
-          loading={loading}
-          disabled={!name || !password}
-        >
-          登录
-        </Button>
-      </main>
+          <Button
+            type="submit"
+            color="primary"
+            onClick={onSubmit}
+            className="mt-5 w-full"
+            large={true}
+            loading={loading}
+            disabled={!name || !password}
+          >
+            登录
+          </Button>
+        </main>
+      </form>
     </div>
   );
 });

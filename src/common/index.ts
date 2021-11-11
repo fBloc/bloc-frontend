@@ -1,3 +1,6 @@
+import { FunctionItem } from "@/api/bloc";
+import { Input, Pair } from "@/api/flow/types";
+
 export * from "./types";
 export enum DetailType {
   launched = "launched",
@@ -15,12 +18,24 @@ export const tabs = [
   },
 ];
 export enum RunningEnum {
-  created = "创建成功",
-  queue = "排队中",
-  running = "运行中",
-  success = "成功",
-  failed = "失败",
+  created = 1,
+  queue,
+  running,
+  userCancel,
+  systemCancel,
+  success,
+  failed,
 }
+
+export const runningStateTexts: Record<RunningEnum, string> = {
+  [RunningEnum.created]: "创建成功",
+  [RunningEnum.queue]: "排队中",
+  [RunningEnum.running]: "运行中",
+  [RunningEnum.userCancel]: "用户取消",
+  [RunningEnum.systemCancel]: "超时取消",
+  [RunningEnum.success]: "成功",
+  [RunningEnum.failed]: "失败",
+};
 
 export function isString(target: unknown): target is string {
   return typeof target === "string";
@@ -58,4 +73,19 @@ export function toRound(value: number, n: number) {
 }
 export function noop() {
   //
+}
+
+export interface CanvasNode {
+  id: string;
+  name: string;
+  position: {
+    left: number;
+    top: number;
+  };
+  connections: {
+    upstream: string[];
+    downstream: string[];
+  };
+  inputParamConf: ((Pair | Input | null)[] | null)[];
+  function: FunctionItem;
 }

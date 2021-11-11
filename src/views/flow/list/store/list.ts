@@ -1,13 +1,13 @@
 import { createContext } from "react";
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
-import { createDraft, deleteDraft, deleteItem, getDraftList, getList, FlowDetailT } from "@/api/flow";
+import { createDraft, deleteDraft, deleteItem, getDraftList, getList } from "@/api/flow";
 import { ToastPlugin } from "@/components/plugins";
 import { DetailType } from "@/common";
-
+type c = DraftFlowListItem;
 export class ListStore {
-  @observable list: FlowDetailT[] = [];
-  @observable draftList: FlowDetailT[] = [];
-  @observable currentList: FlowDetailT[] = [];
+  @observable list: FlowListItem[] = [];
+  @observable draftList: FlowListItem[] = [];
+  @observable currentList: FlowListItem[] = [];
   @observable tab = DetailType.launched;
   @observable index = -1;
   @observable name = "";

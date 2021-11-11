@@ -1,4 +1,4 @@
-import { findLogicNodeById } from ".";
+import { DEFAULT_START_NODE_ID, findLogicNodeById } from ".";
 import { CanvasEvents } from "../common";
 import { Canvas, LogicNode } from "@/fabric/objects";
 import { nodeSettings } from "@/fabric/settings";
@@ -65,7 +65,7 @@ export function prettierCoordinates(canvas: Canvas, entry: LogicNode) {
   const e = Array.from(nodes.entries()).map((i) => i[1].column);
   const minLeft = Math.min(...e);
   const maxLeft = Math.max(...e);
-  const start = findLogicNodeById(canvas, "0");
+  const start = findLogicNodeById(canvas, DEFAULT_START_NODE_ID);
   start?.setOptions({
     left: ((nodeSettings.width + 100) * (minLeft + maxLeft)) / 2,
     top: 0,
@@ -73,10 +73,4 @@ export function prettierCoordinates(canvas: Canvas, entry: LogicNode) {
   start?.setCoords();
   canvas.renderAll();
   start?.fire(CanvasEvents.OBJECT_MOVING);
-  const result = entries.map(([id, { rows, column }]) => ({
-    [id]: {
-      row: Math.max(...rows),
-      column,
-    },
-  }));
 }

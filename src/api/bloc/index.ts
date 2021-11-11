@@ -1,5 +1,5 @@
 import request from "@/api/client";
-import { ValueType } from "@/api/flow";
+import { TruthySimpleValue, ValueType } from "@/api/flow";
 import { ParamTypeOptions } from "@/common";
 
 export function getFunctions() {
@@ -7,10 +7,10 @@ export function getFunctions() {
 }
 
 export interface FunctionItem {
-  description: string;
   id: string;
-  ipt: Ipt[];
   name: string;
+  description: string;
+  ipt: Ipt[];
   opt: IOpt[];
 }
 export interface FunctionGroup {
@@ -42,7 +42,7 @@ export interface IAtom {
 
 export interface SelectOption {
   label: string | number;
-  value: ValueType;
+  value: TruthySimpleValue;
 }
 
 export interface IOpt {

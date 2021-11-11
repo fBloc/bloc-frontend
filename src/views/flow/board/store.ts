@@ -3,7 +3,6 @@ import { Board } from "@/fabric/enhanced/board";
 import { DetailType, Nullable } from "@/common";
 import { LogicNode } from "@/fabric/objects";
 import { isStartNode } from "@/fabric/tools";
-
 interface WithRequest {
   request: { realFetching: boolean };
 }
@@ -12,7 +11,7 @@ export abstract class Store<T extends { id: string } = any> extends Board implem
   @observable detail: Nullable<T> = null;
   @observable originId = "";
   detailType = DetailType.launched;
-  @observable editable = false;
+  @observable editing = false;
   @observable zoom = 1;
   stopEvents = false;
   @computed get intZoom() {
@@ -52,6 +51,22 @@ export abstract class Store<T extends { id: string } = any> extends Board implem
         },
       ),
     );
+    this.disposers.push(
+      reaction(
+        () => this.editing,
+        (editing) => {
+          const cursor = editing ? "default" : "grab";
+          if (this.canvas?.hoverCursor) {
+            this.canvas.hoverCursor = cursor;
+            this.canvas.defaultCursor = cursor;
+          }
+          this.canvas?._objects.forEach((item) => {
+            item.hoverCursor = cursor;
+            item.moveCursor = cursor;
+          });
+        },
+      ),
+    );
   }
   preRenderNodes(nodes: LogicNode[], generateStartNode: () => LogicNode) {
     const lackStartNode = nodes.findIndex(isStartNode) === -1;
@@ -71,7 +86,7 @@ export abstract class Store<T extends { id: string } = any> extends Board implem
     this.detail = detail;
   }
   @action switchEditable(readonly: boolean) {
-    this.editable = readonly;
+    this.editing = readonly;
   }
   onDestroy() {
     this.disposers.forEach((fn) => fn());

@@ -12,7 +12,7 @@ const Functions = observer<FunctionsProps, HTMLDivElement>(
     const [indexList, setIndex] = useState<number[]>([]);
     return (
       <Slide
-        open={store.editable}
+        open={store.editing}
         direction="left"
         onExit={onExit}
         onEnter={onEnter}
