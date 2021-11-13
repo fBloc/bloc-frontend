@@ -1,5 +1,5 @@
 import { FunctionGroup, FunctionItem, getFunctions } from "@/api/bloc";
-import { FlowDetailT, FlowRunningState, getHistoryFlow } from "@/api/flow";
+import { BaseFlowItem, FlowDetailT, FlowRunningState, getHistoryFlow, ReadablePositionInfo } from "@/api/flow";
 import { DetailType, EditType, isTruthyValue, Nullable } from "@/common";
 import { BasicBloc, Bloc, BlocStartNode, ConnectionLine, isBlocNode, isLogicNode, LogicNode } from "@/fabric/objects";
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
@@ -11,7 +11,7 @@ import { findLogicNodeById, generateUniFlowIdentifier, toBlocNodes } from "@/fab
 import { createContext } from "react";
 import { useQuery } from "@/hooks";
 
-export class FlowItemStore extends Store<FlowDetailT> {
+export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
   param!: Param;
   request!: Request;
   private sourceFunctionId = "";
@@ -178,10 +178,10 @@ export class FlowItemStore extends Store<FlowDetailT> {
       downstreamBlocNodes.forEach((item) => {
         item.paramIpts?.forEach((atoms) => {
           atoms.forEach((atom) => {
-            if (atom && atom.flow_bloc_id === node.id) {
+            if (atom && atom.flow_function_id === node.id) {
               atom.blank = true;
               atom.value = null;
-              atom.flow_bloc_id = "";
+              atom.flow_function_id = "";
             }
           });
         });

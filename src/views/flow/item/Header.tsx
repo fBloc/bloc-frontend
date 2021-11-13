@@ -51,7 +51,7 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
       return reaction(
         () => store.detail?.name,
         (name) => {
-          setName(typeof name === "string" ? name || "未命名" : "内容为空");
+          setName(typeof name === "string" ? name || "未命名" : "无效的flow");
         },
         {
           fireImmediately: true,

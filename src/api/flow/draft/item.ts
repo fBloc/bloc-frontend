@@ -1,5 +1,5 @@
 import request from "@/api/client";
-import { BaseFlowItem, DraftFlowListItem, FlowDetailT, normalizeFlowDetail } from "@/api/flow/common";
+import { BaseFlowItem, FlowDetailT, normalizeFlowDetail, ResultState } from "@/api/flow/common";
 import { simpleNanoId } from "@/utils";
 
 /**
@@ -10,7 +10,7 @@ export function createDraft(
     origin_id: string;
   },
 ) {
-  return request.post<DraftFlowListItem>("/api/v1/draft_flow", {
+  return request.post<BaseFlowItem>("/api/v1/draft_flow", {
     name: `未命名flow_${simpleNanoId()}`,
     ...content,
   });
@@ -20,7 +20,7 @@ export function createDraft(
  * 更新草稿
  */
 export function updateDraft(params: Partial<FlowDetailT>) {
-  return request.patch<{ suc: boolean }>("/api/v1/draft_flow", params);
+  return request.patch<ResultState>("/api/v1/draft_flow", params);
 }
 
 /**

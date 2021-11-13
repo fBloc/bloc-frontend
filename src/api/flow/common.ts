@@ -1,5 +1,6 @@
-import { Nullable } from "@/common";
+import { Nullable, ParamTypeOptions, RunningEnum } from "@/common";
 import { isObject } from "@/utils";
+import { LaunchedFlowListItem } from ".";
 
 /**
  * 列表下，flow的position信息较为特殊
@@ -52,11 +53,18 @@ export interface FlowBlocNodeItem<T = Position[]> {
   param_ipts: Array<ParamIpt[]>;
 }
 
+export type BlocItem = {
+  /**
+   * 节点id
+   */
+  id: string;
+} & FlowBlocNodeItem<ReadablePositionInfo>;
+
 export interface ParamIpt {
   blank: boolean;
   ipt_way: IptWay;
-  value_type: ValueType;
-  value: number[] | number | string | string;
+  value_type: ParamTypeOptions;
+  value: ValueType | ValueType[];
   flow_function_id: string;
   key: string;
 }
@@ -64,11 +72,6 @@ export interface ParamIpt {
 export enum IptWay {
   Connection = "connection",
   UserIpt = "user_ipt",
-}
-
-export enum ValueType {
-  Int = "int",
-  String = "string",
 }
 
 export interface Position {
@@ -89,14 +92,14 @@ const transformPosition = (source: any): ReadablePositionInfo => {
   }, {});
 };
 
-export function normalizeFlowDetail<T extends { data?: Nullable<WithPositionFlowItem> }>(
+export function normalizeFlowDetail<T extends { data?: Nullable<BaseFlowItem> }>(
   source: T,
-): Omit<T, "data"> & { data?: Nullable<WithPositionFlowItem<ReadablePositionInfo>> } {
+): Omit<T, "data"> & { data: Nullable<BaseFlowItem<ReadablePositionInfo>> } {
   const data = source.data;
   if (!data)
     return {
       ...source,
-      data,
+      data: null,
     };
   return {
     ...source,
@@ -123,3 +126,26 @@ export type FlowDetailT = BaseFlowItem<ReadablePositionInfo>;
 export interface SearchOptions {
   contains: string;
 }
+
+export interface LatestRun {
+  time: string;
+  status: RunningEnum;
+}
+
+export function isLaunchedFlow(flow: any): flow is LaunchedFlowListItem {
+  return "latest_run" in flow;
+}
+
+export type ValueType = string | number | boolean | undefined | null;
+export type TruthySimpleValue = NonNullable<ValueType>;
+
+export interface ResultState {
+  suc: boolean;
+}
+
+export const atomSetterTemplate: Partial<ParamIpt> = {
+  blank: true,
+  ipt_way: IptWay.UserIpt,
+  value: "",
+  value_type: ParamTypeOptions.string,
+};

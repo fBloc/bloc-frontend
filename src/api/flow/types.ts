@@ -33,7 +33,6 @@ export interface Node {
   out_ports: number[];
   pos_x: number;
   pos_y: number;
-  iconStyle: IconStyle;
   iconClassName?: string;
   nameDescribe?: string;
   zh?: string;
@@ -50,14 +49,6 @@ export interface FinalValues {
   calcu_base?: string;
   content?: string;
   condition?: string;
-}
-
-export interface IconStyle {
-  background: Background;
-}
-
-export enum Background {
-  The6F8Df7 = "#6F8DF7",
 }
 
 export interface PanelSet {

@@ -1,15 +1,7 @@
 import request from "@/api/client";
-import { BaseFlowItem, DraftFlowListItem, normalizeFlowDetail } from "@/api/flow/common";
+import { BaseFlowItem, normalizeFlowDetail, ResultState } from "@/api/flow/common";
 import { RunningEnum } from "@/common";
-import { FlowDetailT } from "..";
-
-export interface LatestRun {
-  time: string;
-  status: RunningEnum;
-}
-export type LaunchedFlowListItem = DraftFlowListItem & {
-  latest_run?: LatestRun;
-};
+import { FlowDetailT } from "../common";
 
 /**
  * 手动触发运行
@@ -57,7 +49,7 @@ export function deleteItem(originId: string) {
 }
 
 export function updateDetail(params: Partial<FlowDetailT> & Pick<FlowDetailT, "id">) {
-  return request.patch<{ suc: boolean }>("/api/v1/flow", params);
+  return request.patch<ResultState>("/api/v1/flow", params);
 }
 
 export function getDetail(originId: string) {

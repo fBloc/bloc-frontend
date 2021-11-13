@@ -11,6 +11,7 @@ import { ListStore } from "./store/list";
 import { FlowItemStore as Store, StoreProvider } from "../item/store";
 import HeaderBar from "./HeaderBar";
 import Board from "../board";
+import { isLaunchedFlow } from "@/api/flow";
 
 const classes: Record<RunningEnum, string> = {
   [RunningEnum.created]: "bg-yellow-50 text-yellow-400",
@@ -39,6 +40,9 @@ const Items: React.FC<{ store: ListStore }> = observer(({ store }) => {
   if (store.loading) {
     return <Spinner className="mt-10" />;
   }
+  if (store.currentList.length === 0) {
+    return <div className="py-20 text-center text-gray-400">暂无数据</div>;
+  }
   return (
     <div className="flex-grow overflow-auto">
       {store.currentList.map((item, index) => (
@@ -51,19 +55,17 @@ const Items: React.FC<{ store: ListStore }> = observer(({ store }) => {
             store.setIndex(index);
           }}
         >
-          {item.latest_run ? (
+          {isLaunchedFlow(item) ? (
             <span
               className={classNames(
                 "px-2 py-1 rounded-full text-xs  font-medium",
                 classNames(classes[item.latest_run.status]),
               )}
             >
-              {runningStateTexts[item.latest_run.status]}
+              {runningStateTexts[item.latest_run.status] || "从未运行"}
             </span>
           ) : (
-            <span className="px-2 py-1 rounded-full text-xs bg-gray-50 text-gray-500 font-medium">
-              {store.tab === DetailType.draft ? "草稿" : "从未运行"}
-            </span>
+            <span className="px-2 py-1 rounded-full text-xs bg-gray-50 text-gray-500 font-medium">草稿</span>
           )}
           <p className="mt-4">{item.name || "未命名"}</p>
         </div>

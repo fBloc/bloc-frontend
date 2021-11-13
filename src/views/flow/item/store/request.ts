@@ -7,6 +7,7 @@ import {
   getLatestRunningState,
   updateDraft,
   createDraft,
+  normalizeFlowDetail,
 } from "@/api/flow";
 import { debounce, DetailType } from "@/common";
 import { isBlocNode } from "@/fabric/objects";
@@ -38,12 +39,12 @@ export class Request {
       }
     }, 200);
     const result = type === DetailType.launched ? await getDetail(originId) : await getDraft(originId);
+    this.root.setDetail(result.data, result.isValid);
     if (result.isValid) {
-      this.root.setDetail(result.data);
       if (type === DetailType.draft && !result.data) {
         const { data, isValid } = await this.createDraft();
         if (isValid) {
-          this.root.setDetail(data);
+          this.root.setDetail(data, isValid);
         }
       }
     }
@@ -89,7 +90,7 @@ export class Request {
   }
   async onNodesChange() {
     await this.update({
-      flowFunctionID_map_flowFunction: this.getNodes(),
+      flowFunctionID_map_flowFunction: this.getNodes() || {},
     });
   }
   async onTransform() {
@@ -109,7 +110,7 @@ export class Request {
       flowFunctionID_map_flowFunction: detail?.flowFunctionID_map_flowFunction,
       position: detail?.position,
       name: detail?.name,
-    });
+    }).then(normalizeFlowDetail);
   }
   @debounce(1000)
   async update(params: Partial<FlowDetailT>) {

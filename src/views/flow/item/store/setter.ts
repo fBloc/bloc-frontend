@@ -139,8 +139,8 @@ export class Params {
   private get isIdsValid() {
     const connectionIds = this.downstreamNode?.paramIpts?.reduce((acc: string[], param) => {
       const ids = param
-        .filter((atom) => atom?.ipt_way === IptWay.Connection && atom.flow_bloc_id)
-        .map((component) => component?.flow_bloc_id)
+        .filter((atom) => atom?.ipt_way === IptWay.Connection && atom.flow_function_id)
+        .map((component) => component?.flow_function_id)
         .filter(isTruthyValue);
       return [...acc, ...ids];
     }, []);
@@ -334,7 +334,7 @@ export class Params {
       return item.filter(
         (inner) =>
           inner?.ipt_way === IptWay.UserIpt ||
-          (inner?.ipt_way === IptWay.Connection && inner?.flow_bloc_id !== this.upstreamNodeId),
+          (inner?.ipt_way === IptWay.Connection && inner?.flow_function_id !== this.upstreamNodeId),
       );
     });
   }
@@ -407,6 +407,8 @@ export class Params {
       value: "",
       value_type: this.atomDescriptor?.value_type || ParamTypeOptions.string,
       ipt_way: IptWay.UserIpt,
+      flow_function_id: "",
+      key: "",
       ...info,
     };
     const target = findLogicNodeById(this.root.canvas, this.downstreamNodeId);
@@ -426,7 +428,7 @@ export class Params {
   submitConnectValue = () => {
     this.setValue({
       ipt_way: IptWay.Connection,
-      flow_bloc_id: this.upstreamNodeId,
+      flow_function_id: this.upstreamNodeId,
       key: this.upstreamParamDescriptor?.key || "",
     });
     this.closeEditor();
