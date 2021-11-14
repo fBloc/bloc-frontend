@@ -1,4 +1,4 @@
-import React, { memo, useContext } from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import classNames from "classnames";
 import { Button, ContainButton, Icon, Tooltip2 } from "@/components";

@@ -12,7 +12,7 @@ const Run = observer(() => {
   });
   const store = useContext(StoreContext);
   const appStore = useContext(AppStoreContext);
-  if (store.editing) return null;
+  if (store.editing || store.notLaunchedEver) return null;
   return (
     <Tooltip2 content="立即运行" placement="bottom" disabled={!store.canRun}>
       <Button

@@ -32,7 +32,7 @@ export abstract class Store<T extends { id: string } = any> extends Board implem
   abstract toEditMode(): Promise<void>;
   abstract setup(el: HTMLCanvasElement | null): Promise<void>;
   abstract onOriginIdChange: () => Promise<void>;
-  abstract request: { realFetching: boolean };
+  abstract request: { realFetching: boolean; fetching: boolean };
   constructor() {
     super();
     makeObservable(this);

@@ -2,6 +2,7 @@ import { IRectOptions, LogicNode, NodeType } from "./node";
 import { nodeSettings, primaryColor } from "@/fabric/settings";
 import playIcon from "@/assets/images/play-icon.png";
 import { BlocItem, ParamIpt } from "@/api/flow";
+import { DEFAULT_START_NODE_ID } from "../tools";
 
 type BlocOptions = {
   blocId: string;
@@ -50,7 +51,7 @@ export abstract class BasicBloc extends LogicNode {
       note: this.name,
       upstream_flowfunction_ids: upstream,
       downstream_flowfunction_ids: downstream,
-      param_ipts: paramIpts,
+      param_ipts: paramIpts || [],
     };
   }
 }
@@ -65,7 +66,7 @@ export class BlocStartNode extends BasicBloc {
       lockMovementX: true,
       lockMovementY: true,
       blocId: "4c0e909e-4176-4ce2-a3f6-f30dab71c936", //  固定写死
-      id: "START_NODE",
+      id: DEFAULT_START_NODE_ID.LITERANL,
       name: "开始节点",
     });
   }

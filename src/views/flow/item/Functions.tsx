@@ -37,7 +37,7 @@ const Functions = observer<FunctionsProps, HTMLDivElement>(
               icon: "folder-close",
               isExpanded: indexList.includes(index),
               label: group.group_name,
-              childNodes: group.blocs.map((func) => ({
+              childNodes: group.functions.map((func) => ({
                 id: func.id,
                 hasCaret: false,
                 label: (

@@ -3,7 +3,7 @@ import { TruthySimpleValue, ValueType } from "@/api/flow";
 import { ParamTypeOptions } from "@/common";
 
 export function getFunctions() {
-  return request.get<FunctionGroup[]>("/api/v1/bloc");
+  return request.get<FunctionGroup[]>("/api/v1/function");
 }
 
 export interface FunctionItem {
@@ -14,7 +14,7 @@ export interface FunctionItem {
   opt: IOpt[];
 }
 export interface FunctionGroup {
-  blocs: FunctionItem[];
+  functions: FunctionItem[];
   group_name: string;
 }
 

@@ -8,6 +8,7 @@ import {
   updateDraft,
   createDraft,
   normalizeFlowDetail,
+  deleteDraft,
 } from "@/api/flow";
 import { debounce, DetailType } from "@/common";
 import { isBlocNode } from "@/fabric/objects";

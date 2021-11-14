@@ -43,9 +43,10 @@ type BoardProps = React.HTMLProps<HTMLDivElement> & {
   detailType?: DetailType;
   loading?: boolean;
   store: Store;
+  onEdit?: (originId: string) => void;
 };
 
-const Board: React.FC<BoardProps> = observer(({ originId, store, detailType, loading }) => {
+const Board: React.FC<BoardProps> = observer(({ originId, store, detailType, loading, onEdit }) => {
   const ref = useRef<Nullable<HTMLCanvasElement>>(null);
   const { active: isSpacePressed } = useSpace();
   useEffect(() => {
@@ -85,7 +86,7 @@ const Board: React.FC<BoardProps> = observer(({ originId, store, detailType, loa
               <ContainButton
                 className="ml-4"
                 onClick={() => {
-                  store.toEditMode();
+                  onEdit ? onEdit?.(originId) : store.toEditMode();
                 }}
               >
                 继续编辑
@@ -94,7 +95,7 @@ const Board: React.FC<BoardProps> = observer(({ originId, store, detailType, loa
           </div>
         </div>
       )}
-      {store.request.realFetching && <Loading className="absolute" />}
+      {store.request.fetching && <Loading className="absolute" />}
     </>
   );
 });

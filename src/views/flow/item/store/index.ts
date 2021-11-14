@@ -26,7 +26,7 @@ export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
   @observable nodeDrawerId = "";
   @observable nodeDrawerVisible = false;
   @computed get flattenFunctions() {
-    return this.functions.reduce((acc: FunctionItem[], item) => [...acc, ...item.blocs], []);
+    return this.functions.reduce((acc: FunctionItem[], item) => [...acc, ...item.functions], []);
   }
   get nodes() {
     const nodes = this.canvas?._objects.filter(isBlocNode) || [];
@@ -53,6 +53,9 @@ export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
   }
   @computed get canUpdateSettings() {
     return this.detail?.super && !this.detail.is_draft && this.detail.version === 1; // 最新版
+  }
+  @computed get notLaunchedEver() {
+    return this.detail === null;
   }
   /**
    * 当前是否空闲
@@ -213,7 +216,9 @@ export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
   }
   onOriginIdChange = async () => {
     await this.request.fetchDetail(this.detailType);
-    this.request.getRunningHistory();
+    if (this.detail?.is_draft === false) {
+      this.request.getRunningHistory();
+    }
   };
   async setup(el: HTMLCanvasElement | null) {
     this.createInstance(el);

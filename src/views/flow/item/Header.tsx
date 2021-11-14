@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { reaction } from "mobx";
 import {
@@ -23,10 +23,13 @@ import { getReadableTime } from "@/utils";
 import Settings from "./Settings";
 import History from "./History";
 import Run from "./Run";
+import classNames from "classnames";
+import { deleteDraft } from "@/api/flow";
 
 const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
   (props, ref) => {
     const store = useContext(StoreContext);
+    const history = useHistory();
     const [name, setName] = useState("");
     const updateName = useCallback(() => {
       store.request.update({
@@ -51,7 +54,7 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
       return reaction(
         () => store.detail?.name,
         (name) => {
-          setName(typeof name === "string" ? name || "未命名" : "无效的flow");
+          setName(typeof name === "string" ? name || "未命名" : "");
         },
         {
           fireImmediately: true,
@@ -74,7 +77,7 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
           <span className="font-medium text-xs">Flow</span>
         </span>
         <EditableText
-          className="ml-6 mr-4 w-40 px-1"
+          className={classNames("ml-6 mr-4 w-40 px-1", { invisible: !store.detail })}
           value={name}
           placeholder="输入名称"
           disabled={!store.editing}
@@ -121,7 +124,17 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
               <Popover2
                 content={
                   <Menu>
-                    <MenuItem icon="trash" text="删除" intent="danger" />
+                    <MenuItem
+                      icon="trash"
+                      text="删除"
+                      intent="danger"
+                      onClick={async () => {
+                        const { isValid } = await deleteDraft(store.originId);
+                        if (isValid) {
+                          history.push("/flow");
+                        }
+                      }}
+                    />
                   </Menu>
                 }
                 position={Position.BOTTOM_RIGHT}

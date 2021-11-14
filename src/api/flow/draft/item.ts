@@ -7,7 +7,7 @@ import { simpleNanoId } from "@/utils";
  */
 export function createDraft(
   content: Partial<Pick<FlowDetailT, "flowFunctionID_map_flowFunction" | "name" | "position">> & {
-    origin_id: string;
+    origin_id?: string;
   },
 ) {
   return request.post<BaseFlowItem>("/api/v1/draft_flow", {
@@ -27,13 +27,13 @@ export function updateDraft(params: Partial<FlowDetailT>) {
  * 获取草稿
  */
 export function getDraft(originId: string) {
-  return request.get<BaseFlowItem>(`/api/v1/draft_flow/${originId}`).then(normalizeFlowDetail);
+  return request.get<BaseFlowItem>(`/api/v1/draft_flow/get_by_origin_id/${originId}`).then(normalizeFlowDetail);
 }
 /**
  * 删除草稿
  */
 export function deleteDraft(originId: string) {
-  return request.delete(`/api/v1/draft_flow/${originId}`);
+  return request.delete(`/api/v1/draft_flow/delete_by_origin_id/${originId}`);
 }
 
 /**

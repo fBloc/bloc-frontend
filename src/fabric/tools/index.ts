@@ -55,7 +55,10 @@ export function getMaxRightBottom({ left, top }: Position) {
   };
 }
 
-export const DEFAULT_START_NODE_ID = "4c0e909e-4176-4ce2-a3f6-f30dab71c936";
+export enum DEFAULT_START_NODE_ID {
+  NUMBER = "0",
+  LITERANL = "START_NODE",
+}
 export function generateUniFlowIdentifier() {
   return uuidv4(); // TODO
 }
@@ -97,9 +100,9 @@ export function renderFlows(
   nameMap?: Map<string, string>,
 ) {
   if (!canvas) return;
-  const startFlow = flows.get(DEFAULT_START_NODE_ID);
+  const startFlow = flows.get(DEFAULT_START_NODE_ID.LITERANL) || flows.get(DEFAULT_START_NODE_ID.NUMBER);
   const restFlows = Array.from(flows.entries())
-    .filter(([id]) => id !== DEFAULT_START_NODE_ID)
+    .filter(([id]) => isStartNode({ id }))
     .map(([_, item]) => item);
   const starter = new FlowStartNode({
     upstream: startFlow?.upstream_flow_ids || [],
@@ -217,7 +220,7 @@ export const queryElement = <T>(selector: string | T) =>
   typeof selector === "string" ? (document.querySelector(selector) as any as T) : selector;
 
 export function isStartNode<T extends { id: string }>(item: T) {
-  return item.id === "DEFAULT_START_NODE_ID";
+  return [DEFAULT_START_NODE_ID.LITERANL, DEFAULT_START_NODE_ID.NUMBER].includes(item.id as DEFAULT_START_NODE_ID);
 }
 function findStatNode<T extends { id: string }>(nodes: T[]) {
   return nodes.find(isStartNode);
@@ -235,8 +238,8 @@ export function toBlocNodes(list: BlocItem[]) {
     const node = new BlocStartNode({
       downstream: [...startNode.downstream_flowfunction_ids],
       upstream: [...startNode.upstream_flowfunction_ids],
-      left: startNode.position.left ?? 400,
-      top: startNode.position.top ?? 200,
+      left: startNode?.position?.left ?? 400,
+      top: startNode?.position?.top ?? 200,
     });
     result.push(node);
   }

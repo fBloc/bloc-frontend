@@ -247,9 +247,9 @@ const SettedValue = observer<{
 const DisplayConnection: React.FC<{ value: ParamIpt }> = observer(({ value }) => {
   const store = useContext(Context);
   const flatFunction = store.functions.reduce((acc: FunctionItem[], item) => {
-    return [...acc, ...item.blocs];
+    return [...acc, ...item.functions];
   }, []);
-  const blocId = store.nodes.get(value?.flow_bloc_id || "")?.blocId;
+  const blocId = store.nodes.get(value?.flow_function_id || "")?.blocId;
   const targetFunction = flatFunction.find((item) => item.id === blocId);
   const param = targetFunction?.opt.find((item) => item.key === value?.key);
   const content = (

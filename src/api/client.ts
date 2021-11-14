@@ -15,11 +15,12 @@ const instance = axios.create({
   baseURL: "http://82.157.98.91/",
 });
 instance.interceptors.request.use((request) => {
-  const token = login.token;
+  const token = login.token; // TODO
   if (!token && !request.url?.includes("/login")) {
     return Promise.reject(new Error("1011:未登录！"));
   }
   request.headers["token"] = login.token;
+  request.headers["token"] = "b9f958d1-0057-4622-bf67-66565c2bd2e9";
   return request;
 });
 instance.interceptors.response.use((response) => {

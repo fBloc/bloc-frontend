@@ -12,6 +12,7 @@ import {
 } from "@/api/flow";
 import { ToastPlugin } from "@/components/plugins";
 import { DetailType } from "@/common";
+import { DEFAULT_START_NODE_ID } from "@/fabric/tools";
 export class ListStore {
   @observable list: LaunchedFlowListItem[] = [];
   @observable draftList: DraftFlowListItem[] = [];
@@ -33,7 +34,26 @@ export class ListStore {
     makeObservable(this);
   }
   createDraft() {
-    return createDraft({ origin_id: "" });
+    return createDraft({
+      position: {
+        left: 200,
+        top: 100,
+      },
+      flowFunctionID_map_flowFunction: {
+        [DEFAULT_START_NODE_ID.LITERANL]: {
+          note: "开始",
+          position: {
+            left: 400,
+            top: 100,
+            zoom: 0,
+          },
+          function_id: "4c0e909e-4176-4ce2-a3f6-f30dab71c936",
+          upstream_flowfunction_ids: [],
+          downstream_flowfunction_ids: [],
+          param_ipts: [],
+        },
+      },
+    });
   }
   @action switchTab(tab: DetailType) {
     this.index = -1;

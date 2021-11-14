@@ -4,7 +4,7 @@ import { BrowserRouter, Switch } from "react-router-dom";
 import { AuthorizedRoute } from "@/router/helper";
 
 const ArrangeList = lazy(() => import("@/views/arrangement/index2"));
-const FlowList = lazy(() => import("@/views/flow/list/index2"));
+const FlowList = lazy(() => import("@/views/flow/list"));
 
 const RouterView = () => {
   return (
