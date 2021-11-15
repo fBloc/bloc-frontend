@@ -66,7 +66,7 @@ export class BlocStartNode extends BasicBloc {
       lockMovementX: true,
       lockMovementY: true,
       blocId: "4c0e909e-4176-4ce2-a3f6-f30dab71c936", //  固定写死
-      id: DEFAULT_START_NODE_ID.LITERANL,
+      id: DEFAULT_START_NODE_ID.NUMBER,
       name: "开始节点",
     });
   }

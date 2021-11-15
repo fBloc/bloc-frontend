@@ -65,7 +65,7 @@ export function prettierCoordinates(canvas: Canvas, entry: LogicNode) {
   const e = Array.from(nodes.entries()).map((i) => i[1].column);
   const minLeft = Math.min(...e);
   const maxLeft = Math.max(...e);
-  const start = findLogicNodeById(canvas, DEFAULT_START_NODE_ID);
+  const start = findLogicNodeById(canvas, DEFAULT_START_NODE_ID.NUMBER);
   start?.setOptions({
     left: ((nodeSettings.width + 100) * (minLeft + maxLeft)) / 2,
     top: 0,

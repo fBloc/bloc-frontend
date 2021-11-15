@@ -122,6 +122,7 @@ export class Request {
     const result = await updateDraft({
       ...params,
       id: this.root.draftId,
+      origin_id: this.root.originId,
     });
     if (result.isValid) {
       runInAction(() => {

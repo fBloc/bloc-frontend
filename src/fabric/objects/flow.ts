@@ -59,7 +59,7 @@ export class FlowStartNode extends BasicFlow {
       ...options,
       fill: `${primaryColor}22`,
       stroke: primaryColor,
-      flowId: DEFAULT_START_NODE_ID, // TODO FLOW ID
+      flowId: DEFAULT_START_NODE_ID.NUMBER, // TODO FLOW ID
       id: "START_NODE",
       name: "开始节点",
       lockMovementX: true,
