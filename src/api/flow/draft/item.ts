@@ -40,5 +40,5 @@ export function deleteDraft(originId: string) {
  * 发布
  */
 export function launch(draftId: string) {
-  return request.get(`/api/v1/draft_flow/${draftId}/commit`);
+  return request.get(`api/v1/draft_flow/commit_by_id/${draftId}`);
 }

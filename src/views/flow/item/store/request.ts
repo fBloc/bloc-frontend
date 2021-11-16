@@ -68,12 +68,6 @@ export class Request {
   toEditMode() {
     //
   }
-  async getBlocs() {
-    const { data, isValid } = await getFunctions();
-    if (isValid && data) {
-      // this.root.setBlocs(data);
-    }
-  }
   patch(data: Partial<FlowDetailT>) {
     return updateDraft({
       id: this.root.detail?.id,

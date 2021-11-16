@@ -10,6 +10,7 @@ import { Request } from "./request";
 import { findLogicNodeById, generateUniFlowIdentifier, toBlocNodes } from "@/fabric/tools";
 import { createContext } from "react";
 import { useQuery } from "@/hooks";
+import { getQuery } from "@/utils";
 
 export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
   param!: Param;
@@ -25,6 +26,7 @@ export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
   };
   @observable nodeDrawerId = "";
   @observable nodeDrawerVisible = false;
+  @observable fetchingFunctions = false;
   @computed get flattenFunctions() {
     return this.functions.reduce((acc: FunctionItem[], item) => [...acc, ...item.functions], []);
   }
@@ -94,11 +96,17 @@ export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
   }
   async getFunctions() {
     const { data, isValid } = await getFunctions();
+    runInAction(() => {
+      this.fetchingFunctions = true;
+    });
     if (isValid && data) {
       runInAction(() => {
         this.functions = data;
       });
     }
+    runInAction(() => {
+      this.fetchingFunctions = false;
+    });
   }
   onLineClick = (line: ConnectionLine) => {
     if (this.canvas?.spacebarPressed) return;
@@ -216,6 +224,11 @@ export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
   }
   onOriginIdChange = async () => {
     await this.request.fetchDetail(this.detailType);
+    const { type } = getQuery<{ type: string }>();
+    if (type === "edit") {
+      this.toEditMode();
+      return;
+    }
     if (this.detail?.is_draft === false) {
       this.request.getRunningHistory();
     }

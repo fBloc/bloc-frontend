@@ -7,6 +7,8 @@ import Board from "../board";
 import { LazyComponent, Spinner } from "@/components";
 import Portal from "@/components/Portal";
 import Contextmenu from "./Contextmenu";
+import { useQuery } from "@/hooks";
+import { reaction } from "mobx";
 // import Info from "./Info";
 const Setter = React.lazy(() => import("./Setter"));
 const Functions = React.lazy(() => import("./Functions"));

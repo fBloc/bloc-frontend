@@ -34,3 +34,16 @@ export function objectToQueryString(source: Record<string, string | number>) {
 export function isObject(source: any) {
   return Object.prototype.toString.call(source) === "[object Object]";
 }
+
+export function getQuery<T extends Record<string, string>>(target = window.location.href) {
+  return (decodeURIComponent(target)
+    .split("?")[1]
+    ?.split("&")
+    ?.reduce((acc, item) => {
+      const [key, value] = item.split("=");
+      return {
+        ...acc,
+        [key]: value,
+      };
+    }, {}) || {}) as Partial<T>;
+}

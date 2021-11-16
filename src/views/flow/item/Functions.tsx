@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { StoreContext } from "./store";
 import { Tree } from "@blueprintjs/core";
 import { Slide, TransitionProps } from "@/components/transition";
+import { Loading } from "@/components/Loading";
 
 type FunctionsProps = Omit<TransitionProps, "open"> & React.HTMLProps<HTMLDivElement>;
 
@@ -23,6 +24,7 @@ const Functions = observer<FunctionsProps, HTMLDivElement>(
         className={className}
       >
         <aside ref={ref} className="bg-white p-2 shadow h-full w-60 rounded-lg" {...rest}>
+          {store.fetchingFunctions && <Loading className="absolute" />}
           <Tree
             onNodeClick={(node) => {
               setIndex((previous) => {

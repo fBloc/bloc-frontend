@@ -34,7 +34,7 @@ export interface FlowRunningState {
  * 获取最近的运行历史
  */
 export function getLatestRunningState(flowId: string) {
-  return request.get<FlowRunningState[]>(`/api/v1/flow_history?flow_id=${flowId}&offset=0&limit=100`);
+  return request.get<FlowRunningState[]>(`api/v1/flow_run_record?flow_id=${flowId}&offset=0&limit=10`);
 }
 
 export function getHistoryFlow(flowId: string) {
@@ -53,5 +53,5 @@ export function updateDetail(params: Partial<FlowDetailT> & Pick<FlowDetailT, "i
 }
 
 export function getDetail(originId: string) {
-  return request.get<BaseFlowItem>(`/api/v1/flow/get_by_id/${originId}`).then(normalizeFlowDetail);
+  return request.get<BaseFlowItem>(`/api/v1/flow/get_latestonline_by_origin_id/${originId}`).then(normalizeFlowDetail);
 }

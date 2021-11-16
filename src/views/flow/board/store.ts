@@ -86,6 +86,7 @@ export abstract class Store<T extends { id: string } = any> extends Board implem
   @action setDetail(detail: Nullable<T>, isValid: boolean) {
     this.detail = detail;
     this.detailValid = isValid;
+    console.log(detail, this.detailValid);
   }
   @action switchEditable(readonly: boolean) {
     this.editing = readonly;

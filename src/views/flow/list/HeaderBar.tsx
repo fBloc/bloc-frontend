@@ -40,7 +40,7 @@ const HeaderBar: React.FC<HeaderBarProps> = observer(({ className, ...rest }) =>
           </Tooltip2>
         )}
         <NavLink
-          to={`/flow/${store.detail?.origin_id}`}
+          to={`/flow/${store.detail?.origin_id}?type=edit`}
           target="_blank"
           className="hover:!text-current hover:no-underline"
         >

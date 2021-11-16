@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { reaction } from "mobx";
 import {
@@ -24,7 +24,7 @@ import Settings from "./Settings";
 import History from "./History";
 import Run from "./Run";
 import classNames from "classnames";
-import { deleteDraft } from "@/api/flow";
+import { deleteDraft, launch } from "@/api/flow";
 
 const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
   (props, ref) => {
@@ -42,11 +42,17 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
     const toReadonly = useCallback(() => {
       store.toReadMode();
     }, [store]);
+    const commit = useCallback(async () => {
+      if (store.draftId) {
+        await launch(store.draftId);
+      }
+    }, [store.draftId]);
     const prettier = useCallback(() => {
       const entry = store.startNode;
       if (store.canvas && entry) {
         prettierCoordinates(store.canvas, entry);
         store.request.onNodesChange();
+        store.hideMenuPopover();
       }
     }, [store]);
 
@@ -118,7 +124,7 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
                 退出编辑
               </Button>
               <PlainButton className="w-20 mx-3">保存</PlainButton>
-              <ContainButton className="w-20" onClick={edit}>
+              <ContainButton className="w-20" onClick={commit}>
                 发布
               </ContainButton>
               <Popover2
