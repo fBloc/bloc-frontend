@@ -44,8 +44,22 @@
       background-color: #4166a8;
     }
   }
+  .bloc-card{
+    @apply border border-solid border-gray-100 bg-gray-50;
+  }
+  .font-monaco{
+    font-family: monaco;
+  }
 }
-
+*{
+  outline: none!important;
+}
+:root{
+  --bloc-primary: 0, 147, 255;
+  --bloc-error: 255, 91, 0;
+  --bloc-warning: 230, 181, 102;
+  --bloc-success: 0, 206, 177;
+}
 body {
   margin: 0;
   font-family:

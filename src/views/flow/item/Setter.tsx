@@ -21,7 +21,24 @@ import { Button } from "@/components";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { Nullable } from "@/common";
 import { getIsMultiple, getIsSelect } from "./store/param";
-import style from "./param.module.scss";
+import "./param.scss";
+import classNames from "classnames";
+
+const MultipleTag: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ children, className, ...rest }) => {
+  return (
+    <span
+      className={classNames(
+        "text-xs text-gray-400 bg-gray-100 px-1 py-0.5 rounded inline-flex items-center border-solid border-gray-200 border",
+        className,
+      )}
+      {...rest}
+    >
+      <Icon icon="duplicate" size={10} className="mr-1"></Icon>
+      多个
+      {children}
+    </span>
+  );
+};
 
 const EditorDialog: React.FC = observer(() => {
   const { param: store } = useContext(Context);
@@ -85,9 +102,7 @@ const UnsetParam: React.FC<{ paramIndex: number; atomIndex: number; className?: 
     const { readonly } = store;
     return (
       <div
-        className={`${
-          style.root
-        } w-1/2 border border-dashed border-gray-400 rounded-lg flex-shrink-0 flex items-center justify-center ${className}
+        className={`target-card-item border border-dashed border-gray-400 rounded-lg flex-shrink-0 flex items-center justify-center ${className}
         ${willDrop ? "will-drop" : ""}
         ${error ? "error" : ""}
         ${allowDrop ? "allow-drop" : ""}`}
@@ -114,6 +129,9 @@ const UnsetParam: React.FC<{ paramIndex: number; atomIndex: number; className?: 
                     color="primary"
                     minimal
                     intent="primary"
+                    style={{
+                      fontSize: 12,
+                    }}
                     onClick={() => {
                       store.showEditor(paramIndex, atomIndex);
                     }}
@@ -196,7 +214,8 @@ const SettedValue = observer<{
   paramIndex: number;
   atomIndex: number;
   method: IptWay;
-}>(({ paramIndex, atomIndex, method, children }) => {
+  className?: string;
+}>(({ paramIndex, atomIndex, method, className, children }) => {
   const { param } = useContext(Context);
   const { readonly } = param;
   const value = param.atomValueViewer(paramIndex, atomIndex);
@@ -213,7 +232,7 @@ const SettedValue = observer<{
   if (!value || !value) return null;
   return (
     <div
-      className={"w-1/2 rounded-lg flex-shrink-0 flex items-center p-5 group"}
+      className={classNames("rounded-lg flex-shrink-0 flex items-center p-5 group", className)}
       style={{
         background: "#f5f5f5",
         height: "112px",
@@ -337,18 +356,20 @@ export const ReadableValue = memo<{ value?: ParamIpt; descriptor?: IAtom }>(({ d
   return <>{realValue?.toString()}</>;
 });
 
-const PreviewZone = observer<{ paramIndex: number; atomIndex: number }>(({ paramIndex, atomIndex }) => {
-  const { param } = useContext(Context);
-  const atomValue = param.atomValueViewer(paramIndex, atomIndex);
-  if (!atomValue) return null;
-  const { ipt_way } = atomValue;
-  const atomDescriptor = param.getAtomDescriptorByIndex(paramIndex, atomIndex);
-  return (
-    <SettedValue paramIndex={paramIndex} atomIndex={atomIndex} method={ipt_way}>
-      <ReadableValue value={atomValue} descriptor={atomDescriptor} />
-    </SettedValue>
-  );
-});
+const PreviewZone = observer<{ paramIndex: number; atomIndex: number; className?: string }>(
+  ({ paramIndex, atomIndex, className }) => {
+    const { param } = useContext(Context);
+    const atomValue = param.atomValueViewer(paramIndex, atomIndex);
+    if (!atomValue) return null;
+    const { ipt_way } = atomValue;
+    const atomDescriptor = param.getAtomDescriptorByIndex(paramIndex, atomIndex);
+    return (
+      <SettedValue paramIndex={paramIndex} atomIndex={atomIndex} method={ipt_way} className={className}>
+        <ReadableValue value={atomValue} descriptor={atomDescriptor} />
+      </SettedValue>
+    );
+  },
+);
 const ParamSetter: React.FC = observer(() => {
   const store = useContext(Context);
   const { param } = store;
@@ -421,17 +442,20 @@ const ParamSetter: React.FC = observer(() => {
               {upstreamDescriptor?.opt.map((paramItem, index) => (
                 <li
                   key={paramItem.key}
-                  className="mb-3 p-4 border-solid border-gray-200 border rounded-lg bg-white"
+                  className="mb-3 p-4 border-solid border-gray-200 border rounded-lg bg-white translate-x-0"
                   draggable={!readonly}
                   onDragStart={(e) => {
                     param.onDragStart(e, index);
                   }}
                   onDragEnd={param.reset}
                 >
-                  <p className="font-monaco flex items-center justify-between">
+                  <div className="font-monaco flex items-center justify-between">
                     {paramItem.key}
-                    <TypeTag value={paramItem.value_type} style={{ transformOrigin: "right center" }} />
-                  </p>
+                    <div>
+                      <TypeTag value={paramItem.value_type} style={{ transformOrigin: "right center" }} />
+                      {paramItem.is_array && <MultipleTag className="ml-2" />}
+                    </div>
+                  </div>
                   <p className="mt-2 text-gray-400 text-xs">{paramItem.description || "暂无描述"}</p>
                 </li>
               ))}
@@ -473,10 +497,15 @@ const ParamSetter: React.FC = observer(() => {
                     {paramIndex + 1}
                   </span>
                   <div className="m-3">
-                    <p>
+                    <div>
                       <span className="font-monaco">{item.key}</span>
-                      {item.must && <span className="ml-5 text-red-600">必填</span>}
-                    </p>
+                      {item.must && (
+                        <span className="inline-flex items-center ml-5 text-red-600 font-medium text-xs">
+                          <Icon icon="snowflake" className="mr-1" size={10} />
+                          必填
+                        </span>
+                      )}
+                    </div>
                     <p className="mt-2 text-xs text-gray-400">{item.display}</p>
                     <p></p>
                   </div>
@@ -484,17 +513,17 @@ const ParamSetter: React.FC = observer(() => {
                 <ul className="flex flex-wrap -ml-2">
                   {item.components.map((atomItem, atomIndex) => (
                     <li className="2xl:w-1/2 w-full p-2" key={atomIndex}>
-                      <div className="border border-solid rounded-lg border-gray-200 bg-white p-5 flex items-center">
-                        {param.atomValueViewer(paramIndex, atomIndex)?.blank === false ? (
-                          <PreviewZone paramIndex={paramIndex} atomIndex={atomIndex} />
-                        ) : (
-                          <UnsetParam paramIndex={paramIndex} atomIndex={atomIndex} />
-                        )}
-
-                        <div className="ml-5">
+                      <div className="relative border border-solid rounded-lg border-gray-200 bg-white p-5 flex items-center">
+                        <div className="absolute top-4 left-4  bg-white p-1 rounded">
                           <TypeTag value={atomItem.value_type} />
-                          <p className="mt-3 line-clamp-2 text-gray-400">{atomItem.hint || "暂无描述"}</p>
+                          {atomItem.allow_multi && <MultipleTag />}
                         </div>
+                        <p className="mt-8 mr-4 w-1/3 text-gray-400">{atomItem.hint || "暂无描述"}</p>
+                        {param.atomValueViewer(paramIndex, atomIndex)?.blank === false ? (
+                          <PreviewZone className="flex-grow" paramIndex={paramIndex} atomIndex={atomIndex} />
+                        ) : (
+                          <UnsetParam className="flex-grow" paramIndex={paramIndex} atomIndex={atomIndex} />
+                        )}
                       </div>
                     </li>
                   ))}
