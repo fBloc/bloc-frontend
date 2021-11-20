@@ -2,7 +2,7 @@ import React, { memo, useContext, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { autorun } from "mobx";
-import { Tab, Tabs, Button, Menu, MenuItem, MenuDivider, Colors, Icon, Popover2, LogoRoute, List } from "@/components";
+import { Tabs, Button, Menu, MenuItem, MenuDivider, Colors, Icon, Popover2, LogoRoute, List } from "@/components";
 import { ListContext, ListStore } from "./store/list";
 import { DetailType } from "@/common";
 import { Arrangement } from "@/api/arrangement";

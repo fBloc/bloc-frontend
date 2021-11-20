@@ -41,7 +41,7 @@ export class ListStore {
       },
       flowFunctionID_map_flowFunction: {
         [DEFAULT_START_NODE_ID.LITERANL]: {
-          note: "开始",
+          note: "开始节点",
           position: {
             left: 400,
             top: 100,
@@ -135,6 +135,7 @@ export class ListStore {
   @action filterList(name: string) {
     const source = this.tab === DetailType.draft ? this.draftList : this.list;
     this.currentList = source.filter((item) => item.name.includes(name));
+    this.setIndex(-1);
   }
   viewIndex(index: number) {
     this.index = index;

@@ -37,7 +37,7 @@ const Item = observer(() => {
         <main className="flex-grow relative">
           <div className="absolute left-0 top-0 bottom-0 z-10">
             <LazyComponent open={store.editing} fallback={Loading}>
-              <Functions className="h-full p-3" />
+              <Functions className="h-full p-3" open={store.editing} />
             </LazyComponent>
           </div>
           <Board originId={id} store={store} />

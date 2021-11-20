@@ -84,23 +84,24 @@ export abstract class Board
     this.instance?.renderAll();
   }
   private onMouseMove = (e: fabric.IEvent) => {
+    this.removeDropArea();
     if (!this.connectingLine || !this.instance) return;
-    const circular =
-      isLogicNode(e.target) && isCircular(this.instance, e.target.id, this.connectingLine.upstreamNode?.id || "");
-    const isDestSystemNode = isLogicNode(e.target) && e.target.nodeType === NodeType.system;
     this.updateConnectingLine(e);
-    // const { result, left, top } = this.root.bridge.isShowLineDropHelper(e);
-    const destIsSelf = this.connectingLine.upstreamNode === e.target;
-    const canConnect = !destIsSelf && !circular && !isDestSystemNode;
-    if (isBlocNode(e.target) && canConnect) {
+    let valid = false;
+    if (isBlocNode(e.target)) {
+      const destIsSelf = this.connectingLine.upstream === e.target?.id;
+      const circular = isCircular(this.instance, e.target.id, this.connectingLine.upstream || "");
+      const isDestSystemNode = e.target.nodeType === NodeType.system;
+      valid = !destIsSelf && !circular && !isDestSystemNode;
+    }
+    if (valid) {
       this.showDropArea({
         left: e.target?.left || 0,
         top: e.target?.top || 0,
         text: "松开手指",
       });
-    } else {
-      this.removeDropArea();
     }
+    this.connectingLine.isValid = valid;
   };
   setEvents(readonly: boolean) {
     this.instance?.setReadonly(readonly);
@@ -114,7 +115,7 @@ export abstract class Board
     const line = this.connectingLine;
     if (line && this.instance) {
       let isLineValid = false;
-      if (isLogicNode(e.target)) {
+      if (isLogicNode(e.target) && this.connectingLine?.isValid) {
         const downstream = e.target.id;
         this.connectingLine?.setDownstream(downstream);
         const dNode = findLogicNodeById(this.instance, line.upstream!);

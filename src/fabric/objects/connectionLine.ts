@@ -54,6 +54,7 @@ function initializePoints([x1, y1, x2, y2]: [number, number, number, number]) {
 export class ConnectionLine extends fabric.Polyline {
   private context!: CanvasRenderingContext2D;
   private hotZoneColor = "transparent";
+  isValid = false;
   upstream?: string;
   downstream?: string;
   upstreamNode?: LogicNode;

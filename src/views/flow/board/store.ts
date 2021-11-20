@@ -24,6 +24,17 @@ export abstract class Store<T extends { id: string } = any> extends Board implem
   @computed get zoomInDisabled() {
     return this.intZoom >= 200;
   }
+  zoomIn = () => {
+    const zoom = Math.min(2, this.zoom + 0.1);
+    this.setZoom(zoom);
+  };
+  zoomOut = () => {
+    const zoom = Math.max(0.2, this.zoom - 0.1);
+    this.setZoom(zoom);
+  };
+  resetZoom = () => {
+    this.setZoom(1);
+  };
   get draftId() {
     return this.detail?.id;
   }
@@ -79,6 +90,7 @@ export abstract class Store<T extends { id: string } = any> extends Board implem
   }
   @action setZoom(value: number) {
     this.zoom = value;
+    this.canvas?.setZoom(value);
   }
   @action setOriginId(id: string) {
     this.originId = id;
@@ -86,7 +98,6 @@ export abstract class Store<T extends { id: string } = any> extends Board implem
   @action setDetail(detail: Nullable<T>, isValid: boolean) {
     this.detail = detail;
     this.detailValid = isValid;
-    console.log(detail, this.detailValid);
   }
   @action switchEditable(readonly: boolean) {
     this.editing = readonly;

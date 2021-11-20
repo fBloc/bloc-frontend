@@ -17,7 +17,7 @@ const SideNav = () => {
             flow
           </NavLink>
         </li>
-        <li className="mb-2">
+        {/* <li className="mb-2">
           <NavLink
             to={PAGES.arrangementList}
             className="block p-3 rounded-full hover:bg-gray-100 hover:no-underline hover:text-current"
@@ -25,7 +25,7 @@ const SideNav = () => {
           >
             编排
           </NavLink>
-        </li>
+        </li> */}
         <li className="mb-2">
           <NavLink
             to={PAGES.about}

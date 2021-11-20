@@ -47,9 +47,10 @@ class Login {
     };
     const code = JSON.stringify(info);
     window.sessionStorage.setItem(this.tokenKeyName, code);
-    if (rememberme) {
-      window.localStorage.setItem(this.tokenKeyName, code);
-    }
+    // if (rememberme) {
+    //   window.localStorage.setItem(this.tokenKeyName, code);
+    // }
+    window.localStorage.setItem(this.tokenKeyName, code); // TODO rememberme
   }
 }
 

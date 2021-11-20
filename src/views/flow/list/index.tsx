@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useCallback, useContext } from "react";
+import React, { useMemo, useEffect, useCallback, useContext, useState } from "react";
 import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import classNames from "classnames";
@@ -12,6 +12,7 @@ import { FlowItemStore as Store, StoreProvider } from "../item/store";
 import HeaderBar from "./HeaderBar";
 import Board from "../board";
 import { isLaunchedFlow } from "@/api/flow";
+import { handleStringChange } from "@/utils";
 
 const classes: Record<RunningEnum, string> = {
   [RunningEnum.created]: "bg-yellow-50 text-yellow-400",
@@ -49,7 +50,7 @@ const Items: React.FC<{ store: ListStore }> = observer(({ store }) => {
         <div
           key={item.id}
           className={classNames("py-5 border-b border-solid border-gray-100 px-4", {
-            "bg-gray-100": index === store.index,
+            "bg-gray-50": index === store.index,
           })}
           onClick={() => {
             store.setIndex(index);
@@ -109,6 +110,7 @@ const ListPage = observer(() => {
   const store = useMemo(() => new ListStore(), []);
   const reload = useContext(RouterContext);
   const history = useHistory();
+  const [searchKey, setSearchKey] = useState("");
   const createDraft = useCallback(async () => {
     spinnerPlugin.show({
       message: "正在创建...",
@@ -117,7 +119,7 @@ const ListPage = observer(() => {
     spinnerPlugin.hide();
     if (isValid) {
       if (data?.origin_id) {
-        history.push(`/flow/${data.origin_id}`);
+        history.push(`/flow/${data.origin_id}?type=edit`);
         reload.setKey();
       }
     }
@@ -140,7 +142,15 @@ const ListPage = observer(() => {
             }}
           />
           <div className="flex items-center">
-            <SearchInput />
+            <form
+              action=""
+              onSubmit={(e) => {
+                e.preventDefault();
+                store.filterList(searchKey);
+              }}
+            >
+              <SearchInput value={searchKey} onChange={handleStringChange(setSearchKey)} />
+            </form>
             <Tooltip2 content="创建新的flow" placement="bottom">
               <span
                 className="cursor-pointer rounded-full w-10 h-10 bg-gray-50 border border-solid border-gray-200 inline-flex justify-center items-center"

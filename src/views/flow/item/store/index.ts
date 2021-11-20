@@ -197,6 +197,7 @@ export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
           });
         });
       });
+      this.hideMenuPopover();
       this.request.onNodesChange();
     }
   };
@@ -207,6 +208,7 @@ export class FlowItemStore extends Store<BaseFlowItem<ReadablePositionInfo>> {
     const zoom = this.canvas?.getZoom() || 1;
     this.setZoom(zoom);
     this.request.onTransform();
+    this.hideMenuPopover();
   };
   isShowDropHelper(e: fabric.IEvent) {
     const sourceFunction = this.flattenFunctions.find((item) => item.id === this.sourceFunctionId);

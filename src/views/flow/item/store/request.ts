@@ -1,4 +1,3 @@
-import { getFunctions } from "@/api/bloc";
 import {
   BlocItem,
   FlowDetailT,
@@ -8,7 +7,6 @@ import {
   updateDraft,
   createDraft,
   normalizeFlowDetail,
-  deleteDraft,
 } from "@/api/flow";
 import { debounce, DetailType } from "@/common";
 import { isBlocNode } from "@/fabric/objects";

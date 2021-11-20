@@ -94,7 +94,7 @@ const Header = observer<React.HTMLProps<HTMLElement>, HTMLElement>(
           store.request.updating ? (
             <>
               <Spinner size={14} />
-              <span>更新中...</span>
+              <span className="ml-2 text-gray-400">更新中...</span>
             </>
           ) : (
             store.request.updateTime > 0 && (

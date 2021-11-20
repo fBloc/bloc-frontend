@@ -1,4 +1,4 @@
-import React, { memo, Suspense, useCallback, useContext, useState, useRef } from "react";
+import React, { memo, useCallback, useContext, useState, useRef } from "react";
 import {
   TypeTag,
   Dialog,
@@ -23,6 +23,7 @@ import { Nullable } from "@/common";
 import { getIsMultiple, getIsSelect } from "./store/param";
 import "./param.scss";
 import classNames from "classnames";
+import RightIcon from "./right.svg";
 
 const MultipleTag: React.FC<React.HTMLAttributes<HTMLSpanElement>> = ({ children, className, ...rest }) => {
   return (
@@ -402,7 +403,8 @@ const ParamSetter: React.FC = observer(() => {
         <span className="flex-1"></span>
         <div className="flex-1 font-medium text-lg text-center flex items-center justify-center">
           {upstreamDescriptor?.name ?? "开始节点"}
-          <Icon icon="arrow-right" className="text-gray-400 mx-5" />
+          {/* <Icon icon="arrow-right" className="text-gray-400 mx-5" /> */}
+          <img src={RightIcon} className="w-3 mx-5 opacity-80" alt="" />
           {downstreamDescriptor?.name}
         </div>
         {readonly ? (
@@ -437,26 +439,29 @@ const ParamSetter: React.FC = observer(() => {
           <p className="text-gray-400 mt-2 leading-6 text-sm">{upstreamDescriptor?.description}</p>
           <MarginDivider my={20} />
           <div>
-            <p className="text-xs font-medium text-gray-400">输出的数据</p>
+            <p className="text-xs font-medium text-gray-400">输出的数据</p>
             <ul className="mt-3">
               {upstreamDescriptor?.opt.map((paramItem, index) => (
                 <li
                   key={paramItem.key}
-                  className="mb-3 p-4 border-solid border-gray-200 border rounded-lg bg-white translate-x-0"
+                  className="mb-3 p-4 border-solid border-gray-200 border rounded-lg bg-white translate-x-0 flex items-center hover:border-blue-300 cursor-pointer active:border-blue-400"
                   draggable={!readonly}
                   onDragStart={(e) => {
                     param.onDragStart(e, index);
                   }}
                   onDragEnd={param.reset}
                 >
-                  <div className="font-monaco flex items-center justify-between">
-                    {paramItem.key}
-                    <div>
-                      <TypeTag value={paramItem.value_type} style={{ transformOrigin: "right center" }} />
-                      {paramItem.is_array && <MultipleTag className="ml-2" />}
+                  <Icon icon="drag-handle-horizontal" className="mr-4" />
+                  <div className="flex-grow">
+                    <div className="font-monaco flex items-center justify-between">
+                      {paramItem.key}
+                      <div>
+                        <TypeTag value={paramItem.value_type} style={{ transformOrigin: "right center" }} />
+                        {paramItem.is_array && <MultipleTag className="ml-2" />}
+                      </div>
                     </div>
+                    <p className="mt-2 text-gray-400 text-xs">{paramItem.description || "暂无描述"}</p>
                   </div>
-                  <p className="mt-2 text-gray-400 text-xs">{paramItem.description || "暂无描述"}</p>
                 </li>
               ))}
             </ul>

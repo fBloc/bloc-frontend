@@ -21,6 +21,7 @@ const Zoom: React.FC<ZoomProps> = observer(({ className, store, ...rest }) => {
       {...rest}
     >
       <Icon
+        onClick={store.zoomIn}
         icon="plus"
         className={classNames("p-2", {
           "opacity-20 cursor-not-allowed": store.zoomInDisabled,
@@ -28,13 +29,16 @@ const Zoom: React.FC<ZoomProps> = observer(({ className, store, ...rest }) => {
         })}
       />
       <Icon
+        onClick={store.zoomOut}
         icon="minus"
         className={classNames("p-2 cursor-pointer mx-2", {
           "opacity-20 cursor-not-allowed": store.zoomOutDisabled,
           "cursor-pointer": !store.zoomOutDisabled,
         })}
       />
-      <span className="w-12 text-center cursor-pointer">{store.intZoom}%</span>
+      <span className="w-12 text-center cursor-pointer" onClick={store.resetZoom}>
+        {store.intZoom}%
+      </span>
     </div>
   );
 });
