@@ -3,7 +3,6 @@ import classNames from "classnames";
 import Overlay, { OverlayComponentProps } from "../overlay";
 import { FaTimes } from "@/components/icons";
 import Button, { ButtonProps } from "../button";
-import { Omit } from "lodash";
 import { Zoom } from "../transition";
 
 export type DialogProps = OverlayComponentProps<{
