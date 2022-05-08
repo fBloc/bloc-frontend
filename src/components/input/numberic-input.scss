@@ -1,0 +1,14 @@
+.rc-input-number{
+  input{
+    @apply h-10 px-2 border-gray-400 border-solid border rounded-lg focus:border-primary-400 w-full;
+    &:disabled{
+      @apply bg-gray-50 cursor-not-allowed;
+    }
+  }
+  &-input-wrap{
+    height: 100%;
+    & > input{
+      height: 100%;
+    }
+  }
+}

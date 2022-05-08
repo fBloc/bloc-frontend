@@ -1,0 +1,37 @@
+.handle {
+  position: relative !important;
+  pointer-events: auto !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  transform: translate(0, 0) !important;
+  width: 10px !important;
+  height: 10px !important;
+}
+
+.param-handle{
+  @apply flex items-center justify-center flex-shrink-0 border-solid hover:scale-110;
+  @extend .handle;
+  background-color: white !important;
+  border-width: 3px !important;
+  border-radius: 50% !important;
+}
+.target-handle, .target-handle{
+  @extend .param-handle;
+}
+
+.source-handle{
+  @extend .param-handle;
+  border-color: rgb(229, 231, 235) !important;
+}
+
+.void-handle{
+  @apply flex items-center justify-center;
+  @extend .handle;
+  background-color: #000 !important;
+  border-radius: 50% !important;
+}
+
+.source-handle-container{
+  @apply bg-gray-50 flex justify-center items-center py-0.5 rounded-md border border-solid border-gray-200 mr-4;
+}
