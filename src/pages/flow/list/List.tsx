@@ -73,20 +73,13 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
     return (tab === FlowListType.draft ? draftListData?.data : launchedListData?.data) || [];
   }, [tab, draftListData, launchedListData]);
   const navigate = useNavigate();
-  // const newDraft = useCallback(async () => {
-  //   const { isValid, data } = await createDraft({});
-  //   if (isValid) {
-  //     navigate(`/flow/edit/${data?.originId}`);
-  //   }
-  // }, [navigate]);
-  const newDraft = useMutation(() => createDraft(), {
+  const newDraft = useMutation(createDraft, {
     onSuccess: ({ isValid, data }) => {
       if (isValid) {
         navigate(`/flow/draft/${data?.originId}`);
       }
     },
   });
-
   useEffect(() => {
     resetFlow();
     setOriginId("");

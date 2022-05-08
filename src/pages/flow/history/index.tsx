@@ -8,7 +8,7 @@ import HeaderBar from "./Header";
 import BlocRecord from "../components/BlocRecord";
 import { useQuery } from "react-query";
 import { flowDetailState, projectSettings } from "@/recoil/flow/flow";
-import { FlowDisplayPage } from "@/shared/enums";
+import { FlowDisplayPage, RunningStatusEnum } from "@/shared/enums";
 import { recordAttrs, recordLogAttrs } from "@/recoil/flow/record";
 import { useReadonlyBoard } from "@/recoil/hooks/useReadonlyBoard";
 import BlocLog from "../components/BlocLog";
@@ -31,7 +31,7 @@ const FlowHistory = () => {
   const node = query.get("node");
   const operation = query.get("operation");
   const setLogAttrs = useSetRecoilState(recordLogAttrs);
-  const setFlow = useSetRecoilState(flowDetailState);
+  const [flow, setFlow] = useRecoilState(flowDetailState);
   const setProject = useSetRecoilState(projectSettings);
   const [initited, setInitiated] = useState(false);
   const { isLoading } = useQuery(
@@ -43,6 +43,7 @@ const FlowHistory = () => {
     {
       refetchOnWindowFocus: false,
       enabled: !!versionId,
+      refetchInterval: flow?.latestRun?.status === RunningStatusEnum.running ? 2000 : false,
       onSuccess: ({ data }) => {
         setFlow(data);
         setProject((previous) => ({
@@ -77,7 +78,7 @@ const FlowHistory = () => {
   }, [node, operation, nodes, setLogAttrs, setRecordAttrs, initited]);
   return (
     <Board loadingFlow={isLoading}>
-      <HeaderBar className="fixed left-2 top-2 right-2 z-10 rounded-lg" />
+      <HeaderBar className="fixed left-2 top-2 right-2 z-10" />
       <div className="h-screen bg-gray-50">
         <FlowBody nodes={nodes} edges={edges} />
       </div>

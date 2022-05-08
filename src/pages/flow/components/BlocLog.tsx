@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 import { useRecoilState } from "recoil";
 import classNames from "classnames";
 import dayjs from "dayjs";
-import { Drawer, DrawerProps, IconButton, DialogTitle, Divider } from "@mui/material";
+import { Drawer, DrawerProps, IconButton, DialogTitle, Divider, CircularProgress } from "@mui/material";
 import { getLog } from "@/api/bloc";
 import { FaTimes } from "@/components/icons";
 import { recordLogAttrs } from "@/recoil/flow/record";
@@ -15,10 +15,14 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
   const { onExit, onExited, ...restSlideProps } = SlideProps || {};
   const [logAttrs, setLogAttrs] = useRecoilState(recordLogAttrs);
   const recordId = useMemo(() => logAttrs.record?.recordId || "", [logAttrs]);
-  const { data: logData } = useQuery(["getRecordLogData", recordId], () => getLog(recordId || ""), {
+  const {
+    data: logData,
+    isLoading,
+    isFetching,
+  } = useQuery(["getRecordLogData", recordId], () => getLog(recordId || ""), {
     enabled: !!recordId,
     refetchOnWindowFocus: false,
-    refetchInterval: logAttrs.record?.status === RunningStatusEnum.running ? 2000 : undefined,
+    refetchInterval: logAttrs.record?.status === RunningStatusEnum.running ? 2000 : false,
   });
   const onInternalExit = useCallback(
     (e: HTMLElement) => {
@@ -90,12 +94,13 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
                   "text-red-400": item.log_level === "error",
                 })}
               >
-                [{dayjs(item.time).format("YYYY-MM-DD HH:mm:ss")} {item.log_level.toUpperCase()}]
+                [{dayjs(item.time).format("YYYY-MM-DD HH:mm:ss")} {item.log_level.toUpperCase()}] [{item.business}]
               </p>
               <p className="ml-2">{item.data}</p>
             </div>
           ))}
           {logData?.data?.length === 0 && <p className="pt-10 text-center text-gray-200">暂无日志</p>}
+          {isFetching && <CircularProgress sx={{ ml: 1 }} className="!text-white" size={14} />}
         </div>
       </div>
     </Drawer>

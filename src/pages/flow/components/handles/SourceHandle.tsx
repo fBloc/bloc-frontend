@@ -34,7 +34,7 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
   return (
     <>
       <div
-        className={classNames("relative mx-2", anchor !== null ? "scale-150 shadow" : "")}
+        className={classNames("relative mx-2 rounded-full", anchor !== null ? "scale-150 shadow" : "")}
         onClick={(e) => {
           setAnchor(e.currentTarget);
         }}

@@ -9,7 +9,6 @@ import { getRunningIcon, getRunningStateClass, getRunningStateText } from "@/sha
 import CurrentState from "./CurrentState";
 import { readableTime } from "@/shared/time";
 import { flowDetailState } from "@/recoil/flow/flow";
-import { getQuery } from "@/shared/tools";
 import { PAGES } from "@/router/pages";
 
 const LaunchedFlowHeader = () => {
@@ -17,11 +16,25 @@ const LaunchedFlowHeader = () => {
   const latestRun = useMemo(() => flow?.latestRun, [flow]);
   return (
     <>
-      <div className="flex-1 flex items-center justify-center">
-        {getRunningIcon(flow?.latestRun?.status, getRunningStateClass(latestRun?.status, {}, "mt-0.5"))}
-        <span className="ml-2">{getRunningStateText(latestRun?.status)}</span>
+      <div
+        className={classNames(
+          "text-center flex-1 flex-shrink-0 overflow-hidden",
+          getRunningStateClass(latestRun?.status, {}, "mt-0.5"),
+        )}
+      >
+        <p className={classNames("flex items-center justify-center")}>
+          {getRunningIcon(flow?.latestRun?.status)}
+          <span className="ml-2">{getRunningStateText(latestRun?.status)}</span>
+        </p>
+        {flow?.latestRun?.error_msg && (
+          <Tooltip title={flow?.latestRun?.error_msg || ""}>
+            <p className="text-xs mt-1 text-ellipsis overflow-hidden whitespace-nowrap text-gray-400">
+              {flow?.latestRun?.error_msg}
+            </p>
+          </Tooltip>
+        )}
       </div>
-      <div className="flex-1 rounded-lg flex items-center justify-end text-gray-400">
+      <div className="flex-shrink-0 flex-1 rounded-lg flex items-center justify-end text-gray-400">
         <CurrentState />
       </div>
     </>
@@ -40,8 +53,11 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
   }, [originId, node]);
   return (
     <div className={className}>
-      <div className={classNames("px-3 py-2 flex items-center justify-between bg-white shadow-sm")} {...rest}>
-        <div className="flex-1 flex items-center">
+      <div
+        className={classNames("px-3 py-2 flex items-center justify-between bg-white shadow-sm rounded-lg")}
+        {...rest}
+      >
+        <div className="flex-1 flex items-center flex-shrink-0">
           <Tooltip title="返回">
             <Link to={target}>
               <Button className="px-0 py-0 w-8 h-8 flex items-center justify-center" rounded>

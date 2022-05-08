@@ -15,13 +15,13 @@ const LaunchedFlowOperations: React.FC = ({ children }) => {
   const getters = useRecoilValue(flowGetters);
   const navigate = useNavigate();
   const triggerRunMutation = useMutation(triggerRun, {
-    onSuccess: ({ isValid }) => {
+    onSuccess: ({ isValid, data }) => {
       if (isValid) {
         showToast({
           children: "已触发运行",
           autoHideDuration: 1500,
         });
-        navigate(`/flow/detail/${flow?.originId}`);
+        navigate(`/flow/history/${flow?.latestRun?.id}?id=${flow?.originId}`);
       }
     },
   });

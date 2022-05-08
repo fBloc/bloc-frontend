@@ -9,4 +9,7 @@ export interface Log {
   function_run_record_id: string;
   log_level: "info" | "warning" | "error";
   time: string;
+  business: string;
+  track_id: string;
+  span_id: string;
 }
