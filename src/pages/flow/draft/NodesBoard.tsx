@@ -23,13 +23,9 @@ const NodesBoard = () => {
     edges,
     onEdgesChange,
     onNodesChange,
-    onAtomPickerExited,
-    onAtomPickerExit,
     onConnect,
     dropRef,
-    onNodeViewerExited,
     onConnectStart,
-    onConnectStop,
     onConnectEnd,
     onNodeDragStop,
     onMoveEnd,
@@ -50,7 +46,6 @@ const NodesBoard = () => {
           onConnect={onConnect}
           onConnectStart={onConnectStart}
           onNodeDragStop={onNodeDragStop}
-          onConnectStop={onConnectStop}
           onConnectEnd={onConnectEnd}
           deleteKeyCode={null}
           zoomOnScroll={false}
@@ -62,12 +57,8 @@ const NodesBoard = () => {
             : {})}
         />
       </div>
-      <AtomPicker onExit={onAtomPickerExit} onExited={onAtomPickerExited} />
-      <NodeViewer
-        SlideProps={{
-          onExited: onNodeViewerExited,
-        }}
-      />
+      <AtomPicker />
+      <NodeViewer />
       <RemoveConnection />
     </>
   );

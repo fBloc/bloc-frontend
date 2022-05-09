@@ -2720,6 +2720,14 @@
                   "default_value": null,
                   "allow_multi": true,
                   "select_options": null
+                },
+                {
+                  "value_type": "string",
+                  "formcontrol_type": "select",
+                  "hint": "对此列表输入的学生统一添加附加信息222",
+                  "default_value": null,
+                  "allow_multi": true,
+                  "select_options": null
                 }
               ]
             },
@@ -2752,7 +2760,7 @@
           "group_name": "来自python client",
           "provider_name": "shcool-python",
           "register_time": null,
-          "last_alive_time": 1651998261,
+          "last_alive_time": 1652087174,
           "description": "一个python client驱动的function节点",
           "ipt": [
             {

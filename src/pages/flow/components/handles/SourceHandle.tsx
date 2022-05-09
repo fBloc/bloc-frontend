@@ -10,6 +10,8 @@ import { runningRecord } from "@/recoil/flow/node";
 import { getBlocRecordDetail } from "@/api/flow";
 import styles from "./handle.module.scss";
 import classNames from "classnames";
+import { FlowDisplayPage } from "@/shared/enums";
+import { TextFallback } from "@/shared/jsxUtils";
 
 const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Connectable> = ({
   detail,
@@ -31,6 +33,7 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
   const paramDetail = useMemo(() => {
     return recordDetail?.opt?.[detail.key];
   }, [recordDetail, detail.key]);
+  const readFlowMode = useMemo(() => [FlowDisplayPage.flow, FlowDisplayPage.draft].includes(nodeData.mode), [nodeData]);
   return (
     <>
       <div
@@ -39,12 +42,12 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
           setAnchor(e.currentTarget);
         }}
         onMouseEnter={(e) => {
-          if (isConnectable) {
+          if (readFlowMode) {
             setAnchor(e.currentTarget);
           }
         }}
         onMouseLeave={() => {
-          if (isConnectable) {
+          if (readFlowMode) {
             setAnchor(null);
           }
         }}
@@ -56,8 +59,6 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
           id={detail.key}
           className={styles["source-handle"]}
         />
-
-        {!isConnectable && <span className="absolute left-0 top-0 w-full h-full"></span>}
       </div>
       <Popover
         open={!!anchor}
@@ -71,7 +72,7 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
           horizontal: "center",
         }}
         sx={
-          isConnectable
+          readFlowMode
             ? {
                 pointerEvents: "none",
               }
@@ -82,17 +83,10 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
         }}
       >
         <div className="w-60 p-3">
-          {isConnectable ? (
-            <>
-              <p className="mt-1">{detail.description}</p>
-              <p className="text-xs text-gray-400">{detail.key}</p>
-            </>
-          ) : (
-            <>
-              <p className="mt-1">{detail.description}</p>
-              <p className="text-xs text-gray-400">{detail.key}</p>
-              <div className="mt-2 bg-gray-50 p-2 rounded break-all">{paramDetail?.brief}</div>
-            </>
+          <p className="mt-1">{detail.description}</p>
+          <p className="text-xs text-gray-400">{detail.key}</p>
+          {!readFlowMode && (
+            <div className="mt-2 bg-gray-50 p-2 rounded break-all">{TextFallback(paramDetail?.brief, "数据为空")}</div>
           )}
         </div>
       </Popover>
@@ -114,7 +108,6 @@ export const VoidSourceHandle: React.FC<Connectable & { nodeData: BlocNodeData }
           className={styles["void-handle"]}
           data-handlepos="bottom"
         />
-        {!isConnectable && <span className="absolute left-0 top-0 w-full h-full"></span>}
       </div>
     </Tooltip>
   );

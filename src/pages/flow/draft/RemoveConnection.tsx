@@ -1,11 +1,14 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { Button, Dialog } from "@/components";
+import { Dialog, Box, Button, IconButton } from "@mui/material";
 import { beingRemovedConnectionAttrs } from "@/recoil/flow/connections";
+import { FaTimes } from "@/components/icons";
 import { useQueries } from "@/recoil/hooks/useQueries";
 import { isTruthyValue } from "@/shared/tools";
+
 import { useRemoveConnection } from "@/recoil/hooks/useRemoveConnection";
 import { TextFallback } from "@/shared/jsxUtils";
+import { showToast } from "@/components/toast";
 
 const RemoveConnection = () => {
   const [attrs, setAttrs] = useRecoilState(beingRemovedConnectionAttrs);
@@ -22,50 +25,64 @@ const RemoveConnection = () => {
     }
     return targetAtomIndex.map((item) => queryTargetAtom(node, targetParam, item)).filter(isTruthyValue);
   }, [attrs, queryNode, queryTargetAtom]);
+  const onInternalExit = useCallback(() => {
+    setAttrs((previous) => ({
+      ...previous,
+      open: false,
+    }));
+  }, [setAttrs]);
   return (
     <Dialog
       open={attrs.open}
-      size="sm"
-      onExit={() => {
-        setAttrs((previous) => ({
-          ...previous,
-          open: false,
-        }));
+      maxWidth="xs"
+      fullWidth
+      TransitionProps={{
+        onExit: onInternalExit,
+        onExited: resetAttrs,
       }}
-      onExited={resetAttrs}
     >
-      <p className="text-lg text-center font-medium">选择要取消关联的子项</p>
-      <p className="mt-1 text-center text-gray-400">目标参数关联了{attrs.connection?.targetAtomIndex?.length}个子项</p>
-      <div className="my-6 ">
-        {targeAtoms.map((atom) => (
-          <p
-            key={atom.atomIndex}
-            className="mt-3 p-3 border border-solid rounded-md flex items-center justify-between group"
-          >
-            {TextFallback(atom.description, "暂无描述")}
-            <Button
-              className="ml-2"
-              size="small"
-              onClick={() => {
-                if (!attrs.connection) return;
-                removeConnection({
-                  ...attrs.connection,
-                  targetAtomIndex: atom.atomIndex,
-                });
-                setAttrs((previous) => ({
-                  ...previous,
-                  open: false,
-                }));
-              }}
+      <Box sx={{ p: 2 }}>
+        <p className="flex justify-end">
+          <IconButton onClick={onInternalExit}>
+            <FaTimes size={14} />
+          </IconButton>
+        </p>
+        <p className="text-lg text-center font-medium">选择要取消关联的子项</p>
+        <p className="mt-1 text-center text-gray-400">
+          目标参数关联了{attrs.connection?.targetAtomIndex?.length}个子项
+        </p>
+        <div className="mt-6 ">
+          {targeAtoms.map((atom) => (
+            <p
+              key={atom.atomIndex}
+              className="mt-3 p-3 border border-solid rounded-md flex items-center justify-between group"
             >
-              取消关联
-            </Button>
-          </p>
-        ))}
-      </div>
-      {/* <Button block className="invisibles group-hover:visible flex mx-auto items-center justify-center" intent="danger">
-        取消关联
-      </Button> */}
+              {TextFallback(atom.description, "暂无描述")}
+              <Button
+                className="ml-2"
+                size="small"
+                onClick={() => {
+                  if (!attrs.connection) return;
+                  removeConnection({
+                    ...attrs.connection,
+                    targetAtomIndex: atom.atomIndex,
+                  });
+                  setAttrs((previous) => ({
+                    ...previous,
+                    open: false,
+                  }));
+                  showToast({
+                    children: "已取消关联",
+                    autoHideDuration: 1500,
+                  });
+                }}
+              >
+                取消关联
+              </Button>
+            </p>
+          ))}
+        </div>
+      </Box>
     </Dialog>
   );
 };

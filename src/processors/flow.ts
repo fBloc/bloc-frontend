@@ -2,7 +2,7 @@ import { EditAtom, FlowDetailT, FullStateAtom, ParamOpt, StatefulMergedIptParam 
 import { FunctionItem, IptParam } from "@/api/functions";
 import { correctValue } from "@/processors/correctAtomValue";
 import { DEFAULT_POSITION } from "@/shared/defaults";
-import { FormControlType, IptWay, MergedIptParamStatus } from "@/shared/enums";
+import { IptWay, MergedIptParamStatus } from "@/shared/enums";
 import { BlocNodeItem, ParamConnectionEnd } from "@/shared/types";
 import { getDefaultEditAtom } from "./node";
 
@@ -89,17 +89,6 @@ export const getDefaultEditParam = (ipt: IptParam): EditAtom[] => {
   return ipt.atoms.map(getDefaultEditAtom);
 };
 
-export const toReadableValue = (atom: Omit<FullStateAtom, "readableValue">) => {
-  const { formType, iptWay, selectOptions, value, valueType } = atom;
-  if (iptWay === IptWay.Connection) return null;
-  if (formType !== FormControlType.select) return value;
-  if (value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0)) {
-    return "未设置";
-  }
-  if (!Array.isArray(value)) return value;
-  if (!selectOptions) return "";
-  return value.map((item) => selectOptions.find((option) => option.value === item)?.label || "");
-};
 export function mergeIpts(paramIpts: EditAtom[][], fn: FunctionItem | null, id: string): StatefulMergedIptParam[] {
   return (
     fn?.ipt.map((param, paramIndex) => {
@@ -108,20 +97,19 @@ export function mergeIpts(paramIpts: EditAtom[][], fn: FunctionItem | null, id: 
         ...param,
         atoms: param.atoms.map((atom, atomIndex) => {
           const currentAtom = currentParam[atomIndex];
-          const _atom = {
+          const _atom: FullStateAtom = {
             ...currentAtom,
             ...atom,
             value: correctValue({
               ...currentAtom,
               ...atom,
             }),
+            nodeId: id,
+            parentParam: param.key,
             atomIndex,
-            targetNode: id,
-            targetParam: param.key,
           };
           return {
             ..._atom,
-            readableValue: toReadableValue(_atom),
           };
         }),
         status: MergedIptParamStatus.avaliable,

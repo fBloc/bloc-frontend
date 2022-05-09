@@ -111,7 +111,7 @@ export function generateRemovedConnections(records: OperationRecord[]) {
     }
     return {
       id: getConnectionId(sourceNode, targetNode, sourceParam, targetParam),
-      targetAtomIndex: targetAtomIndex,
+      targetAtomIndex,
     };
   });
 }
@@ -205,6 +205,8 @@ export function addConnection(
           ? { voidIpt: uniq([...node.voidIpt, _sourceNode]) }
           : {
               paramIpt: node.paramIpt.map((param) => {
+                if (param.key === "user_ids") {
+                }
                 const atoms = param.atoms.map((atom, atomIndex) => {
                   const _sourceParam = sourceParam || "";
                   if (!_sourceParam) {

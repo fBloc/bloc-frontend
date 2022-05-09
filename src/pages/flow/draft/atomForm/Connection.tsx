@@ -29,7 +29,7 @@ const Connection: React.FC<ConenctionProps> = ({ value, onReset }) => {
         <span className="w-4 h-4 rounded bg-gray-600 inline-flex items-center justify-center">
           <FaSitemap size={10} color="#fff" />
         </span>
-        <span className="ml-2 text-xs text-gray-400">{targetNode?.note || "-"}</span>
+        <span className="ml-2 text-xs text-gray-400">{targetNode?.note || targetNode?.function?.name || "-"}</span>
         <span className="ml-auto cursor-default">
           <span className="w-12 bg-success bg-opacity-10 text-success text-xs h-5 rounded inline-flex justify-center items-center group-hover:hidden">
             已关联

@@ -9,7 +9,7 @@ import { RunningStatusEnum, TriggerTypes } from "@/shared/enums";
  * 手动触发运行
  */
 export function triggerRun({ flowOriginId }: { flowOriginId: string }) {
-  return request.get(`/api/v1/flow/run/by_origin_id/${flowOriginId}`);
+  return request.get<{ msg: string; flow_run_record_id: string }>(`/api/v1/flow/run/by_origin_id/${flowOriginId}`);
 }
 
 export interface FlowRunningStatusResponse {

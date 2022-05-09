@@ -1,15 +1,14 @@
 import React, { useCallback, useMemo } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { FormControlType, IptWay, ParamValueType } from "@/shared/enums";
 import InputView from "./UserInput";
 import { DEFAULT_EDIT_ATOM_DESCCRIPTOR } from "@/shared/defaults";
 import Connection from "./Connection";
 import { atomEditState, AtomKey, currentBlocNodeId } from "@/recoil/flow/node";
-import { getDefaultEditAtom } from "@/processors";
-import { valueEqualsUnset } from "@/processors/value";
 import { operationRecords } from "@/recoil/flow/param";
 import UserSelet from "./UserSelect";
 import { useFormikContext } from "formik";
+import { useSetAtomValue } from "@/recoil/hooks/useSetAtomValue";
 
 export type AtomFormProps = {
   param: string;
@@ -21,7 +20,8 @@ export type AtomFormProps = {
 const AtomForm: React.FC<AtomFormProps> = ({ param, atomIndex, name, value, onChange }) => {
   const currenBlocId = useRecoilValue(currentBlocNodeId);
   const key = `${currenBlocId}_${param}_${atomIndex}` as AtomKey;
-  const [currentAtom, setCurrentAtom] = useRecoilState(atomEditState(key));
+  const currentAtom = useRecoilValue(atomEditState(key));
+  const setAtomValue = useSetAtomValue();
   const setRecords = useSetRecoilState(operationRecords);
   const { setFieldValue } = useFormikContext();
   const {
@@ -31,33 +31,13 @@ const AtomForm: React.FC<AtomFormProps> = ({ param, atomIndex, name, value, onCh
     isArray,
     selectOptions,
     iptWay,
-    unset,
     defaultValue,
     sourceNode,
     sourceParam,
-    targetNode,
-    targetParam,
-    atomIndex: _atomIndex,
+    nodeId,
+    parentParam,
   } = currentAtom || DEFAULT_EDIT_ATOM_DESCCRIPTOR;
-  const setScopeValue = useCallback(
-    (value: unknown, reset = false) => {
-      setCurrentAtom((previous) => {
-        const result = {
-          ...previous,
-          value,
-          unset: valueEqualsUnset({
-            ...previous,
-            value,
-          }),
-        };
-        return {
-          ...result,
-          ...(reset ? getDefaultEditAtom(result) : {}),
-        };
-      });
-    },
-    [setCurrentAtom],
-  );
+
   const normalizedOptions = useMemo(() => {
     return (
       selectOptions?.map((item) => ({
@@ -78,30 +58,26 @@ const AtomForm: React.FC<AtomFormProps> = ({ param, atomIndex, name, value, onCh
     },
     [name, setFieldValue, valueType],
   );
+  const onConnectionReset = useCallback(() => {
+    setAtomValue(key, "", true);
+    setRecords((prevoious) => [
+      ...prevoious,
+      {
+        type: "disconnect",
+        source: {
+          nodeId: sourceNode,
+          param: sourceParam,
+        },
+        target: {
+          nodeId: nodeId || "",
+          param: parentParam,
+          atomIndex,
+        },
+      },
+    ]);
+  }, [atomIndex, sourceNode, sourceParam, nodeId, parentParam, setRecords, setAtomValue, key]);
   if (iptWay === IptWay.Connection) {
-    return (
-      <Connection
-        value={currentAtom}
-        onReset={() => {
-          setScopeValue(null, true);
-          setRecords((prevoious) => [
-            ...prevoious,
-            {
-              type: "disconnect",
-              source: {
-                nodeId: sourceNode,
-                param: sourceParam,
-              },
-              target: {
-                nodeId: targetNode || "",
-                param: targetParam,
-                atomIndex: _atomIndex,
-              },
-            },
-          ]);
-        }}
-      />
-    );
+    return <Connection value={currentAtom} onReset={onConnectionReset} />;
   }
   switch (formType) {
     case FormControlType.select:

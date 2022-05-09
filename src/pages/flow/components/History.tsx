@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import classNames from "classnames";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Link as MdLink, Box } from "@mui/material";
 import { FlowRunningStatus, getLatestRunningRecords } from "@/api/flow";
 import {
   getRunningIcon,
@@ -34,7 +34,6 @@ const TriggerType: React.FC<{ triggerKey: string; triggerUser: string; type: Tri
         )}
       >
         <span className="mr-1">{icons[type]}</span>
-
         <span className="max-w-[100px] overflow-ellipsis overflow-hidden whitespace-nowrap">
           {getTriggerValue({
             type,
@@ -152,10 +151,17 @@ const FlowHistory = () => {
                     type={item.trigger_type}
                   />
                 </td>
-                <td className="px-2 py-4 text-primary-400 hover:underline">
-                  <Link to={`/flow/history/${item.id}?id=${item.flow_origin_id}`} target="_blank">
-                    查看
-                  </Link>
+                <td className="px-2 py-4">
+                  <Box
+                    sx={{
+                      color: (theme) => theme.palette.primary.main,
+                    }}
+                    className="hover:underline inline-block"
+                  >
+                    <Link to={`/flow/history/${item.id}?id=${item.flow_origin_id}`} target="_blank">
+                      查看
+                    </Link>
+                  </Box>
                 </td>
               </tr>
             ))}

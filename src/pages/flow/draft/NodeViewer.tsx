@@ -18,6 +18,9 @@ import NodeValue from "./NodeValue";
 import { IptWay, ParamValueType } from "@/shared/enums";
 import { valueEqualsUnset } from "@/processors/value";
 import { useUpdateBlocNode } from "@/recoil/hooks/useUpdateBlocNode";
+import { TextFallback } from "@/shared/jsxUtils";
+import { useClearAllAtoms } from "@/recoil/hooks/useClearAtom";
+
 export type NodeViewerProps = DrawerProps & {};
 
 function isJson(str?: string) {
@@ -76,9 +79,11 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
   const [attrs, setAttrs] = useRecoilState(nodeViewAttrs);
   const detail = useRecoilValue(currentReactFlowBlocNode);
   const data = detail?.data || null;
-
-  const resetRemovedConnections = useResetRecoilState(operationRecords);
+  const resetTempConnections = useResetRecoilState(operationRecords);
   const updateAtom = useUpdateAtomValue();
+  const clearAllAtoms = useClearAllAtoms();
+  const [currentNodeId, setCurrenBlocId] = useRecoilState(currentBlocNodeId);
+
   const resetTabView = useCallback(() => {
     setAttrs((previous) => ({
       ...previous,
@@ -177,7 +182,6 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
     },
     [setAttrs],
   );
-  const currentNodeId = useRecoilValue(currentBlocNodeId);
   const setAtomValue = useRecoilCallback(
     ({ set }) =>
       (key: AtomKey, value: FullStateAtom) => {
@@ -189,9 +193,11 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
     (node: HTMLElement) => {
       SlideProps?.onExited?.(node);
       resetTabView();
-      resetRemovedConnections();
+      resetTempConnections();
+      clearAllAtoms();
+      setCurrenBlocId(null);
     },
-    [SlideProps, resetTabView, resetRemovedConnections],
+    [SlideProps, resetTabView, resetTempConnections, clearAllAtoms, setCurrenBlocId],
   );
   const onInternalExit = useCallback(
     (node: HTMLElement) => {
@@ -221,9 +227,9 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
           const entries = Object.entries(values);
           entries.forEach(([key, value]) => {
             const v = value as FullStateAtom[];
-            v.forEach((atom) => {
+            v.forEach((atom, index) => {
               if (atom.iptWay === IptWay.UserIpt) {
-                const atomKey: AtomKey = `${currentNodeId || ""}_${key}_${atom.atomIndex ?? -1}`;
+                const atomKey: AtomKey = `${currentNodeId || ""}_${key}_${index ?? -1}`;
                 setAtomValue(atomKey, {
                   ...atom,
                   unset: valueEqualsUnset(atom), //确认此处逻辑是否可优化
@@ -281,8 +287,8 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                   </IconButton>
                 </div>
                 <Tabs value={attrs.tabView} onChange={onTabViewChange}>
-                  <Tab label="输入" value="input" />
-                  <Tab label="输出" value="output" />
+                  <Tab label={`输入(${data?.statefulMergedIpts?.length})`} value="input" />
+                  <Tab label={`输出(${data?.paramOpts.length})`} value="output" />
                 </Tabs>
                 <TabPanel index="input" value={attrs.tabView}>
                   {data?.statefulMergedIpts?.map((param, paramIndex) => (
@@ -352,11 +358,16 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                             <span className="w-2 h-2 rounded-full bg-gray-200"></span>
                             <div className="ml-2 border border-solid border-gray-200 rounded-md flex-grow p-4">
                               <p className="text-xs text-gray-400">
-                                {queryNode(target.nodeId)?.note || queryNode(target.nodeId)?.function?.name || "-"}
+                                {TextFallback(
+                                  queryNode(target.nodeId)?.note || queryNode(target.nodeId)?.function?.name,
+                                  "暂无描述",
+                                )}
                               </p>
                               <div className="mt-4 flex">
                                 <ArrowConnection />
-                                <p className="ml-2 mt-2">{getTargetAtom(target)?.description || "-"}</p>
+                                <p className="ml-2 mt-2">
+                                  {TextFallback(getTargetAtom(target)?.description, "暂无描述")}
+                                </p>
                               </div>
                             </div>
                           </div>

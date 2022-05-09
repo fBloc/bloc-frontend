@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useRecoilValue, useRecoilCallback, useSetRecoilState } from "recoil";
+import { useRecoilValue, useRecoilCallback, useRecoilState } from "recoil";
 import { atomEditState, AtomKey, blocNodeList, currentBlocNode } from "../flow/node";
 import { operationRecords } from "../flow/param";
 import { addConnection, removeConnection } from "@/processors/connections";
@@ -8,10 +8,9 @@ import { IptWay } from "@/shared/enums";
 import { FullStateAtom } from "@/api/flow";
 
 export function useUpdateAtomValue() {
-  const setBlocNodeList = useSetRecoilState(blocNodeList);
+  const [nodes, setBlocNodeList] = useRecoilState(blocNodeList);
   const blocNode = useRecoilValue(currentBlocNode);
-  const records = useRecoilValue(operationRecords);
-  const nodes = useRecoilValue(blocNodeList);
+  // const records = useRecoilValue(operationRecords);
   const fetchEditValue = useRecoilCallback(
     ({ snapshot }) =>
       (key: AtomKey) => {
@@ -19,9 +18,14 @@ export function useUpdateAtomValue() {
       },
     [],
   );
-
+  const getRecords = useRecoilCallback(({ snapshot }) => {
+    return () => {
+      return snapshot.getPromise(operationRecords);
+    };
+  });
   const excuteRecords = useCallback(
-    (nodes: BlocNodeItem[]) => {
+    async (nodes: BlocNodeItem[]) => {
+      const records = await getRecords();
       let newerNodes = [...nodes];
       records.forEach(({ source, target, type, isFlow }) => {
         const connection = {
@@ -33,15 +37,15 @@ export function useUpdateAtomValue() {
           isFlow,
         };
         if (type === "connect") {
-          newerNodes = addConnection(nodes, connection);
+          newerNodes = addConnection(newerNodes, connection);
         }
         if (type === "disconnect") {
-          newerNodes = removeConnection(nodes, connection);
+          newerNodes = removeConnection(newerNodes, connection);
         }
       });
       return newerNodes;
     },
-    [records],
+    [getRecords],
   );
   const updateAtomValue = useCallback(async () => {
     const result = new Map<AtomKey, FullStateAtom>();
@@ -62,28 +66,26 @@ export function useUpdateAtomValue() {
         ];
       }, []) || [];
     await Promise.all(promiseFetchValue);
-    let newerNodes = await Promise.all(
-      nodes.map(async (node) => {
-        if (node.id === blocNode?.id)
-          return {
-            ...node,
-            paramIpt: node.paramIpt.map((param) => {
-              return {
-                ...param,
-                atoms: param.atoms.map((atom, atomIndex) => {
-                  if (atom.iptWay === IptWay.UserIpt) {
-                    const key: AtomKey = `${blocNode.id}_${param.key}_${atomIndex}`;
-                    return result.get(key) || atom;
-                  }
-                  return atom;
-                }),
-              };
-            }),
-          };
-        return node;
-      }),
-    );
-    newerNodes = excuteRecords(newerNodes);
+    let newerNodes = nodes.map((node) => {
+      if (node.id === blocNode?.id)
+        return {
+          ...node,
+          paramIpt: node.paramIpt.map((param) => {
+            return {
+              ...param,
+              atoms: param.atoms.map((atom, atomIndex) => {
+                if (atom.iptWay === IptWay.UserIpt) {
+                  const key: AtomKey = `${blocNode.id}_${param.key}_${atomIndex}`;
+                  return result.get(key) || atom;
+                }
+                return atom;
+              }),
+            };
+          }),
+        };
+      return node;
+    });
+    newerNodes = await excuteRecords(newerNodes);
     setBlocNodeList(newerNodes);
   }, [blocNode, fetchEditValue, excuteRecords, nodes, setBlocNodeList]);
   return updateAtomValue;

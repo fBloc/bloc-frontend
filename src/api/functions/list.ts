@@ -14,6 +14,7 @@ function washFunctions(data?: OriginFunctionGroup[] | null): {
         ...func,
         provider: func.provider_name,
         lastAliveTime: func.last_alive_time,
+        avaliable: Date.now() / 1000 - func.last_alive_time < 60,
         opt: func.opt.map(({ key, description, value_type, is_array }) => ({
           key,
           description,

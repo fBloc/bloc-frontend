@@ -2,9 +2,8 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 import { Link, useSearchParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { Tooltip } from "@mui/material";
+import { Tooltip, IconButton } from "@mui/material";
 import { FaChevronLeft } from "@/components/icons";
-import { Button } from "@/components";
 import { getRunningIcon, getRunningStateClass, getRunningStateText } from "@/shared/enums";
 import CurrentState from "./CurrentState";
 import { readableTime } from "@/shared/time";
@@ -60,9 +59,9 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
         <div className="flex-1 flex items-center flex-shrink-0">
           <Tooltip title="返回">
             <Link to={target}>
-              <Button className="px-0 py-0 w-8 h-8 flex items-center justify-center" rounded>
-                <FaChevronLeft />
-              </Button>
+              <IconButton>
+                <FaChevronLeft size={14} />
+              </IconButton>
             </Link>
           </Tooltip>
           <div className="ml-4">

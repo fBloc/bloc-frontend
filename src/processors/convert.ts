@@ -39,6 +39,7 @@ export const toReactFlowNodes = (
   });
 };
 type ReactFlowEdge = Omit<Edge<EdgeData>, "type"> & { type?: CustomEdgeTypes };
+
 export const toReactFlowEdges = (sourceConnections: Connection[], settings: ProjectSettings): ReactFlowEdge[] => {
   const edges: ReactFlowEdge[] = [];
   const times = new Map<string, number[]>();

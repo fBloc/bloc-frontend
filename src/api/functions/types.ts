@@ -34,6 +34,7 @@ export interface FunctionItem {
    * 上次心跳时间
    */
   lastAliveTime: number;
+  avaliable: boolean;
 }
 
 export interface SelectOption {

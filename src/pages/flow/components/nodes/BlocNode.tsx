@@ -17,6 +17,7 @@ import { useNodeOperations } from "@/recoil/hooks/useNodeOperations";
 import styles from "../handles/handle.module.scss";
 import { useNavigate } from "react-router-dom";
 import { flowDetailState } from "@/recoil/flow/flow";
+import { showConfirm } from "@/components";
 
 /**
  * 编辑状态时atom的相关数据信息
@@ -45,16 +46,23 @@ const RunningState: React.FC<Pick<BlocNodeProps["data"], "latestRunningInfo">> =
     </div>
   );
 };
-
+const askPermission = () => {
+  return showConfirm({
+    title: "将会跳转到运行详情页，确认继续吗？",
+  });
+};
 const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, type, ...rest }) => {
   const setRecordAttrs = useSetRecoilState(recordAttrs);
   const setLogAttrs = useSetRecoilState(recordLogAttrs);
   const flow = useRecoilValue(flowDetailState);
   const navigate = useNavigate();
-  const onRecordClick = useCallback(() => {
+  const onRecordClick = useCallback(async () => {
     switch (data.mode) {
       case FlowDisplayPage.preview:
-        navigate(`/flow/history/${flow?.latestRun?.id}?id=${flow?.originId}&node=${data.id}&operation=record`);
+        const confirmed = await askPermission();
+        if (confirmed) {
+          navigate(`/flow/history/${flow?.latestRun?.id}?id=${flow?.originId}&node=${data.id}&operation=record`);
+        }
         break;
       case FlowDisplayPage.history:
         setRecordAttrs({
@@ -63,11 +71,13 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
         });
     }
   }, [data, setRecordAttrs, flow, navigate]);
-  const viewLog = useCallback(() => {
+  const viewLog = useCallback(async () => {
     switch (data.mode) {
       case FlowDisplayPage.preview:
-        navigate(`/flow/history/${flow?.latestRun?.id}?id=${flow?.originId}&node=${data.id}&operation=log`);
-
+        const confirmed = await askPermission();
+        if (confirmed) {
+          navigate(`/flow/history/${flow?.latestRun?.id}?id=${flow?.originId}&node=${data.id}&operation=log`);
+        }
         break;
       case FlowDisplayPage.history:
         setLogAttrs({

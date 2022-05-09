@@ -198,10 +198,7 @@ export interface SearchOptions {
 //   status: RunningStatusEnum;
 // }
 export type FlowDetailT = BaseFlow<ReadablePositionInfo>;
-export type FullStateAtom = EditAtom &
-  FnAtom & { atomIndex?: number; targetNode?: string; targetParam?: string } & {
-    readableValue: unknown;
-  };
+export type FullStateAtom = EditAtom & FnAtom & { atomIndex?: number; nodeId?: string; parentParam?: string };
 
 export type MergedInputParam = Pick<IptParam, "description" | "key" | "required"> & {
   atoms: FullStateAtom[];

@@ -1,22 +1,20 @@
 import React from "react";
-import { Button } from "@/components";
+
+import { Button } from "@mui/material";
 import LogoWithName from "@/assets/logo-name.png";
-import { Tooltip } from "@/components";
 const Home = () => {
   return (
     <div className="h-screen p-6 max-w-6xl mx-auto hidden" style={{}}>
       <h1 className="flex items-center justify-between">
         <img src={LogoWithName} className="h-6" alt="" />
-        <Button variant="plain" size="small">
-          login
-        </Button>
+        <Button variant="outlined">login</Button>
       </h1>
 
       <main className="mt-20">
         <p className="text-5xl font-bold">make your workflow faster than ever before</p>
         <p className="mt-4 text-3xl">make your workflow faster than ever before</p>
         <div className="mt-10">
-          <Button variant="default" intent="primary">
+          <Button variant="contained" color="primary">
             Get a demo
           </Button>
         </div>

@@ -9,11 +9,8 @@ import { useAddNode } from "@/recoil/hooks/useAddNode";
 import { useAddConnection } from "@/recoil/hooks/useAddConnection";
 import { blocNodeList, connectableNodeIds, currentBlocNodeId } from "@/recoil/flow/node";
 import { nodeViewAttrs, paramAtomsPickerAttrs } from "@/recoil/flow/board";
-import { useClearAllAtoms } from "@/recoil/hooks/useClearAtom";
 import { BlocNodeData, ParamConnectionEnd } from "@/shared/types";
 import { useReadonlyBoard } from "@/recoil/hooks/useReadonlyBoard";
-import { editAtomsState } from "@/recoil/flow/param";
-import { showPrompt } from "@/components";
 import { getAtomPickerAttrs } from "@/processors/param";
 import { flowDetailState } from "@/recoil/flow/flow";
 
@@ -24,11 +21,10 @@ export function useBoard() {
   const setConnectionTarget = useSetRecoilState(tempConnectionTarget);
   const setAtomPickerAttrs = useSetRecoilState(paramAtomsPickerAttrs);
   const updateNodePosition = useUpdateNodePosition();
-  const clearAllAtoms = useClearAllAtoms();
   const { addNode } = useAddNode();
   const addConnection = useAddConnection();
-  const tempTarget = useRef<ParamConnectionEnd | null>(null);
-  const setAtomShot = useSetRecoilState(editAtomsState);
+  const isValidConnection = useRef<boolean>(false); // 是否是有效的连接，用户可能中途取消
+
   const [info, updateFlowInfo] = useRecoilState(flowDetailState);
   const [, dropRef] = useDrop({
     accept: ["functionItem"],
@@ -46,19 +42,11 @@ export function useBoard() {
   const resetTempConnection = useCallback(() => {
     setConnectionSource(null);
     setConnectionTarget(null);
-    tempTarget.current = null;
+    isValidConnection.current = false;
   }, [setConnectionSource, setConnectionTarget]);
 
-  const onAtomPickerExited = useCallback(() => {
-    resetTempConnection();
-  }, [resetTempConnection]);
   const setCurrenBlocId = useSetRecoilState(currentBlocNodeId);
-  const onAtomPickerExit = useCallback(() => {
-    setAtomPickerAttrs((previous) => ({
-      ...previous,
-      open: false,
-    }));
-  }, [setAtomPickerAttrs]);
+
   const onNodeDragStop = useCallback(
     (_: any, target: Node) => {
       updateNodePosition(target.id, {
@@ -88,10 +76,7 @@ export function useBoard() {
   });
   const onConnect = useCallback(
     async ({ source, target, targetHandle, sourceHandle }: Connection) => {
-      tempTarget.current = {
-        nodeId: target,
-        param: targetHandle,
-      };
+      isValidConnection.current = true;
 
       const isFlowConnection = targetHandle === BLOC_FLOW_HANDLE_ID && sourceHandle === BLOC_FLOW_HANDLE_ID;
       const isParamConnection = targetHandle !== BLOC_FLOW_HANDLE_ID && sourceHandle !== BLOC_FLOW_HANDLE_ID;
@@ -148,13 +133,11 @@ export function useBoard() {
     ],
   );
 
-  const onConnectStop = useCallback(() => {
-    // stop
-  }, []);
   const onConnectEnd = useCallback(async () => {
-    if (!tempTarget.current) {
+    if (!isValidConnection.current) {
       setConnectionSource(null);
     }
+    isValidConnection.current = false;
   }, [setConnectionSource]);
 
   const onMoveEnd = useCallback(
@@ -174,11 +157,6 @@ export function useBoard() {
     },
     [updateFlowInfo],
   );
-  const onNodeViewerExited = useCallback(() => {
-    setAtomShot([]);
-    clearAllAtoms();
-    setCurrenBlocId(null);
-  }, [setAtomShot, setCurrenBlocId, clearAllAtoms]);
   const onNodeClick = useCallback(
     (node: Node<BlocNodeData>) => {
       setNodeViewerProps((previous) => ({
@@ -191,8 +169,6 @@ export function useBoard() {
   );
 
   return {
-    onAtomPickerExited,
-    onAtomPickerExit,
     onConnect,
     nodes,
     edges,
@@ -201,10 +177,8 @@ export function useBoard() {
     setNodes,
     setEdges,
     onNodeClick,
-    onNodeViewerExited,
     dropRef,
     onConnectStart,
-    onConnectStop,
     onConnectEnd,
     onNodeDragStop,
     onMoveEnd,

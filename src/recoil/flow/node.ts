@@ -61,7 +61,7 @@ export const atomEditState = atomFamily<FullStateAtom, AtomKey>({
   default: selectorFamily({
     key: "atomEditState/default",
     get:
-      (param) =>
+      (atomKey) =>
       ({ get }) => {
         const node = get(currentBlocNode);
 
@@ -71,7 +71,8 @@ export const atomEditState = atomFamily<FullStateAtom, AtomKey>({
           return DEFAULT_EDIT_ATOM_DESCCRIPTOR;
         }
         const atoms = flatParamAtoms(node.paramIpt);
-        const target = atoms.find((atom) => `${node.id}_${atom.targetParam}_${atom.atomIndex}` === param);
+        const target = atoms.find((atom) => `${atom.nodeId}_${atom.parentParam}_${atom.atomIndex}` === atomKey);
+        console.log(atomKey, "..");
         if (!target) {
           console.log("no target found");
           // TODO error提示

@@ -43,8 +43,3 @@ export const mayConnectableParams = selector({
     return collectMayConnectableParams(nodeIds, sourceParam);
   },
 });
-
-export const editAtomsState = atom<MergedInputParam[]>({
-  key: "editAtomsState",
-  default: [],
-});

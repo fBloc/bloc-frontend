@@ -22,6 +22,7 @@ const Confirm: React.FC<Confirmprops> = ({
   onResolve,
   onCancel,
   onConfirm,
+  onExited: cmdOnExited,
   title,
   body,
   cancelText = "取消",
@@ -29,26 +30,32 @@ const Confirm: React.FC<Confirmprops> = ({
   open,
   ...rest
 }) => {
-  const onExit = rest.TransitionProps?.onExit;
-  const onScopeCancel = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      onExit?.(e.currentTarget);
-      onCancel?.();
-      onResolve?.(false);
+  const { onExit, onExited, ...restTransitionProps } = rest.TransitionProps || {};
+  const onScopeCancel = useCallback(() => {
+    onCancel?.();
+    onResolve?.(false);
+  }, [onResolve, onCancel]);
+  const onScopeConfrim = useCallback(() => {
+    onConfirm?.();
+    onResolve?.(true);
+  }, [onResolve, onConfirm]);
+  const onInternalExited = useCallback(
+    (e: HTMLElement) => {
+      cmdOnExited?.();
+      onExited?.(e);
     },
-    [onExit, onResolve, onCancel],
+    [cmdOnExited, onExited],
   );
-  const onScopeConfrim = useCallback(
-    (e: React.MouseEvent<HTMLElement>) => {
-      onExit?.(e.currentTarget);
-      onConfirm?.();
-      onResolve?.(true);
-    },
-    [onExit, onResolve, onConfirm],
-  );
-
   return (
-    <Dialog open={open} {...rest}>
+    <Dialog
+      open={open}
+      TransitionProps={{
+        onExited: onInternalExited,
+        onExit,
+        ...restTransitionProps,
+      }}
+      {...rest}
+    >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{body}</DialogContentText>

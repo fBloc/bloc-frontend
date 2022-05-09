@@ -3,7 +3,7 @@ import ReactFlow, { Background, Controls, ReactFlowProps, MiniMap } from "react-
 import { nodeTypes } from "./nodes";
 import edgeTypes from "./connections";
 
-const FlowBody: React.FC<{} & Partial<ReactFlowProps>> = ({ ...rest }) => {
+const FlowBody: React.FC<Partial<ReactFlowProps>> = ({ ...rest }) => {
   return (
     <ReactFlow nodeTypes={nodeTypes} edgeTypes={edgeTypes} {...rest}>
       <Background />

@@ -3,22 +3,22 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { useMutation } from "react-query";
 import classNames from "classnames";
-import { Button } from "@/components";
-import { Menu, MenuItem, IconButton, Tooltip } from "@mui/material";
-import { FaHome, FaInfoCircle, FaPlayCircle, FaEdit, FaEllipsisV } from "@/components/icons";
+import { Menu, MenuItem, IconButton, Tooltip, Divider } from "@mui/material";
+import { FaHome, FaPlayCircle, FaEdit, FaEllipsisV } from "@/components/icons";
 import { showToast } from "@/components/toast";
 import { PAGES } from "@/router/pages";
 import Info from "../components/Info";
 import { flowDetailState, flowGetters } from "@/recoil/flow/flow";
 import { copyAsDraft, triggerRun } from "@/api/flow";
+
 type HeaderProps = React.HTMLAttributes<HTMLDivElement> & {
   tab?: string;
   loading?: boolean;
   onExcuteSuccess?: () => void;
 };
+
 const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, onExcuteSuccess, ...rest }) => {
   const flow = useRecoilValue(flowDetailState);
-
   const [infoVisible, setInfoVisible] = useState(false);
   const showInfo = useCallback(() => {
     setInfoVisible(true);
@@ -39,7 +39,6 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, onExcu
   });
   const getters = useRecoilValue(flowGetters);
   const [target, setTarget] = useState<HTMLElement | null>(null);
-
   const handleClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
     setTarget(e.currentTarget);
   }, []);
@@ -66,9 +65,11 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, onExcu
           </div>
           <div className="flex-1 flex justify-center">{flow?.name}</div>
           <div className={classNames("flex-1 flex justify-end items-center", tab === "flow" ? "" : "invisible")}>
-            <IconButton onClick={handleClick}>
-              <FaEllipsisV size={12} />
-            </IconButton>
+            <Tooltip title="更多">
+              <IconButton onClick={handleClick} sx={{ mr: 2 }}>
+                <FaEllipsisV size={14} />
+              </IconButton>
+            </Tooltip>
             <Menu
               anchorEl={target}
               open={visible}
@@ -91,17 +92,13 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, onExcu
               >
                 创建副本
               </MenuItem>
+              <Divider />
+              <MenuItem onClick={showInfo}>基本信息</MenuItem>
             </Menu>
-            <Tooltip title="基本信息" placement="bottom">
-              <IconButton onClick={showInfo} sx={{ mx: 2 }}>
-                <FaInfoCircle size={16} />
-              </IconButton>
-            </Tooltip>
-
             <Tooltip title="修改流程" placement="bottom">
               <Link to={`/flow/draft/${flow?.originId || ""}`}>
                 <IconButton>
-                  <FaEdit size={16} />
+                  <FaEdit size={18} />
                 </IconButton>
               </Link>
             </Tooltip>
@@ -123,7 +120,7 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, onExcu
                   }
                 }}
               >
-                <FaPlayCircle size={16} />
+                <FaPlayCircle size={18} />
               </IconButton>
             </Tooltip>
           </div>

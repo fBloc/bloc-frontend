@@ -1,16 +1,15 @@
 import React, { useState, useMemo, useEffect } from "react";
-import classNames from "classnames";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { Tooltip } from "@mui/material";
+import { Tooltip, TextField, IconButton, Button, Box, Theme, SxProps, Fab } from "@mui/material";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
+import classNames from "classnames";
 import { createDraft, getDraftList, getList, isLaunchedFlow } from "@/api/flow";
-import { Button, Input } from "@/components";
 import { FaPlus } from "@/components/icons";
 import { handleValueChange } from "@/shared/form";
 import {
   FlowListType,
-  getRunningStateClass,
+  getRunningIcon,
   getRunningStateText,
   getTriggerLabel,
   getTriggerValue,
@@ -18,11 +17,13 @@ import {
 } from "@/shared/enums";
 import { List as ListComponent } from "@/components";
 import { readableTime } from "@/shared/time";
-import { FaBolt, FaPlay, FaStopCircle } from "@/components/icons";
+import { FaBolt, FaPlay, FaStopCircle, FaSearch } from "@/components/icons";
 import { flowDetailState, listCurrentOriginId } from "@/recoil/flow/flow";
 import { flowListTab } from "@/recoil/flow/list";
 import styles from "./index.module.scss";
 import { Tabs, Tab } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+
 const tabs = [
   {
     label: "已发布",
@@ -35,6 +36,33 @@ const tabs = [
 ];
 
 interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const getStyles = (status?: RunningStatusEnum): SxProps<Theme> => {
+  switch (status) {
+    case RunningStatusEnum.success:
+      return {
+        color: (theme) => theme.palette.success.main,
+      };
+    case RunningStatusEnum.failed:
+    case RunningStatusEnum.userCancel:
+    case RunningStatusEnum.systemCancel:
+    case RunningStatusEnum.rejected:
+    case RunningStatusEnum.intercepted:
+      return {
+        color: (theme) => theme.palette.error.main,
+      };
+    case RunningStatusEnum.created:
+    case RunningStatusEnum.queue:
+    case RunningStatusEnum.running:
+      return {
+        color: (theme) => theme.palette.warning.main,
+      };
+    default:
+      return {
+        color: (theme) => theme.palette.grey[600],
+      };
+  }
+};
 const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => {
   const [originId, setOriginId] = useRecoilState(listCurrentOriginId);
   const resetOriginId = useResetRecoilState(listCurrentOriginId);
@@ -80,12 +108,12 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
       }
     },
   });
-  useEffect(() => {
-    resetFlow();
-    setOriginId("");
-  }, [apiContains, resetFlow, setOriginId]);
+  // useEffect(() => {
+  //   resetFlow();
+  //   setOriginId("");
+  // }, [apiContains, resetFlow, setOriginId]);
   return (
-    <div className={classNames("flex flex-col", className)} {...rest}>
+    <div className={classNames("flex flex-col relative", className)} {...rest}>
       <div
         className="p-3"
         style={{
@@ -121,25 +149,25 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
               setApiContains(form.querySelector("input")?.value || "");
             }}
           >
-            <Input
+            <TextField
               placeholder="输入关键词搜索Flow"
-              block
+              fullWidth
+              inputProps={{
+                maxLength: 60,
+              }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton>
+                    <FaSearch size={14} className="text-gray-400" />
+                  </IconButton>
+                ),
+              }}
+              // size="small"
+              className="bg-gray-50"
               defaultValue={apiContains}
               onBlur={handleValueChange(setApiContains)}
             />
           </form>
-          <Tooltip title="创建Flow">
-            <Button
-              className="ml-2 h-10 w-10 flex items-center justify-center bg-gray-100"
-              rounded
-              disabled={newDraft.isLoading}
-              onClick={() => {
-                newDraft.mutate();
-              }}
-            >
-              <FaPlus size={14} />
-            </Button>
-          </Tooltip>
         </div>
       </div>
       <div className="overflow-auto flex-grow pb-96">
@@ -159,17 +187,20 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
           }
         >
           {list.map((item) => (
-            <div
+            <Box
               key={item.id}
               className={classNames(
-                "py-5 border-solid pr-4 pl-3 border-gray-100 border-b border-l-4 cursor-default",
+                "py-4 border-solid pr-4 pl-3 border-l-4 cursor-default",
                 originId === item.origin_id ? styles.active : styles.normal,
               )}
+              sx={{
+                borderLeftColor: originId === item.origin_id ? (theme) => theme.palette.primary.main : "transparent",
+              }}
               onClick={() => {
                 setOriginId(item.origin_id);
               }}
             >
-              <p className="flex justify-between items-center">
+              <div className="flex justify-between items-center">
                 {isLaunchedFlow(item) ? (
                   <Tooltip
                     title={
@@ -217,19 +248,12 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
                     }
                     placement="top-start"
                   >
-                    <span
-                      className={classNames(
-                        "px-2 py-1 rounded-full text-xs  font-medium",
-                        classNames(
-                          getRunningStateClass(item.latest_run?.status, {
-                            text: true,
-                            bg: true,
-                          }),
-                        ),
-                      )}
-                    >
-                      {getRunningStateText(item.latest_run?.status)}
-                    </span>
+                    <Box sx={getStyles(item.latest_run?.status)}>
+                      <span className={classNames("py-1 text-xs font-medium inline-flex items-center")}>
+                        {getRunningIcon(item.latest_run?.status, "mr-1")}
+                        {getRunningStateText(item.latest_run?.status)}
+                      </span>
+                    </Box>
                   </Tooltip>
                 ) : (
                   <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-500 font-medium">草稿</span>
@@ -239,12 +263,30 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
                     {item.create_user_name[0]}
                   </span>
                 </Tooltip>
-              </p>
-              <p className="mt-4 text-base">{item.name || "未命名"}</p>
-            </div>
+              </div>
+              <p className="mt-3 text-base">{item.name || "未命名"}</p>
+            </Box>
           ))}
         </ListComponent>
       </div>
+      <Tooltip title="创建Flow">
+        <Fab
+          color="primary"
+          className="absolute"
+          size="medium"
+          sx={{
+            bottom: 30,
+            right: 30,
+            position: "absolute",
+          }}
+          disabled={newDraft.isLoading}
+          onClick={() => {
+            newDraft.mutate({});
+          }}
+        >
+          <FaPlus size={14} />
+        </Fab>
+      </Tooltip>
       {children}
     </div>
   );

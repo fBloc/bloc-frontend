@@ -1,7 +1,7 @@
 import React from "react";
-import { getBezierPath, getEdgeCenter, EdgeProps } from "react-flow-renderer";
-import { FaTrashAlt } from "@/components/icons";
 import { useSetRecoilState } from "recoil";
+import { getBezierPath, getEdgeCenter, EdgeProps } from "react-flow-renderer";
+import { FaTrashAlt, FaTimes } from "@/components/icons";
 import { Tooltip } from "@mui/material";
 import { EdgeData } from "@/shared/types";
 import { FlowDisplayPage } from "@/shared/enums";
@@ -90,7 +90,7 @@ export default function CustomEdge({
                     }
                   }}
                 >
-                  <FaTrashAlt size={12} />
+                  <FaTimes size={14} />
                 </button>
               </Tooltip>
             </div>

@@ -1,48 +1,97 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import classNames from "classnames";
-import { Tooltip } from "@mui/material";
-import { Button, Dialog, DialogProps } from "@/components";
-import { FaQuestionCircle } from "@/components/icons";
+import { Tooltip, Dialog, DialogProps, Box, Button, IconButton } from "@mui/material";
+import { FaQuestionCircle, FaTimes } from "@/components/icons";
 import { TextFallback } from "@/shared/jsxUtils";
-import { currentBlocNode } from "@/recoil/flow/node";
+import { AtomKey, currentBlocNode } from "@/recoil/flow/node";
 import { tempConnectionSource, tempConnectionTarget } from "@/recoil/flow/connections";
-import { DEFAULT_CONNECTION_END } from "@/shared/defaults";
 import { useAddConnection } from "@/recoil/hooks/useAddConnection";
 import { paramAtomsPickerAttrs } from "@/recoil/flow/board";
+import { useSetAtomValue } from "@/recoil/hooks/useSetAtomValue";
+import { operationRecords } from "@/recoil/flow/param";
+import { FullStateAtom } from "@/api/flow";
+import { useUpdateAtomValue } from "@/recoil/hooks/useUpdateAtomValue";
+import { useTempConnection } from "@/recoil/hooks/useTempConnection";
+import { useClearAllAtoms } from "@/recoil/hooks/useClearAtom";
 
 export type AtomPickerProps = DialogProps;
 
-const AtomPicker: React.FC<AtomPickerProps> = ({ onExited, onExit, ...rest }) => {
+const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, ...rest }) => {
+  const { onExit, onExited, ...restTransitionProps } = TransitionProps || {};
   const [index, setIndex] = useState(-1);
   const source = useRecoilValue(tempConnectionSource);
   const target = useRecoilValue(tempConnectionTarget);
-
+  const resetSource = useResetRecoilState(tempConnectionSource);
+  const resetTarget = useResetRecoilState(tempConnectionTarget);
+  const records = useRecoilValue(operationRecords);
+  const { tempAddConnection, tempRemoveConnection } = useTempConnection();
+  const updateAtom = useUpdateAtomValue();
+  const clearAtoms = useClearAllAtoms();
+  const resetRecords = useResetRecoilState(operationRecords);
   const [attrs, setAttrs] = useRecoilState(paramAtomsPickerAttrs);
-  const { param: currentParam } = attrs;
+  const { param: currentParam, open } = attrs;
   const currentNode = useRecoilValue(currentBlocNode);
-  const { nodeId: sourceNode, param: sourceParam } = useRecoilValue(tempConnectionSource) || DEFAULT_CONNECTION_END;
   const addConnection = useAddConnection();
-  const onFullExited = useCallback(() => {
-    setIndex(-1);
-    onExited?.();
-  }, [onExited]);
-  const resetAtom = useCallback((index?: number) => {
-    //
-  }, []);
-  const saveConnection = useCallback(
-    (isVoid = false) => {
-      onExit?.();
-      addConnection({
-        sourceNode: source?.nodeId || "",
-        sourceParam: source?.param,
-        targetNode: target?.nodeId || "",
-        targetParam: target?.param || "",
-        targetAtomIndex: isVoid ? undefined : index,
-        isVoid,
+  const onInternalExit = useCallback(
+    (e: HTMLElement) => {
+      onExit?.(e);
+      setAttrs((previous) => ({
+        ...previous,
+        open: false,
+      }));
+    },
+    [setAttrs, onExit],
+  );
+  const onInternalExited = useCallback(
+    (e: HTMLElement) => {
+      onExited?.(e);
+      setIndex(-1);
+      clearAtoms();
+      resetRecords();
+      resetSource();
+      resetTarget();
+    },
+    [clearAtoms, resetRecords, onExited, resetSource, resetTarget],
+  );
+
+  const setAtomValue = useSetAtomValue();
+  const resetAtom = useCallback(
+    (atom: FullStateAtom) => {
+      const { sourceNode, sourceParam, nodeId, parentParam, atomIndex } = atom;
+      const key = `${nodeId}_${parentParam}_${atomIndex}` as AtomKey;
+      setAtomValue(key, "", true);
+      tempRemoveConnection({
+        source: {
+          nodeId: sourceNode,
+          param: sourceParam,
+        },
+        target: {
+          nodeId: nodeId || "",
+          param: parentParam,
+          atomIndex,
+        },
+      });
+      setAttrs((previous) => {
+        return {
+          ...previous,
+          param: {
+            ...previous.param,
+            atoms:
+              previous.param?.atoms.map((_atom) => {
+                return _atom.atomIndex === atom.atomIndex
+                  ? {
+                      ..._atom,
+                      unset: true,
+                      avaliable: _atom.isTypeMatch,
+                    }
+                  : _atom;
+              }) || [],
+          },
+        } as any;
       });
     },
-    [index, onExit, addConnection, source, target],
+    [setAtomValue, setAttrs, tempRemoveConnection],
   );
   const onAtomIndexChange = useCallback(
     (i = -1) => {
@@ -51,100 +100,150 @@ const AtomPicker: React.FC<AtomPickerProps> = ({ onExited, onExit, ...rest }) =>
     [index],
   );
   const alreadyConnected = useMemo(() => {
+    const sourceNode = source?.nodeId || "";
     if (!currentNode || !sourceNode) return false;
     return currentNode.voidIpt.includes(sourceNode);
-  }, [currentNode, sourceNode]);
+  }, [currentNode, source]);
   return (
-    <Dialog open={attrs.open} onExited={onFullExited} onExit={onExit} {...rest}>
-      <p className="text-lg text-center font-medium">选择一个子项</p>
-      <p className="mt-1 text-center text-gray-400">
-        目标参数「{currentParam?.key}」有{currentParam?.atoms?.length}个子项
-      </p>
-      <ul className="mt-8 mb-6 max-h-[80vh] overflow-auto">
-        {currentParam?.atoms?.map((atom) => (
-          <li
-            onClick={() => {
-              if (!atom.avaliable) return;
-              onAtomIndexChange(atom.atomIndex);
-            }}
-            key={atom.atomIndex}
-            className={classNames(
-              "mb-2 py-3 group border border-solid px-2 rounded-md",
-              atom.avaliable ? "cursor-default hover:bg-gray-50" : "cursor-not-allowed",
-              atom.atomIndex === index ? "border-primary-400" : "border-gray-200",
-            )}
-          >
-            <div
-              className={classNames("flex justify-between items-center rounded-lg", {
-                "opacity-60": !atom.avaliable,
-              })}
+    <Dialog
+      open={open}
+      TransitionProps={{
+        onExit: onInternalExit,
+        onExited: onInternalExited,
+        ...restTransitionProps,
+      }}
+      {...rest}
+    >
+      <Box
+        sx={{
+          p: 2,
+        }}
+      >
+        <p
+          className="flex justify-end"
+          onClick={(e) => {
+            onInternalExit(e.currentTarget);
+          }}
+        >
+          <IconButton>
+            <FaTimes size={14} />
+          </IconButton>
+        </p>
+        <p className="text-lg text-center font-medium">选择一个子项</p>
+        <p className="mt-1 text-center text-gray-400">
+          目标参数「{currentParam?.key}」有{currentParam?.atoms?.length}个子项
+        </p>
+        <ul className="mt-8 mb-6 max-h-[80vh] overflow-auto">
+          {currentParam?.atoms?.map((atom, _atomIndex) => (
+            <li
+              onClick={() => {
+                if (!atom.avaliable) return;
+                onAtomIndexChange(_atomIndex);
+              }}
+              key={_atomIndex}
+              className={classNames(
+                "mb-2 py-3 group border border-solid px-2 rounded-md",
+                atom.avaliable ? "cursor-default hover:bg-gray-50" : "cursor-not-allowed bg-gray-50",
+                atom.atomIndex === index ? "border-primary-400" : "border-gray-200",
+              )}
             >
-              <p className="flex items-center">
-                {TextFallback(atom.description, "缺少描述")}
-                {atom.message && (
-                  <Tooltip title={atom.message} placement="right">
-                    <span className="ml-1 cursor-default">
-                      <FaQuestionCircle size={12} />
-                    </span>
-                  </Tooltip>
-                )}
-              </p>
-              <span
-                className={classNames(
-                  "flex-shrink-0 ml-4 w-4 h-4 rounded-full inline-flex items-center justify-center border-2 border-solid",
-                  atom.atomIndex === index ? "border-primary-400 border-4" : "border-gray-200",
-                  atom.avaliable ? "group-hover:border-primary-400" : "bg-gray-50",
-                )}
-              >
-                {/* {index === atom.atomIndex && <FaCheck className={classNames("flex-shrink-0 text-white")} size={12} />} */}
-              </span>
-              {!atom.unset && atom.isTypeMatch && (atom.sourceNode !== sourceNode || atom.sourceParam !== sourceParam) && (
-                <div className="flex-shrink-0 ml-3">
-                  <span
-                    className="w-14 h-6 bg-red-400 justify-center rounded text-xs items-center hidden group-hover:inline-flex group-hover:text-white cursor-default"
-                    onClick={() => {
-                      resetAtom(atom.atomIndex);
-                    }}
-                  >
-                    清除
-                  </span>
+              <div className={classNames("flex justify-between items-center rounded-lg")}>
+                <p className="flex items-center flex-grow justify-between">
+                  {TextFallback(atom.description, "缺少描述")}
+                  {atom.message && (
+                    <Tooltip title={atom.message} placement="left">
+                      <span className="ml-1 cursor-default">
+                        <FaQuestionCircle size={12} />
+                      </span>
+                    </Tooltip>
+                  )}
+                </p>
+                {atom.avaliable && (
                   <span
                     className={classNames(
-                      "w-14 h-6 bg-gray-100 rounded text-xs inline-flex justify-center items-center",
-                      atom.isTypeMatch ? "group-hover:hidden hover:bg-gray-200" : "",
+                      "flex-shrink-0 ml-4 w-4 h-4 rounded-full inline-flex items-center justify-center border-2 border-solid",
+                      _atomIndex === index ? "border-primary-400 border-4" : "border-gray-200",
+                      atom.avaliable ? "group-hover:border-primary-400" : "bg-gray-50",
                     )}
-                  >
-                    已设置
-                  </span>
-                </div>
-              )}
-            </div>
-            {/* {atom.message && <p className="mt-1 text-xs text-red-400">{atom.message}</p>} */}
-          </li>
-        ))}
-      </ul>
+                  ></span>
+                )}
+                {!atom.unset && atom.isTypeMatch && (
+                  <div className="flex-shrink-0 ml-3">
+                    <span
+                      className="w-14 h-6 bg-red-400 justify-center rounded text-xs items-center hidden group-hover:inline-flex group-hover:text-white cursor-default"
+                      onClick={() => {
+                        resetAtom(atom);
+                      }}
+                    >
+                      清除
+                    </span>
+                    <span
+                      className={classNames(
+                        "w-14 h-6 bg-gray-200 rounded text-xs inline-flex justify-center items-center",
+                        atom.isTypeMatch ? "group-hover:hidden" : "",
+                      )}
+                    >
+                      已设置
+                    </span>
+                  </div>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
 
-      <Button
-        intent="primary"
-        block
-        disabled={index < 0}
-        onClick={() => {
-          saveConnection();
-        }}
-      >
-        保存关联
-      </Button>
-      <Button
-        variant="plain"
-        className="mt-3"
-        block
-        disabled={alreadyConnected}
-        onClick={() => {
-          saveConnection(true);
-        }}
-      >
-        {alreadyConnected ? "流程已关联" : "仅连接流程，不关联参数"}
-      </Button>
+        <Button
+          color="primary"
+          variant="contained"
+          fullWidth
+          disabled={index < 0}
+          onClick={async (e) => {
+            tempAddConnection({
+              source: {
+                nodeId: source?.nodeId || "",
+                param: source?.param || "",
+              },
+              target: {
+                nodeId: target?.nodeId || "",
+                param: target?.param || "",
+                atomIndex: index,
+              },
+            });
+
+            setTimeout(() => {
+              updateAtom();
+              onInternalExit(e.currentTarget);
+            });
+            // updateAtom()
+          }}
+        >
+          保存关联
+        </Button>
+
+        {!alreadyConnected && (
+          <Button
+            color="info"
+            fullWidth
+            variant="outlined"
+            sx={{
+              mt: 2,
+            }}
+            disabled={alreadyConnected}
+            onClick={(e) => {
+              addConnection({
+                sourceNode: source?.nodeId || "",
+                sourceParam: source?.param || "",
+                targetNode: target?.nodeId || "",
+                targetParam: target?.param || "",
+                isVoid: true,
+              });
+              onInternalExit(e.currentTarget);
+            }}
+          >
+            仅连接流程，不关联参数
+          </Button>
+        )}
+      </Box>
     </Dialog>
   );
 };

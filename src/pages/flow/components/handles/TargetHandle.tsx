@@ -6,10 +6,10 @@ import { useRecoilState } from "recoil";
 import { Popover, Divider, Tooltip } from "@mui/material";
 import { getBlocRecordDetail, StatefulMergedIptParam } from "@/api/flow";
 import { BLOC_FLOW_HANDLE_ID } from "@/shared/constants";
-import { MergedIptParamStatus } from "@/shared/enums";
+import { FlowDisplayPage, MergedIptParamStatus } from "@/shared/enums";
 import { TextFallback } from "@/shared/jsxUtils";
 import { BlocNodeData, Connectable } from "@/shared/types";
-import { FaExclamationCircle } from "@/components/icons";
+import { FaExclamationCircle, FaCheckCircle } from "@/components/icons";
 import { runningRecord } from "@/recoil/flow/node";
 import styles from "../handles/handle.module.scss";
 
@@ -18,7 +18,6 @@ const percentage = (value: number) => {
 };
 const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNodeData } & Connectable> = ({
   detail,
-  isConnectable,
   nodeData,
 }) => {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -36,21 +35,22 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
   const atoms = useMemo(() => {
     return recordDetail?.ipt?.[detail.index] || [];
   }, [detail.index, recordDetail]);
+  const readFlowMode = useMemo(() => [FlowDisplayPage.flow, FlowDisplayPage.draft].includes(nodeData.mode), [nodeData]);
 
   return (
     <>
       <div
         className={classNames("relative mx-2 grxoup rounded-full", anchor !== null ? "scale-150 shadow" : "")}
         onClick={(e) => {
-          setAnchor(e.target as any);
+          setAnchor(e.currentTarget);
         }}
         onMouseEnter={(e) => {
-          if (isConnectable) {
-            setAnchor(e.target as any);
+          if (readFlowMode) {
+            setAnchor(e.currentTarget);
           }
         }}
         onMouseLeave={() => {
-          if (isConnectable) {
+          if (readFlowMode) {
             setAnchor(null);
           }
         }}
@@ -76,7 +76,7 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
         open={!!anchor}
         anchorEl={anchor}
         sx={
-          isConnectable
+          readFlowMode
             ? {
                 pointerEvents: "none",
               }
@@ -95,14 +95,17 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
         }}
       >
         <div className="w-60 p-3">
-          {isConnectable ? (
+          {readFlowMode ? (
             <>
               <p>{TextFallback(detail.description, "缺少描述")}</p>
               <p className="text-xs text-gray-400">{detail.key}</p>
               <ul className="mt-1 pl-4 opacity-80">
                 {detail.atoms?.map((atom, i) => (
                   <li key={i} className="list-disc my-2">
-                    <span className="bg-gray-100 px-1 py-0.5 rounded mr-1 scale-90 inline-flex">子项 {i + 1}</span>
+                    <span className="mr-1 scale-90 inline-flex items-center">
+                      {!atom.unset && <FaCheckCircle className="mr-1 text-green-400" size={12} />}
+                      <span className="rounded bg-gray-100 px-1 py-0.5">子项{i + 1}</span>
+                    </span>
                     {TextFallback(atom.description, "缺少描述")}
                   </li>
                 ))}
@@ -136,7 +139,7 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
                       {i + 1}. {TextFallback(atom.description, "缺少描述")}
                     </div>
                     <div className="mt-1.5 p-2 bg-gray-100 rounded text-sm simple-ellipsis">
-                      {isLoading ? "loading..." : TextFallback(atoms[i]?.brief, "内容为空")}
+                      {isLoading ? "loading..." : TextFallback(atoms[i]?.brief, "数据为空")}
                     </div>
                   </li>
                 ))}
@@ -177,8 +180,6 @@ export const VoidTargetHandle: React.FC<Connectable & { nodeData: BlocNodeData }
           data-handlepos="top"
           className={classNames(styles["void-handle"])}
         />
-
-        {!isConnectable && <span className="absolute left-0 top-0 w-full h-full"></span>}
       </div>
     </Tooltip>
   );

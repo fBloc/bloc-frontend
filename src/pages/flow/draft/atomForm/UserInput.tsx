@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
-import { get } from "lodash-es";
-import { Button, TextField, TextFieldProps, IconButton, Tooltip } from "@mui/material";
-import { FaTrashAlt } from "@/components/icons";
 import { FieldArray, useFormikContext } from "formik";
+import { get } from "lodash-es";
+import { Button, TextField, TextFieldProps } from "@mui/material";
 import { FormControlType, ParamValueType } from "@/shared/enums";
 import { FaPlus } from "@/components/icons";
 import { simpleNanoId } from "@/shared/tools";
