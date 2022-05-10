@@ -23,7 +23,7 @@ export function normalizeResponse<T>(
 }
 const instance = axios.create({
   timeout: 60000,
-  baseURL: "http://82.157.98.91/",
+  baseURL: __HTTP_URL__,
 });
 instance.interceptors.request.use((request) => {
   const token = identificationInstance.token;

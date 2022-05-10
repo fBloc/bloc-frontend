@@ -7,3 +7,4 @@ declare const __DEFAULT_TEXTAREA_PLACEHOLDER__: string;
 declare const __DEFAULT_SELECT_PLACEHOLDER__: string;
 declare const __DEFAULT_JSON_PLACEHOLDER__: string;
 declare const __MAX_FLOW_NAME_LENGTH__: number;
+declare const __HTTP_URL__: string;

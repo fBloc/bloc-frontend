@@ -8,11 +8,9 @@ export default defineConfig({
   base: "/dev/",
   server: {
     port: 3338,
-    // proxy: {
-    //   "/api": "http://82.157.98.91/",
-    // },
   },
   define: {
+    __HTTP_URL__: "'http://82.157.98.91/'",
     __MAX_TEXTAREA_LENGTH__: 100,
     __MAX_INPUT_LENGTH__: 40,
     __MAX_MULTI_FORM_COUNT__: 10,
