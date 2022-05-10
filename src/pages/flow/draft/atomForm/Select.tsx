@@ -1,8 +1,7 @@
 import React from "react";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Button } from "@mui/material";
 import { FaRegQuestionCircle } from "@/components/icons";
 import { Select, SelectProps } from "@/components/select";
-import { Button } from "@/components";
 import { FullStateAtom } from "@/api/flow";
 
 export type AtomSelectProps = SelectProps & Pick<FullStateAtom, "isArray" | "defaultValue" | "unset">;
@@ -17,10 +16,6 @@ const AtomSelect: React.FC<AtomSelectProps> = ({ isArray, placeholder, defaultVa
       {!isArray && unset && defaultValue && (
         <div className="flex justify-end items-center absolute right-6 top-1/2 -translate-y-1/2 bg-white">
           <Button
-            intent="primary"
-            size="small"
-            variant="text"
-            className="inline-flex items-center"
             onClick={() => {
               props.onChange?.(defaultValue, []);
             }}

@@ -46,6 +46,5 @@ export * from "./editableText";
 export { default as TextArea } from "./textarea";
 export * from "./textarea";
 
-export { default as Drawer } from "./drawer";
 export * from "./confirm";
 export { default as Confirm } from "./confirm";

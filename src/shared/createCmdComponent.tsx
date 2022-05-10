@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { DialogProps } from "@/components";
+import { DialogProps } from "@mui/material";
 
 export interface CmdComponentProps<T = any> {
   open?: boolean;
-  onExited?: DialogProps["onExit"];
+  onExited?: Required<DialogProps>["TransitionProps"]["onExit"];
   onResolve?: (value?: T) => void;
 }
 export function createCmdComponent<T extends CmdComponentProps>(Component: React.FC<T>, append = true) {
@@ -30,7 +30,7 @@ export function createCmdComponent<T extends CmdComponentProps>(Component: React
         ReactDOM.render(
           React.cloneElement(<Component {...(props as any)} />, {
             onExited: () => {
-              props?.onExited?.();
+              props?.onExited?.(div);
               onExited?.();
             },
             onResolve: (v: ResultType) => {

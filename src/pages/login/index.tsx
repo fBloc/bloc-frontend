@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { handleStringChange } from "@/shared/form";
-import { Input, Button } from "@/components";
-
+import { Input } from "@/components";
+import { Button } from "@mui/material";
 import { useLocation, Link, useNavigate, Navigate } from "react-router-dom";
 import { login } from "@/api/auth";
 import Logo from "@/assets/logo.png";
@@ -83,7 +83,14 @@ const Login = () => {
           onChange={handleStringChange(setPassword)}
         />
         {errorMessage && <p className="text-red-400">{errorMessage}</p>}
-        <Button onClick={onSubmit} className="mt-4" block intent="primary" disabled={!name || !password}>
+        <Button
+          onClick={onSubmit}
+          className="mt-4"
+          fullWidth
+          color="primary"
+          variant="contained"
+          disabled={!name || !password}
+        >
           登录
         </Button>
       </form>

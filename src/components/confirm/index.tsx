@@ -41,7 +41,7 @@ const Confirm: React.FC<Confirmprops> = ({
   }, [onResolve, onConfirm]);
   const onInternalExited = useCallback(
     (e: HTMLElement) => {
-      cmdOnExited?.();
+      cmdOnExited?.(e);
       onExited?.(e);
     },
     [cmdOnExited, onExited],

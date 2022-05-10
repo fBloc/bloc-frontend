@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Tooltip } from "@mui/material";
+import { Tooltip, Button } from "@mui/material";
 import { Input, InputProps } from "@/components";
 import { FaPlus, FaTrashAlt } from "@/components/icons";
 import { FormControlType, ParamValueType } from "@/shared/enums";
@@ -120,9 +120,6 @@ const InputView: React.FC<ListFormProps> = ({ isArray, valueType, value, onValue
             {index !== 0 && (
               <Tooltip title="删除这条数据">
                 <Button
-                  variant="text"
-                  intent="danger"
-                  size="small"
                   onClick={() => {
                     onValueChange(value.filter((p: any) => p.id !== item.id));
                   }}
@@ -133,7 +130,7 @@ const InputView: React.FC<ListFormProps> = ({ isArray, valueType, value, onValue
             )}
           </div>
         ))}
-        <Button size="small" className="flex mx-auto items-center" onClick={appendData}>
+        <Button onClick={appendData}>
           <FaPlus size={10} className="mr-2" />
           添加一条数据
         </Button>
