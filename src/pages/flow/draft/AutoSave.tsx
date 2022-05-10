@@ -11,7 +11,6 @@ import { DEFAULT_POSITION } from "@/shared/defaults";
 export type AutoSaveProps = React.HTMLAttributes<HTMLDivElement>;
 const AutoSave = React.forwardRef<HTMLDivElement, AutoSaveProps>(({ className, children, ...rest }, ref) => {
   const nodes = useRecoilValue(blocNodeList);
-  const resetNodes = useResetRecoilState(blocNodeList);
   const flowDetail = useRecoilValue(flowDetailState);
   const [loading, setLoading] = useState(false);
   const lock = useRef<number | null>(null);
@@ -27,11 +26,7 @@ const AutoSave = React.forwardRef<HTMLDivElement, AutoSaveProps>(({ className, c
       lock.current = window.setTimeout(async () => {
         if (!flowDetail) return;
         setLoading(true);
-        await syncFlow({
-          nodeToBlocMap: toSourceNodes(nodes),
-          name: flowDetail?.name || "",
-          position: flowDetail?.position || DEFAULT_POSITION,
-        });
+        await syncFlow();
         if (alive) {
           setLoading(false);
         }
@@ -43,9 +38,6 @@ const AutoSave = React.forwardRef<HTMLDivElement, AutoSaveProps>(({ className, c
     };
   }, [nodes, syncFlow, flowDetail]);
 
-  useEffect(() => {
-    return resetNodes;
-  }, [resetNodes]);
   return (
     <div className={classNames("flex items-center text-gray-400", className)} ref={ref} {...rest}>
       {loading && (

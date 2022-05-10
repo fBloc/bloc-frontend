@@ -3,10 +3,29 @@ import { useMatch, Outlet } from "react-router-dom";
 import SideNav from "./components/SideNav";
 import Loading from "@/components/loading";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import shadows from "@mui/material/styles/shadows";
 // import primary from "@mui/material/colors/deepPurple";
 const theme = createTheme({
-  shape: {
-    borderRadius: 8,
+  // shape: {
+  //   borderRadius: 8,
+  // },
+  shadows: shadows.map((item, index) => (index === 2 ? "none" : item)) as any,
+
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+        },
+      },
+    },
   },
   palette: {
     // primary,
@@ -15,7 +34,7 @@ const theme = createTheme({
 export const AppSuspenseFallback = () => {
   return (
     <div className="h-screen flex justify-center items-center">
-      <Loading size={30} />
+      <Loading />
     </div>
   );
 };

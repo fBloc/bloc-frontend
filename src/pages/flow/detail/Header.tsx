@@ -14,12 +14,12 @@ import { copyAsDraft, triggerRun } from "@/api/flow";
 type HeaderProps = React.HTMLAttributes<HTMLDivElement> & {
   tab?: string;
   loading?: boolean;
-  onExcuteSuccess?: () => void;
 };
 
-const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, onExcuteSuccess, ...rest }) => {
+const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, ...rest }) => {
   const flow = useRecoilValue(flowDetailState);
   const [infoVisible, setInfoVisible] = useState(false);
+  const navigate = useNavigate();
   const showInfo = useCallback(() => {
     setInfoVisible(true);
   }, []);
@@ -27,13 +27,13 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, onExcu
     setInfoVisible(false);
   }, []);
   const excuteMutation = useMutation(triggerRun, {
-    onSuccess: ({ isValid }) => {
+    onSuccess: ({ isValid, data }) => {
       if (isValid) {
         showToast({
           children: "已触发",
           autoHideDuration: 1500,
         });
-        onExcuteSuccess?.();
+        navigate(`/flow/history/${data?.flow_run_record_id}?id=${flow?.originId}`);
       }
     },
   });
@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, onExcu
   }, []);
   const visible = useMemo(() => target !== null, [target]);
   const createDraftFlowMutation = useMutation(copyAsDraft);
-  const navigate = useNavigate();
+
   return (
     <>
       <header className={classNames("pr-2 bg-white shadow-sm", className)} {...rest}>

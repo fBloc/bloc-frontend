@@ -20,12 +20,12 @@ export const absConnectableParams = selector({
     const source = get(tempConnectionSource);
     if (!source) return [];
     const nodes = get(blocNodeList);
-    const nodeIds = get(connectableNodeIds)
+    const nodeItems = get(connectableNodeIds)
       .map((id) => nodes.find((node) => node.id === id))
       .filter(isTruthyValue);
     const sourceParam =
       nodes.find((node) => node.id === source.nodeId)?.paramOpt.find((param) => param.key === source.param) || null;
-    return collectAbsoluteConnctableParams(nodeIds, sourceParam);
+    return collectAbsoluteConnctableParams(nodeItems, sourceParam);
   },
 });
 
@@ -35,11 +35,11 @@ export const mayConnectableParams = selector({
     const source = get(tempConnectionSource);
     if (!source) return [];
     const nodes = get(blocNodeList);
-    const nodeIds = get(connectableNodeIds)
+    const nodeItems = get(connectableNodeIds)
       .map((id) => nodes.find((node) => node.id === id))
       .filter(isTruthyValue);
     const sourceParam =
       nodes.find((node) => node.id === source.nodeId)?.paramOpt.find((param) => param.key === source.param) || null;
-    return collectMayConnectableParams(nodeIds, sourceParam);
+    return collectMayConnectableParams(nodeItems, sourceParam);
   },
 });

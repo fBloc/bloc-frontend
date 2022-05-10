@@ -39,7 +39,7 @@ const Result = () => {
   if (loading)
     return (
       <div className="h-screen flex items-center justify-center">
-        <Loading open={true} size={50} />
+        <Loading />
       </div>
     );
   if (!data.data)

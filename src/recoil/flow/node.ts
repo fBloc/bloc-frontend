@@ -1,6 +1,6 @@
 import { atom, atomFamily, selector, selectorFamily } from "recoil";
 import { Node } from "react-flow-renderer";
-import { OriginBlocRecordDetail, FullStateAtom, BlocRecordDetail } from "@/api/flow";
+import { FullStateAtom, BlocRecordDetail } from "@/api/flow";
 import { BlocNodeData, BlocNodeItem } from "@/shared/types";
 import { DEFAULT_EDIT_ATOM_DESCCRIPTOR } from "@/shared/defaults";
 import { collectConnectableNodeIds, extractNodes, flatParamAtoms, withSourceParamStateNodes } from "@/processors";

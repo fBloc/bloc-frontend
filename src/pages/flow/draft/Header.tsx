@@ -13,12 +13,14 @@ import { launch, deleteDraft } from "@/api/flow";
 import { showToast } from "@/components/toast";
 import { useUpdateFlow } from "@/recoil/hooks/useUpdateFlow";
 import { useMutation } from "react-query";
-
+import { useSyncFlow } from "@/recoil/hooks/useSave";
+import { useCheckFlow } from "@/recoil/hooks/useCheckFlow";
 const DraftFlowHeader = () => {
   const flow = useRecoilValue(flowDetailState);
   const navigate = useNavigate();
-
+  const syncFlow = useSyncFlow();
   const deleteDraftMutaion = useMutation(deleteDraft);
+  const check = useCheckFlow();
   const launchFlowMutation = useMutation(launch, {
     onSuccess: ({ isValid, data }) => {
       if (isValid) {
@@ -30,6 +32,7 @@ const DraftFlowHeader = () => {
       }
     },
   });
+  const saveDraftMutation = useMutation(syncFlow);
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const handleClose = useCallback(() => {
     setAnchor(null);
@@ -44,7 +47,6 @@ const DraftFlowHeader = () => {
           <FaEllipsisV size={12} />
         </IconButton>
 
-        <Button variant="outlined">自动规整</Button>
         <Button
           color="primary"
           variant="contained"
@@ -53,7 +55,19 @@ const DraftFlowHeader = () => {
             ml: 2,
           }}
           onClick={async () => {
-            await launchFlowMutation.mutateAsync(flow?.id || "");
+            // preflight
+            const error = check();
+            if (error) {
+              showToast({
+                children: error.message,
+                autoHideDuration: 1500,
+              });
+              return;
+            }
+            const { isValid } = await saveDraftMutation.mutateAsync(); //  再保存一次
+            if (isValid) {
+              await launchFlowMutation.mutateAsync(flow?.id || "");
+            }
           }}
         >
           <FaRegPaperPlane className="inline-block mr-2" size={12} />

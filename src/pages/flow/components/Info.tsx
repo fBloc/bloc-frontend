@@ -36,7 +36,7 @@ const Info: React.FC<DialogProps> = ({ className, ...rest }) => {
     <Dialog maxWidth="sm" {...rest}>
       <div className={classNames(className, "p-4")}>
         <DialogTitle className="flex justify-between !p-0">
-          <span>运行信息</span>
+          <span>基本信息</span>
           <IconButton
             onClick={(e) => {
               rest.TransitionProps?.onExit?.(e.currentTarget);

@@ -1,17 +1,15 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { TabPanel } from "@/components";
-import { createCmdComponent } from "@/shared/createCmdComponent";
 import classNames from "classnames";
 import { getBlocRecordDetail, ResultPreview } from "@/api/flow";
 import { getRunningIcon, getRunningStateClass, getRunningStateText, RunningStatusEnum } from "@/shared/enums";
 import { FaTimes } from "@/components/icons";
 import { diffSeconds, readableTime } from "@/shared/time";
-import { recordAttrs } from "@/recoil/flow/record";
+import { operationAttrs, resultAttrs } from "@/recoil/flow/operation";
 import { Dialog, DialogTitle, IconButton, Divider, Tabs, Tab, DialogProps } from "@mui/material";
-export type BlocRecordProps = DialogProps;
 
 type DataZoneProps = React.HTMLAttributes<HTMLDivElement> & {
   preview?: ResultPreview;
@@ -42,34 +40,48 @@ const DataZone: React.FC<DataZoneProps> = ({ preview, className, children, ...re
   );
 };
 
-const BlocRecord: React.FC<BlocRecordProps> = ({ open, className, TransitionProps, ...rest }) => {
+const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ...rest }) => {
   const { onExited, onExit, ...restTransitionProps } = TransitionProps || {};
-  const attrs = useRecoilValue(recordAttrs);
+  const attrs = useRecoilValue(resultAttrs);
+  const setOperationAttrs = useSetRecoilState(operationAttrs);
   const currentFunction = useMemo(() => attrs.nodeData?.function, [attrs]);
   const [type, setType] = useState<"input" | "output">("input");
   const recordId = useMemo(() => attrs.nodeData?.latestRunningInfo?.recordId, [attrs]);
-  const { data } = useQuery(["getBlocRecordDetail", recordId], () => getBlocRecordDetail(recordId || ""), {
+  const { data } = useQuery(["getBlocResult", recordId], () => getBlocRecordDetail(recordId || ""), {
     refetchOnWindowFocus: false,
-    enabled: !!recordId,
+    enabled: !!recordId && attrs.open,
   });
-  const record = useMemo(() => data?.data, [data]);
+  const resultDetail = useMemo(() => data?.data, [data]);
   const stateCode = useMemo(() => attrs.nodeData?.latestRunningInfo?.status, [attrs]);
-
-  const onFullExited = useCallback(
+  const onInternalExit = useCallback(
+    (e: HTMLElement) => {
+      onExit?.(e);
+      setOperationAttrs((previous) => ({
+        ...previous,
+        open: false,
+      }));
+    },
+    [setOperationAttrs, onExit],
+  );
+  const onInternalExited = useCallback(
     (e: HTMLElement) => {
       onExited?.(e);
       setType("input");
+      setOperationAttrs((previous) => ({
+        ...previous,
+        nodeId: "",
+      }));
     },
-    [onExited],
+    [onExited, setOperationAttrs],
   );
   return (
     <Dialog
       maxWidth="md"
       fullWidth
-      open={open ?? false}
+      open={attrs.open}
       TransitionProps={{
-        onExited: onFullExited,
-        onExit,
+        onExited: onInternalExited,
+        onExit: onInternalExit,
         ...restTransitionProps,
       }}
       {...rest}
@@ -78,7 +90,7 @@ const BlocRecord: React.FC<BlocRecordProps> = ({ open, className, TransitionProp
         <span></span>
         <IconButton
           onClick={(e) => {
-            onExit?.(e.currentTarget);
+            onInternalExit(e.currentTarget);
           }}
         >
           <FaTimes size={14} />
@@ -98,25 +110,25 @@ const BlocRecord: React.FC<BlocRecordProps> = ({ open, className, TransitionProp
             <div className="ml-2">
               <p className="font-medium">{getRunningStateText(stateCode)}</p>
 
-              {record?.errorMsg && <p className="text-xs mt-1">{record?.errorMsg}</p>}
+              {resultDetail?.errorMsg && <p className="text-xs mt-1">{resultDetail?.errorMsg}</p>}
             </div>
           </div>
 
           <div className="mt-4">
             <p className="text-gray-400 text-xs">触发时间</p>
-            <p>{readableTime(record?.trigger)}</p>
+            <p>{readableTime(resultDetail?.trigger)}</p>
           </div>
           <div className="my-4">
             <p className="text-gray-400 text-xs">开始运行时间</p>
-            <p>{readableTime(record?.start)}</p>
+            <p>{readableTime(resultDetail?.start)}</p>
           </div>
           <div>
             <p className="text-gray-400 text-xs">结束运行时间</p>
-            <p>{readableTime(record?.end)}</p>
+            <p>{readableTime(resultDetail?.end)}</p>
           </div>
           <div className="my-4">
             <p className="text-gray-400 text-xs">历时</p>
-            <p>{diffSeconds(record?.start, record?.end)}</p>
+            <p>{diffSeconds(resultDetail?.start, resultDetail?.end)}</p>
           </div>
         </div>
         <Divider orientation="vertical" sx={{ mx: 4, alignSelf: "stretch" }} />
@@ -147,7 +159,7 @@ const BlocRecord: React.FC<BlocRecordProps> = ({ open, className, TransitionProp
                   {ipt.atoms.map((_, atomIndex) => (
                     <DataZone
                       key={atomIndex}
-                      preview={record?.ipt?.[iptIndex]?.[atomIndex]}
+                      preview={resultDetail?.ipt?.[iptIndex]?.[atomIndex]}
                       className="mr-4 w-[300px] min-h-[90px]"
                     />
                   ))}
@@ -175,7 +187,7 @@ const BlocRecord: React.FC<BlocRecordProps> = ({ open, className, TransitionProp
                     <div key={opt.key} className="mt-6 w-[300px] min-h-[90px]">
                       <p className="mb-0.5">{opt.description || "暂无描述"}</p>
                       <p className="font-mono bloc-description">{opt.key}</p>
-                      <DataZone preview={record?.opt?.[opt.key]} className="mt-2" />
+                      <DataZone preview={resultDetail?.opt?.[opt.key]} className="mt-2" />
                     </div>
                   ))}
                 </>
@@ -183,10 +195,8 @@ const BlocRecord: React.FC<BlocRecordProps> = ({ open, className, TransitionProp
             </>
           </TabPanel>
         </div>
-        {/* <div className="mx-6 w-96 bg-gray-600 rounded-lg h-full"></div> */}
       </div>
     </Dialog>
   );
 };
-export default BlocRecord;
-export const showRecord = createCmdComponent(BlocRecord, false);
+export default BlocReresult;

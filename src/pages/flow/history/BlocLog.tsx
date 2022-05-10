@@ -1,53 +1,60 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { useQuery } from "react-query";
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { Drawer, DrawerProps, IconButton, DialogTitle, Divider, CircularProgress } from "@mui/material";
 import { getLog } from "@/api/bloc";
 import { FaTimes } from "@/components/icons";
-import { recordLogAttrs } from "@/recoil/flow/record";
+import { logAttrs, operationAttrs } from "@/recoil/flow/operation";
 import { diffSeconds } from "@/shared/time";
 import { getRunningIcon, getRunningStateClass, getRunningStateText, RunningStatusEnum } from "@/shared/enums";
 
 export type BlocLogProps = DrawerProps & {};
 const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => {
+  const ref = useRef<HTMLDivElement | null>(null);
   const { onExit, onExited, ...restSlideProps } = SlideProps || {};
-  const [logAttrs, setLogAttrs] = useRecoilState(recordLogAttrs);
-  const recordId = useMemo(() => logAttrs.record?.recordId || "", [logAttrs]);
-  const {
-    data: logData,
-    isLoading,
-    isFetching,
-  } = useQuery(["getRecordLogData", recordId], () => getLog(recordId || ""), {
-    enabled: !!recordId,
+  const internalLogAttrs = useRecoilValue(logAttrs);
+  const setOperationAttrs = useSetRecoilState(operationAttrs);
+  const record = useMemo(() => internalLogAttrs.nodeData?.latestRunningInfo, [internalLogAttrs]);
+  const recordId = useMemo(() => record?.recordId || "", [record]);
+  const { data: logData, isFetching } = useQuery(["getRecordLogData", recordId], () => getLog(recordId || ""), {
+    enabled: !!recordId && internalLogAttrs.open,
     refetchOnWindowFocus: false,
-    refetchInterval: logAttrs.record?.status === RunningStatusEnum.running ? 2000 : false,
+    refetchInterval: record?.status === RunningStatusEnum.running ? 2000 : false,
+    onSuccess: ({ isValid }) => {
+      if (isValid) {
+        setTimeout(() => {
+          if (ref.current) {
+            ref.current.scrollTop = 9999;
+          }
+        }, 0);
+      }
+    },
   });
   const onInternalExit = useCallback(
     (e: HTMLElement) => {
       onExit?.(e);
-      setLogAttrs((previous) => ({
+      setOperationAttrs((previous) => ({
         ...previous,
         open: false,
       }));
     },
-    [onExit, setLogAttrs],
+    [onExit, setOperationAttrs],
   );
   const onInternalExited = useCallback(
     (e: HTMLElement) => {
-      setLogAttrs((previous) => ({
+      setOperationAttrs((previous) => ({
         ...previous,
-        record: null,
-        node: null,
+        nodeId: "",
       }));
       onExited?.(e);
     },
-    [onExited, setLogAttrs],
+    [onExited, setOperationAttrs],
   );
   return (
     <Drawer
-      open={logAttrs.open}
+      open={internalLogAttrs.open}
       anchor="bottom"
       SlideProps={{
         ...restSlideProps,
@@ -58,7 +65,7 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
       {...rest}
     >
       <DialogTitle className="flex items-center justify-between">
-        <span>{logAttrs.node?.note || logAttrs.node?.function?.name}</span>
+        <span>{internalLogAttrs.nodeData?.note || internalLogAttrs.nodeData?.function?.name}</span>
         <IconButton
           sx={{
             ml: "auto",
@@ -73,19 +80,15 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
       <Divider />
       <div className="p-4">
         <div className="flex items-center">
-          <p className={getRunningStateClass(logAttrs.record?.status)}>
-            {getRunningIcon(logAttrs.record?.status, "mr-0.5")}
-          </p>
+          <p className={getRunningStateClass(record?.status)}>{getRunningIcon(record?.status, "mr-0.5")}</p>
           <div className="ml-2">
-            <p className="font-medium">{getRunningStateText(logAttrs.record?.status)}</p>
-            {logAttrs.record?.status && logAttrs.record.status > RunningStatusEnum.running && (
-              <p className="mt-1 text-xs text-gray-400">
-                历时{diffSeconds(logAttrs.record?.startTime, logAttrs.record?.endTime)}
-              </p>
+            <p className="font-medium">{getRunningStateText(record?.status)}</p>
+            {record?.status && record.status > RunningStatusEnum.running && (
+              <p className="mt-1 text-xs text-gray-400">历时{diffSeconds(record?.startTime, record?.endTime)}</p>
             )}
           </div>
         </div>
-        <div className="mt-4 bg-gray-500 rounded-lg p-4 h-96 overflow-auto">
+        <div className="mt-4 bg-gray-500 rounded-lg p-4 h-96 overflow-auto" ref={ref}>
           {logData?.data?.map((item, index) => (
             <div key={index} className={classNames("px-2 py-1 flex items-center mb-1 text-white", {})}>
               <p

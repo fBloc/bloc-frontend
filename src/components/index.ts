@@ -1,6 +1,3 @@
-export { default as Button } from "./button";
-export * from "./button";
-
 export * from "./transition";
 
 export { default as Portal } from "./portal";
@@ -37,9 +34,6 @@ export * from "./list";
 
 export { default as Switch } from "./switch";
 
-export { default as Dialog } from "./dialog";
-export * from "./dialog";
-
 export { default as Empty } from "./empty";
 export * from "./empty";
 
@@ -55,6 +49,3 @@ export * from "./textarea";
 export { default as Drawer } from "./drawer";
 export * from "./confirm";
 export { default as Confirm } from "./confirm";
-
-export { default as Prompt } from "./prompt";
-export * from "./prompt";

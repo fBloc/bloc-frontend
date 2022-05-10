@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Tooltip } from "@mui/material";
-import { Button, Input, InputProps } from "@/components";
+import { Input, InputProps } from "@/components";
 import { FaPlus, FaTrashAlt } from "@/components/icons";
 import { FormControlType, ParamValueType } from "@/shared/enums";
 import { handleStringChange } from "@/shared/form";

@@ -5,6 +5,8 @@ import NodeViewer from "./NodeViewer";
 import FlowBody from "../components/FlowBody";
 import { useBoard } from "./useBoard";
 import RemoveConnection from "./RemoveConnection";
+import { tempConnectionSource } from "@/recoil/flow/connections";
+import { useRecoilValue } from "recoil";
 
 type NodeT = ReturnType<typeof useNodesState>;
 type EdgeT = ReturnType<typeof useEdgesState>;

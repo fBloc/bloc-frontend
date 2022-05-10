@@ -166,10 +166,11 @@ export function withSourceParamStateNodes(
       ...node,
       paramIpt: node.paramIpt.map((param) => {
         let status = MergedIptParamStatus.unavaliable;
-        if (mayConnectableParams.includes(param.key)) {
+        const key = `${node.id}_${param.key}`;
+        if (mayConnectableParams.includes(key)) {
           status = MergedIptParamStatus.indeterminate;
         }
-        if (absConnectableParams.includes(param.key)) {
+        if (absConnectableParams.includes(key)) {
           status = MergedIptParamStatus.avaliable;
         }
         if (!connectableNodeIds.includes(node.id)) {

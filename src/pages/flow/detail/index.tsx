@@ -9,13 +9,10 @@ import Settings from "../components/Settings";
 import { FaCog, FaHistory, FaProjectDiagram } from "@/components/icons";
 import { SideTab, SideTabProps } from "./SideTab";
 import { useQuery } from "react-query";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { flowDetailState, projectSettings } from "@/recoil/flow/flow";
 import { useReadonlyBoard } from "@/recoil/hooks/useReadonlyBoard";
 import { useResetFlowWhenDestroy } from "@/recoil/hooks/useResetFlow";
-import BlocRecord from "../components/BlocRecord";
-import { recordAttrs } from "@/recoil/flow/record";
-import BlocLog from "../components/BlocLog";
 import { FlowDisplayPage } from "@/shared/enums";
 
 const sideTabItems: SideTabProps<string>["items"] = [
@@ -55,9 +52,8 @@ const Detail = () => {
   const setProject = useSetRecoilState(projectSettings);
 
   useResetFlowWhenDestroy();
-  const { isLoading, refetch } = useQuery(["fetchFlowDetail", originId], () => getDetail(originId), {
+  const { isLoading } = useQuery(["fetchFlowDetail", originId], () => getDetail(originId), {
     enabled: !!originId,
-    // onSuccess: updateQueryState(setFlow),
     onSuccess: ({ data }) => {
       setFlow(data);
       setProject((previous) => ({
@@ -68,14 +64,13 @@ const Detail = () => {
     refetchOnWindowFocus: false,
   });
   const { nodes, edges } = useReadonlyBoard();
-  const [attrs, setRecordDialogAttrs] = useRecoilState(recordAttrs);
   const [searchParams] = useSearchParams();
   const tab = normalzieTab(searchParams.get("tab"));
 
   return (
     <div className="h-screen flex flex-col relative">
       <Board loadingFlow={isLoading}>
-        <Header tab={tab} className="shadow-sm relative" onExcuteSuccess={refetch} />
+        <Header tab={tab} className="shadow-sm relative" />
         <div className="flex-grow flex overflow-hidden">
           <SideTab items={sideTabItems} value={tab} />
           <div className="bg-gray-50 overflow-y-auto flex-grow">
@@ -83,24 +78,6 @@ const Detail = () => {
             {tab === "history" && <History />}
             {tab === "settings" && <Settings />}
           </div>
-          <BlocRecord
-            open={attrs.open}
-            TransitionProps={{
-              onExited: () => {
-                setRecordDialogAttrs({
-                  ...attrs,
-                  nodeData: null,
-                });
-              },
-              onExit: () => {
-                setRecordDialogAttrs({
-                  ...attrs,
-                  open: false,
-                });
-              },
-            }}
-          />
-          <BlocLog />
         </div>
       </Board>
     </div>

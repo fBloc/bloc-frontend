@@ -1,14 +1,14 @@
 import React from "react";
 import { useSetRecoilState } from "recoil";
 import { getBezierPath, getEdgeCenter, EdgeProps } from "react-flow-renderer";
-import { FaTrashAlt, FaTimes } from "@/components/icons";
-import { Tooltip } from "@mui/material";
+import { FaTimes } from "@/components/icons";
+import { Tooltip, Button } from "@mui/material";
 import { EdgeData } from "@/shared/types";
 import { FlowDisplayPage } from "@/shared/enums";
 import { useRemoveConnection } from "@/recoil/hooks/useRemoveConnection";
 import { beingRemovedConnectionAttrs } from "@/recoil/flow/connections";
 
-const foreignObjectSize = 30;
+const foreignObjectSize = 20;
 
 export default function CustomEdge({
   id,
@@ -61,8 +61,17 @@ export default function CustomEdge({
             </button> */}
             <div className="h-full flex items-center justify-between absolute w-full">
               <Tooltip title="解除关联">
-                <button
-                  className="w-full h-[30px] bg-gray-100 rounded-full inline-flex justify-center items-center hover:bg-gray-200 text-red-400"
+                <Button
+                  disableElevation
+                  sx={{
+                    minWidth: 0,
+                    width: foreignObjectSize,
+                    height: foreignObjectSize,
+                    padding: 0,
+                    borderRadius: foreignObjectSize / 2,
+                  }}
+                  variant="contained"
+                  color="inherit"
                   onClick={(e) => {
                     e.stopPropagation();
 
@@ -90,8 +99,8 @@ export default function CustomEdge({
                     }
                   }}
                 >
-                  <FaTimes size={14} />
-                </button>
+                  <FaTimes size={12} />
+                </Button>
               </Tooltip>
             </div>
           </div>

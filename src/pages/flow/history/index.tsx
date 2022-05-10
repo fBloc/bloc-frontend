@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { useQuery } from "react-query";
 import { getDetail, getSomeHistoryDetail } from "@/api/flow";
 import FlowBody from "../components/FlowBody";
 import Board from "../components/Board";
 import HeaderBar from "./Header";
-import BlocRecord from "../components/BlocRecord";
-import { useQuery } from "react-query";
+import BlocResult from "./BlocResult";
 import { flowDetailState, projectSettings } from "@/recoil/flow/flow";
 import { FlowDisplayPage, RunningStatusEnum } from "@/shared/enums";
-import { recordAttrs, recordLogAttrs } from "@/recoil/flow/record";
+import { operationAttrs, RunningHistoryOperation } from "@/recoil/flow/operation";
 import { useReadonlyBoard } from "@/recoil/hooks/useReadonlyBoard";
-import BlocLog from "../components/BlocLog";
-import { getQuery } from "@/shared/tools";
-import { BlocNodeData } from "@/shared/types";
-
+import BlocLog from "./BlocLog";
 interface Ids {
   originId?: string;
   versionId?: string;
@@ -26,14 +23,28 @@ const getFlow = ({ originId, versionId }: Ids) => {
 
 const FlowHistory = () => {
   const { versionId } = useParams<"versionId">();
-  const [attrs, setRecordAttrs] = useRecoilState(recordAttrs);
   const [query] = useSearchParams();
   const node = query.get("node");
   const operation = query.get("operation");
-  const setLogAttrs = useSetRecoilState(recordLogAttrs);
   const [flow, setFlow] = useRecoilState(flowDetailState);
+  const [attrs, setOperationAttrs] = useRecoilState(operationAttrs);
   const setProject = useSetRecoilState(projectSettings);
   const [initited, setInitiated] = useState(false);
+  const { nodes, edges } = useReadonlyBoard();
+
+  const setNodeOperation = useCallback(
+    (operation: RunningHistoryOperation, nodeId: string) => {
+      if (!nodeId) return;
+      const isValidOperation = [RunningHistoryOperation.LOG, RunningHistoryOperation.RESULT].includes(operation);
+      if (!isValidOperation) return;
+      setOperationAttrs({
+        open: true,
+        operation: operation,
+        nodeId,
+      });
+    },
+    [setOperationAttrs],
+  );
   const { isLoading } = useQuery(
     ["getFlow", versionId],
     () =>
@@ -53,52 +64,18 @@ const FlowHistory = () => {
       },
     },
   );
-  const { nodes, edges } = useReadonlyBoard();
   useEffect(() => {
     if (!node || !operation || !nodes || nodes.length === 0 || initited) return;
-    const nodeData = nodes.find((item) => item.id === node)?.data as BlocNodeData;
-    if (!nodeData) return;
-    switch (operation) {
-      case "log":
-        setLogAttrs({
-          open: true,
-          record: nodeData.latestRunningInfo,
-          node: nodeData,
-        });
-        break;
-      case "record":
-        setRecordAttrs({
-          open: true,
-          nodeData,
-        });
-      default:
-      //
-    }
+    setNodeOperation(operation as any, node);
     setInitiated(true);
-  }, [node, operation, nodes, setLogAttrs, setRecordAttrs, initited]);
+  }, [node, operation, nodes, initited, setNodeOperation]);
   return (
     <Board loadingFlow={isLoading}>
       <HeaderBar className="fixed left-2 top-2 right-2 z-10" />
       <div className="h-screen bg-gray-50">
         <FlowBody nodes={nodes} edges={edges} />
       </div>
-      <BlocRecord
-        open={attrs.open}
-        TransitionProps={{
-          onExit: () => {
-            setRecordAttrs({
-              ...attrs,
-              open: false,
-            });
-          },
-          onExited: () => {
-            setRecordAttrs({
-              ...attrs,
-              nodeData: null,
-            });
-          },
-        }}
-      />
+      <BlocResult />
       <BlocLog />
     </Board>
   );

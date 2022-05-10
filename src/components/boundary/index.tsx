@@ -1,6 +1,6 @@
 import React from "react";
-import Button from "../button";
-import loadi from "./loading.svg";
+import { Button } from "@mui/material";
+import loadingIcon from "./loading.svg";
 class ErrorBoundary extends React.Component<{ hasError: boolean }> {
   constructor(props: any) {
     super(props);
@@ -20,7 +20,7 @@ class ErrorBoundary extends React.Component<{ hasError: boolean }> {
       return (
         <div className="h-screen flex justify-center items-center pb-40">
           <div className="text-center">
-            <img className="w-96" src={loadi} alt="" />
+            <img className="w-96" src={loadingIcon} alt="" />
 
             <p className="font-mono text-2xl">ops！出现了一个未知错误</p>
             <div
@@ -29,10 +29,13 @@ class ErrorBoundary extends React.Component<{ hasError: boolean }> {
                 window.location.href = `${import.meta.env.BASE_URL}flow`;
               }}
             >
-              <Button variant="plain">回到首页</Button>
+              <Button variant="outlined">回到首页</Button>
               <Button
-                className="ml-4"
-                intent="primary"
+                sx={{
+                  ml: 2,
+                }}
+                color="primary"
+                variant="contained"
                 onClick={() => {
                   window.location.reload();
                 }}

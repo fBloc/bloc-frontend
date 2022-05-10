@@ -9,7 +9,7 @@ import BaseNode from "./BaseNode";
 import { FnAtom } from "@/api/functions";
 import { BlocNodeData } from "@/shared/types";
 import { readableTime } from "@/shared/time";
-import { recordAttrs, recordLogAttrs } from "@/recoil/flow/record";
+import { operationAttrs, RunningHistoryOperation } from "@/recoil/flow/operation";
 import Sourcehandle, { VoidSourceHandle } from "../handles/SourceHandle";
 import TargetHandle, { VoidTargetHandle } from "../handles/TargetHandle";
 import EditNodeOpeations from "./EditNodeOpeations";
@@ -52,41 +52,31 @@ const askPermission = () => {
   });
 };
 const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, type, ...rest }) => {
-  const setRecordAttrs = useSetRecoilState(recordAttrs);
-  const setLogAttrs = useSetRecoilState(recordLogAttrs);
+  const setOperationAttrs = useSetRecoilState(operationAttrs);
   const flow = useRecoilValue(flowDetailState);
   const navigate = useNavigate();
-  const onRecordClick = useCallback(async () => {
-    switch (data.mode) {
-      case FlowDisplayPage.preview:
-        const confirmed = await askPermission();
-        if (confirmed) {
-          navigate(`/flow/history/${flow?.latestRun?.id}?id=${flow?.originId}&node=${data.id}&operation=record`);
-        }
-        break;
-      case FlowDisplayPage.history:
-        setRecordAttrs({
-          open: true,
-          nodeData: data,
-        });
-    }
-  }, [data, setRecordAttrs, flow, navigate]);
-  const viewLog = useCallback(async () => {
-    switch (data.mode) {
-      case FlowDisplayPage.preview:
-        const confirmed = await askPermission();
-        if (confirmed) {
-          navigate(`/flow/history/${flow?.latestRun?.id}?id=${flow?.originId}&node=${data.id}&operation=log`);
-        }
-        break;
-      case FlowDisplayPage.history:
-        setLogAttrs({
-          open: true,
-          record: data.latestRunningInfo,
-          node: data,
-        });
-    }
-  }, [data, setLogAttrs, flow, navigate]);
+
+  const onClick = useCallback(
+    async (operation: RunningHistoryOperation) => {
+      switch (data.mode) {
+        case FlowDisplayPage.preview:
+          const confirmed = await askPermission();
+          if (confirmed) {
+            navigate(
+              `/flow/history/${flow?.latestRun?.id}?id=${flow?.originId}&node=${data.id}&operation=${operation}`,
+            );
+          }
+          break;
+        case FlowDisplayPage.history:
+          setOperationAttrs({
+            open: true,
+            nodeId: data.id,
+            operation,
+          });
+      }
+    },
+    [data, flow, navigate, setOperationAttrs],
+  );
   const { showNodeViewer } = useNodeOperations();
 
   return (
@@ -112,7 +102,9 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
         <RunningState latestRunningInfo={data.latestRunningInfo}>
           <Tooltip title="查看日志" placement="bottom">
             <IconButton
-              onClick={viewLog}
+              onClick={() => {
+                onClick(RunningHistoryOperation.LOG);
+              }}
               sx={{
                 ml: "auto",
               }}
@@ -121,7 +113,11 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
             </IconButton>
           </Tooltip>
           <Tooltip title="数据详情" placement="bottom">
-            <IconButton onClick={onRecordClick}>
+            <IconButton
+              onClick={() => {
+                onClick(RunningHistoryOperation.RESULT);
+              }}
+            >
               <FaInfoCircle size={13} />
             </IconButton>
           </Tooltip>

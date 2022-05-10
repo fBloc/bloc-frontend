@@ -10,7 +10,7 @@ export function collectParams(
   return nodes.reduce((acc: string[], node) => {
     const ids = node.paramIpt.reduce((acc: string[], param) => {
       const validAtoms = param.atoms.filter(filter(sourceParam));
-      return [...acc, ...(validAtoms.length > 0 ? [param.key] : [])];
+      return [...acc, ...(validAtoms.length > 0 ? [`${node.id}_${param.key}`] : [])];
     }, []);
     return [...acc, ...ids];
   }, []);

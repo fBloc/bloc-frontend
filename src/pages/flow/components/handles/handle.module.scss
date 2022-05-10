@@ -12,7 +12,7 @@
 .param-handle{
   @apply flex items-center justify-center flex-shrink-0 border-solid hover:scale-110;
   @extend .handle;
-  background-color: white !important;
+  background-color: #fff !important;
   border-width: 3px !important;
   border-radius: 50% !important;
 }
