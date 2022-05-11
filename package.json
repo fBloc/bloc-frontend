@@ -70,7 +70,6 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "postcss": "^8.3.5",
     "prettier": "^2.3.2",
-    "rc-tooltip": "^5.1.1",
     "react-icons": "^4.3.1",
     "sass": "^1.43.5",
     "stylelint": "^13.13.1",

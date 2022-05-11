@@ -42,6 +42,7 @@ const getSchema = (atom: FullStateAtom) => {
       schema,
     };
   }
+
   switch (valueType) {
     case ParamValueType.bool:
       const booleanItemSchema = Yup.boolean();

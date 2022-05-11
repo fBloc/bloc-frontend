@@ -3,10 +3,11 @@ import { Handle, Position } from "react-flow-renderer";
 import classNames from "classnames";
 import { useQuery } from "react-query";
 import { useRecoilState } from "recoil";
-import { Popover, Divider, Tooltip, Snackbar } from "@mui/material";
+import { Popover, Divider } from "@mui/material";
+import { Tooltip } from "@/components";
 import { getBlocRecordDetail, StatefulMergedIptParam } from "@/api/flow";
 import { BLOC_FLOW_HANDLE_ID } from "@/shared/constants";
-import { FlowDisplayPage, MergedIptParamStatus } from "@/shared/enums";
+import { FlowDisplayPage, IptWay, MergedIptParamStatus } from "@/shared/enums";
 import { TextFallback } from "@/shared/jsxUtils";
 import { BlocNodeData, Connectable } from "@/shared/types";
 import { FaExclamationCircle, FaCheckCircle } from "@/components/icons";
@@ -16,6 +17,14 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 const percentage = (value: number) => {
   return `${Math.round(value * 100)}%`;
+};
+
+const getIptWayText = (iptway: IptWay) => {
+  const texts = {
+    [IptWay.UserIpt]: "用户输入",
+    [IptWay.Connection]: "关联",
+  };
+  return texts[iptway];
 };
 const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNodeData } & Connectable> = ({
   detail,
@@ -56,21 +65,27 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
           }
         }}
       >
-        <Handle
-          isConnectable={false}
-          type="target"
-          id={detail.key}
-          position={Position.Top}
-          className={classNames(
-            styles["target-handle"],
-            detail.status === MergedIptParamStatus.avaliable ? "!border-green-300" : "",
-            detail.status === MergedIptParamStatus.indeterminate ? "!border-yellow-300" : "",
-            detail.status === MergedIptParamStatus.unavaliable
-              ? "!bg-gray-100 !border-gray-100 hover:!border-red-400"
-              : "",
-            "hover:!border-gray-400",
-          )}
-        />
+        <Tooltip
+          title={
+            [FlowDisplayPage.preview, FlowDisplayPage.history].includes(nodeData.mode) ? "点击查看数据详情" : false
+          }
+        >
+          <Handle
+            isConnectable={false}
+            type="target"
+            id={detail.key}
+            position={Position.Top}
+            className={classNames(
+              styles["target-handle"],
+              detail.status === MergedIptParamStatus.avaliable ? "!border-green-300" : "",
+              detail.status === MergedIptParamStatus.indeterminate ? "!border-yellow-300" : "",
+              detail.status === MergedIptParamStatus.unavaliable
+                ? "!bg-gray-100 !border-gray-100 hover:!border-red-400"
+                : "",
+              "hover:!border-gray-400",
+            )}
+          />
+        </Tooltip>
         {nodeData.isConnecting ? (
           <div
             className={classNames(
@@ -94,7 +109,7 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
                 },
                 path: {
                   strokeLinecap: "butt",
-                  stroke: "#2e7d32",
+                  stroke: "#4ade80",
                 },
                 trail: {
                   stroke: "white",
@@ -128,27 +143,36 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
         }}
       >
         <div className="w-60 p-3">
-          {readFlowMode ? (
+          {nodeData.mode === FlowDisplayPage.draft && (
             <>
-              <div className="text-gray-400">
+              {/* <div className="text-gray-400">
                 <span>已完成: {percentage(detail.progress)}</span>
               </div>
-              <Divider sx={{ my: 2 }} />
-
+              <Divider sx={{ my: 2 }} /> */}
               <p>{TextFallback(detail.description, "缺少描述")}</p>
               <p className="text-xs text-gray-400">{detail.key}</p>
-              <ul className="mt-1 pl-4 opacity-80">
+              <Divider sx={{ my: 2 }} />
+
+              <ul>
                 {detail.atoms?.map((atom, i) => (
-                  <li key={i} className="list-disc my-3">
-                    <p className="mr-1 scale-90 inline-flex items-center">
-                      <span className="rounded bg-gray-100 px-2 py-0.5">子项 {i + 1}</span>
-                      {!atom.unset && <FaCheckCircle className="ml-2 text-green-400" size={14} />}
-                    </p>
-                    <p className="mt-1">{TextFallback(atom.description, "缺少描述")}</p>
+                  <li key={i} className="mt-2">
+                    <div className="text-xs text-gray-400">
+                      {i + 1}. {TextFallback(atom.description, "缺少描述")}
+                    </div>
+                    <div className="mt-1 bg-gray-100 rounded">
+                      {!atom.unset && atom.iptWay === IptWay.UserIpt && (
+                        <div className="p-2 bg-gray-500 text-white rounded-t text-sm simple-ellipsis">
+                          {atom.readableValue}
+                        </div>
+                      )}
+                      <p className="text-xs p-1 text-gray-400 flex items-center justify-between">
+                        {atom.unset ? "未设置" : `通过 ${getIptWayText(atom.iptWay)} 设置`}
+                        {!atom.unset && <FaCheckCircle className="ml-2 text-green-400" size={12} />}
+                      </p>
+                    </div>
                   </li>
                 ))}
               </ul>
-
               {detail.status === MergedIptParamStatus.unavaliable && nodeData.isConnecting && (
                 <div className="mt-2 mb-1 text-red-400 flex items-center">
                   <FaExclamationCircle className="mr-1" />
@@ -156,18 +180,53 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
                 </div>
               )}
             </>
-          ) : (
+          )}
+          {nodeData.mode === FlowDisplayPage.flow && (
             <>
-              <p className="text-sm">{TextFallback(detail.description, "缺少描述")}</p>
-              <p className="text-gray-400 text-xs">{detail.key}</p>
-              <Divider sx={{ mt: 2 }} />
+              <p>{TextFallback(detail.description, "缺少描述")}</p>
+              <p className="text-xs text-gray-400">{detail.key}</p>
+              <Divider sx={{ my: 2 }} />
+
               <ul>
                 {detail.atoms?.map((atom, i) => (
-                  <li key={i} className="mt-4">
+                  <li key={i} className="mt-2">
                     <div className="text-xs text-gray-400">
                       {i + 1}. {TextFallback(atom.description, "缺少描述")}
                     </div>
-                    <div className="mt-1.5 p-2 bg-gray-100 rounded text-sm simple-ellipsis">
+                    <div className="mt-1 bg-gray-100 rounded">
+                      {!atom.unset && atom.iptWay === IptWay.UserIpt && (
+                        <div className="p-2 bg-gray-500 text-white rounded-t text-sm simple-ellipsis">
+                          {atom.readableValue}
+                        </div>
+                      )}
+                      <p className="text-xs p-1 text-gray-400 flex items-center justify-between">
+                        {atom.unset ? "未设置" : `通过 ${getIptWayText(atom.iptWay)} 设置`}
+                        {!atom.unset && <FaCheckCircle className="ml-2 text-green-400" size={12} />}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              {detail.status === MergedIptParamStatus.unavaliable && nodeData.isConnecting && (
+                <div className="mt-2 mb-1 text-red-400 flex items-center">
+                  <FaExclamationCircle className="mr-1" />
+                  当前节点不可匹配
+                </div>
+              )}
+            </>
+          )}
+          {[FlowDisplayPage.history, FlowDisplayPage.preview].includes(nodeData.mode) && (
+            <>
+              <p className="text-sm">{TextFallback(detail.description, "缺少描述")}</p>
+              <p className="text-gray-400 text-xs">{detail.key}</p>
+              <Divider sx={{ mt: 1 }} />
+              <ul>
+                {detail.atoms?.map((atom, i) => (
+                  <li key={i} className="mt-2">
+                    <div className="text-xs text-gray-400 flex items-center justify-between">
+                      {i + 1}. {TextFallback(atom.description, "缺少描述")}
+                    </div>
+                    <div className="mt-1 p-2 bg-gray-500 text-white rounded text-sm simple-ellipsis">
                       {isLoading ? "loading..." : TextFallback(atoms[i]?.brief, "数据为空")}
                     </div>
                   </li>

@@ -47,5 +47,5 @@ export function correctValue({
           };
     });
   }
-  return (value as any)?.toString() || "";
+  return value;
 }

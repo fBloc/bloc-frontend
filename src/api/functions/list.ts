@@ -1,4 +1,3 @@
-import { ParamValueType } from "@/shared/enums";
 import request from "@/shared/request";
 import { OriginFunctionGroup } from "./originTypes";
 import { FunctionItem } from "./types";

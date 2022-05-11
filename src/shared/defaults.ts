@@ -26,6 +26,7 @@ export const DEFAULT_EDIT_ATOM_DESCCRIPTOR: FullStateAtom = {
   nodeId: "",
   parentParam: "",
   atomIndex: -1,
+  readableValue: "",
 };
 
 export const DEFAULT_SOURCE_PARAM: ParamOpt = {

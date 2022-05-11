@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ReactJson from "react-json-view";
 import { getStorageDetail } from "@/api/storage";
-import { AppSuspenseFallback } from "@/App";
 import { Loading } from "@/components";
-import { FaRegFrown } from "@/components/icons";
 const Result = () => {
   const { key } = useParams<"key">();
   const [data, setData] = useState<{ isJson: boolean; data: any }>({ isJson: false, data: "" });

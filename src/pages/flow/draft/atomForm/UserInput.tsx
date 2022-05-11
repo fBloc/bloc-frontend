@@ -25,7 +25,7 @@ type UserInputProps = TextFieldProps & {
 const UserInput: React.FC<UserInputProps> = ({ isArray, formType, valueType, name, ...props }) => {
   const { values } = useFormikContext();
   const inputType = useMemo(
-    () => ([ParamValueType.int, ParamValueType.int].includes(valueType) ? "number" : "text"),
+    () => ([ParamValueType.int, ParamValueType.float].includes(valueType) ? "number" : "text"),
     [valueType],
   );
   if (isArray) {

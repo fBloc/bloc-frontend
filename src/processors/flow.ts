@@ -2,7 +2,8 @@ import { EditAtom, FlowDetailT, FullStateAtom, ParamOpt, StatefulMergedIptParam 
 import { FunctionItem, IptParam } from "@/api/functions";
 import { correctValue } from "@/processors/correctAtomValue";
 import { DEFAULT_POSITION } from "@/shared/defaults";
-import { IptWay, MergedIptParamStatus } from "@/shared/enums";
+import { FormControlType, IptWay, MergedIptParamStatus } from "@/shared/enums";
+import { isTruthyValue } from "@/shared/tools";
 import { BlocNodeItem, ParamConnectionEnd } from "@/shared/types";
 import { getDefaultEditAtom } from "./node";
 
@@ -89,6 +90,21 @@ export const getDefaultEditParam = (ipt: IptParam): EditAtom[] => {
   return ipt.atoms.map(getDefaultEditAtom);
 };
 
+function getReadableValue(value: unknown, atom: Omit<FullStateAtom, "readableValue">) {
+  const { selectOptions, formType, iptWay } = atom;
+  if (iptWay === IptWay.Connection || !isTruthyValue(value)) return "";
+  const isValueArray = Array.isArray(value);
+  if (formType === FormControlType.select) {
+    const getLabel = (value: unknown) =>
+      (selectOptions?.find((option) => option.value === value)?.label || "").toString();
+    if (Array.isArray(value)) {
+      return value.map(getLabel).join(",");
+    }
+    return getLabel(value);
+  }
+  return isValueArray ? value.map((item) => item.toString()).join(",") : (value as string | number).toString();
+}
+
 export function mergeIpts(paramIpts: EditAtom[][], fn: FunctionItem | null, id: string): StatefulMergedIptParam[] {
   return (
     fn?.ipt.map((param, paramIndex) => {
@@ -97,10 +113,15 @@ export function mergeIpts(paramIpts: EditAtom[][], fn: FunctionItem | null, id: 
         ...param,
         atoms: param.atoms.map((atom, atomIndex) => {
           const currentAtom = currentParam[atomIndex];
+          const _value = correctValue({
+            ...currentAtom,
+            ...atom,
+          });
           const _atom: FullStateAtom = {
             ...currentAtom,
             ...atom,
-            value: correctValue({
+            value: _value,
+            readableValue: getReadableValue(_value, {
               ...currentAtom,
               ...atom,
             }),
@@ -197,6 +218,10 @@ export function withSourceParamStateNodes(
         }
         return {
           ...param,
+          atoms: param.atoms.map((atom) => ({
+            ...atom,
+            readableValue: getReadableValue(atom.value, atom),
+          })),
           status,
           progress: setedLength / all,
         };

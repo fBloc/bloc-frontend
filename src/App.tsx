@@ -1,9 +1,11 @@
-import React, { Suspense } from "react";
-import { useMatch, Outlet } from "react-router-dom";
-import SideNav from "./components/SideNav";
-import Loading from "@/components/loading";
+import React from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import RouterView from "./router";
+import { RecoilRoot } from "recoil";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import shadows from "@mui/material/styles/shadows";
+export const queryClient = new QueryClient();
+
 // import primary from "@mui/material/colors/deepPurple";
 const theme = createTheme({
   // shape: {
@@ -31,25 +33,15 @@ const theme = createTheme({
     // primary,
   },
 });
-export const AppSuspenseFallback = () => {
-  return (
-    <div className="h-screen flex justify-center items-center">
-      <Loading />
-    </div>
-  );
-};
+
 function App() {
-  const matchedRoute = useMatch("/*");
   return (
     <ThemeProvider theme={theme}>
-      <div className="flex">
-        {["/flow", "/about", "/functions"].includes(matchedRoute?.pathname || "") && <SideNav />}
-        <div className="flex-grow">
-          <Suspense fallback={<AppSuspenseFallback />}>
-            <Outlet />
-          </Suspense>
-        </div>
-      </div>
+      <QueryClientProvider client={queryClient}>
+        <RecoilRoot>
+          <RouterView />
+        </RecoilRoot>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

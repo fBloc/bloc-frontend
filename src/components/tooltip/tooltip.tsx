@@ -1,18 +1,12 @@
 import React from "react";
-import RcTooltip from "rc-tooltip";
-import { TooltipProps as RCTooltipProps } from "rc-tooltip/lib/Tooltip";
-import "rc-tooltip/assets/bootstrap.css";
+import { Tooltip as MdTooltip, TooltipProps } from "@mui/material";
 
-export type TooltipProps = {
-  content?: React.ReactNode;
-  children?: React.ReactElement;
-} & Omit<RCTooltipProps, "overlay">;
-
-const Tooltip = React.forwardRef<HTMLElement, TooltipProps>(({ children, content, ...rest }, ref) => {
+const Tooltip: React.FC<TooltipProps> = ({ title, children, ...rest }) => {
+  if (!title) return <>{children}</>;
   return (
-    <RcTooltip overlay={content} {...rest} ref={ref}>
+    <MdTooltip title={title} {...rest}>
       {children}
-    </RcTooltip>
+    </MdTooltip>
   );
-});
+};
 export default Tooltip;

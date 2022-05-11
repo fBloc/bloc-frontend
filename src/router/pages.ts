@@ -5,4 +5,5 @@ export const PAGES = {
   flowItem: "/flow/:id",
   functions: "/functions",
   root: "/",
+  admin: "/admin",
 };

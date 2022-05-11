@@ -41,9 +41,9 @@ export enum FlowListType {
 }
 
 const textClasses: Record<RunningStatusEnum, string> = {
-  [RunningStatusEnum.created]: "text-yellow-400",
-  [RunningStatusEnum.queue]: "text-yellow-400",
-  [RunningStatusEnum.running]: "text-yellow-400",
+  [RunningStatusEnum.created]: "text-warning",
+  [RunningStatusEnum.queue]: "text-warning",
+  [RunningStatusEnum.running]: "text-warning",
   [RunningStatusEnum.success]: "text-green-400",
   [RunningStatusEnum.systemCancel]: "text-red-400",
   [RunningStatusEnum.userCancel]: "text-red-400",
@@ -52,9 +52,9 @@ const textClasses: Record<RunningStatusEnum, string> = {
   [RunningStatusEnum.rejected]: "text-red-400",
 };
 const bgClasses: Record<RunningStatusEnum, string> = {
-  [RunningStatusEnum.created]: "bg-yellow-50",
-  [RunningStatusEnum.queue]: "bg-yellow-50",
-  [RunningStatusEnum.running]: "bg-yellow-50",
+  [RunningStatusEnum.created]: "bg-warning bg-opacity-10",
+  [RunningStatusEnum.queue]: "bg-warning bg-opacity-10",
+  [RunningStatusEnum.running]: "bg-warning bg-opacity-10",
   [RunningStatusEnum.success]: "bg-green-50",
   [RunningStatusEnum.systemCancel]: "bg-red-50",
   [RunningStatusEnum.userCancel]: "bg-red-50",

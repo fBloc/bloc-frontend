@@ -51,7 +51,11 @@ const AtomForm: React.FC<AtomFormProps> = ({ param, atomIndex, name, value, onCh
       if (name) {
         let _value = value;
         if ([ParamValueType.int, ParamValueType.float].includes(valueType)) {
-          _value = Number(value);
+          if (Array.isArray(value)) {
+            _value = value.map(Number);
+          } else {
+            _value = Number(value);
+          }
         }
         setFieldValue(name, _value);
       }

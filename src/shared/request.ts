@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { Nullable } from "@/shared/types";
 import { showToast } from "@/components/toast";
 import { isObject, mergeUrlQuery } from "./tools";
-import { identificationInstance } from "./Identification ";
+import { identificationInstance } from "./Identification";
 
 export type ServerResponse<T> = {
   status_code: number;

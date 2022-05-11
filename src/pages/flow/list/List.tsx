@@ -10,6 +10,7 @@ import { handleValueChange } from "@/shared/form";
 import {
   FlowListType,
   getRunningIcon,
+  getRunningStateClass,
   getRunningStateText,
   getTriggerLabel,
   getTriggerValue,
@@ -193,9 +194,6 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
                 "py-4 border-solid pr-4 pl-3 border-l-4 cursor-default",
                 originId === item.origin_id ? styles.active : styles.normal,
               )}
-              sx={{
-                borderLeftColor: originId === item.origin_id ? (theme) => theme.palette.primary.main : "transparent",
-              }}
               onClick={() => {
                 setOriginId(item.origin_id);
               }}
@@ -248,12 +246,18 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
                     }
                     placement="top-start"
                   >
-                    <Box sx={getStyles(item.latest_run?.status)}>
-                      <span className={classNames("py-1 text-xs font-medium inline-flex items-center")}>
-                        {getRunningIcon(item.latest_run?.status, "mr-1")}
-                        {getRunningStateText(item.latest_run?.status)}
-                      </span>
-                    </Box>
+                    <span
+                      className={classNames(
+                        "rounded px-2 py-1 text-xs font-medium inline-flex items-center",
+                        getRunningStateClass(item.latest_run?.status, {
+                          bg: true,
+                          text: true,
+                        }),
+                      )}
+                    >
+                      {getRunningIcon(item.latest_run?.status, "mr-1")}
+                      {getRunningStateText(item.latest_run?.status)}
+                    </span>
                   </Tooltip>
                 ) : (
                   <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-500 font-medium">草稿</span>

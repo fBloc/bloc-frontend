@@ -44,7 +44,6 @@ specifiers:
   rc-progress: ^3.2.4
   rc-select: ^14.0.6
   rc-textarea: ^0.3.7
-  rc-tooltip: ^5.1.1
   react: ^17.0.0
   react-circular-progressbar: ^2.0.4
   react-copy-to-clipboard: ^5.0.4
@@ -136,7 +135,6 @@ devDependencies:
   eslint-plugin-react-hooks: 4.3.0_eslint@7.32.0
   postcss: 8.4.7
   prettier: 2.5.1
-  rc-tooltip: 5.1.1_react-dom@17.0.2+react@17.0.2
   react-icons: 4.3.1_react@17.0.2
   sass: 1.49.9
   stylelint: 13.13.1
@@ -1761,6 +1759,7 @@ packages:
 
   /classnames/2.3.1:
     resolution: {integrity: sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==}
+    dev: false
 
   /cli-cursor/2.1.0:
     resolution: {integrity: sha512-8lgKz8LmCRYZZQDpRyT2m5rKJ08TnU4tR9FFFW2rxpxR1FzWi4PQ/NfyODchAatHaUgnSPVcx/R5w6NuTBzFiw==}
@@ -2175,6 +2174,7 @@ packages:
 
   /dom-align/1.12.2:
     resolution: {integrity: sha512-pHuazgqrsTFrGU2WLDdXxCFabkdQDx72ddkraZNih1KsMcN5qsRSTR9O4VJRlwTPCPb5COYg3LOfiMHHcPInHg==}
+    dev: false
 
   /dom-helpers/5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
@@ -4320,6 +4320,7 @@ packages:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       resize-observer-polyfill: 1.5.1
+    dev: false
 
   /rc-input-number/7.3.4_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-W9uqSzuvJUnz8H8vsVY4kx+yK51SsAxNTwr8SNH4G3XqQNocLVmKIibKFRjocnYX1RDHMND9FFbgj2h7E7nvGA==}
@@ -4345,6 +4346,7 @@ packages:
       rc-util: 5.19.3_react-dom@17.0.2+react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+    dev: false
 
   /rc-overflow/1.2.4_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-nIeelyYfdS+mQBK1++FisLZEvZ8xVAzC+duG+TC4TmqNN+kTHraiGntV9/zxDGA1ruyQ91YRJ549JjFodCBnsw==}
@@ -4420,18 +4422,6 @@ packages:
       shallowequal: 1.1.0
     dev: false
 
-  /rc-tooltip/5.1.1_react-dom@17.0.2+react@17.0.2:
-    resolution: {integrity: sha512-alt8eGMJulio6+4/uDm7nvV+rJq9bsfxFDCI0ljPdbuoygUscbsMYb6EQgwib/uqsXQUvzk+S7A59uYHmEgmDA==}
-    peerDependencies:
-      react: '>=16.9.0'
-      react-dom: '>=16.9.0'
-    dependencies:
-      '@babel/runtime': 7.17.8
-      rc-trigger: 5.2.11_react-dom@17.0.2+react@17.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-    dev: true
-
   /rc-trigger/5.2.11_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-YS+BA4P2aqp9qU7dcTQwsK56SOLJk7XDaFynnXg96obJOUVFiQ6Lfomq9em2dlB4uSjd7Z/gjriZdUY8S2CPQw==}
     engines: {node: '>=8.x'}
@@ -4446,6 +4436,7 @@ packages:
       rc-util: 5.19.3_react-dom@17.0.2+react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+    dev: false
 
   /rc-util/5.19.3_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-S28epi9E2s7Nir05q8Ffl3hzDLwkavTGi0PGH1cTqCmkpG1AeBEuZgQDpksYeU6IgHcds5hWIPE5PUcdFiZl8w==}
@@ -4458,6 +4449,7 @@ packages:
       react-dom: 17.0.2_react@17.0.2
       react-is: 16.13.1
       shallowequal: 1.1.0
+    dev: false
 
   /rc-virtual-list/3.4.6_react-dom@17.0.2+react@17.0.2:
     resolution: {integrity: sha512-wMJ7Bl+AxgIDojp0VxuQxjpNulKodwxGXSsTyxA9Mwzwemj5vKAgTbkPT64ZW5ORf8FOQAaPRlMiTADrPEo3sQ==}
@@ -4851,6 +4843,7 @@ packages:
 
   /resize-observer-polyfill/1.5.1:
     resolution: {integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==}
+    dev: false
 
   /resolve-dir/1.0.1:
     resolution: {integrity: sha512-R7uiTjECzvOsWSfdM0QKFNBVFcK27aHOUwdvK53BcW8zqnGdYp0Fbj82cy54+2A4P2tFM22J5kRfe1R+lM/1yg==}
@@ -5016,6 +5009,7 @@ packages:
 
   /shallowequal/1.1.0:
     resolution: {integrity: sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==}
+    dev: false
 
   /shebang-command/2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}

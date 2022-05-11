@@ -1,42 +1,24 @@
-import React, { useCallback, useState } from "react";
-import { handleStringChange } from "@/shared/form";
-import { Input } from "@/components";
-import { Button } from "@mui/material";
+import React from "react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
 import { useLocation, Link, useNavigate, Navigate } from "react-router-dom";
+import { Button, TextField } from "@mui/material";
 import { login } from "@/api/auth";
 import Logo from "@/assets/logo.png";
 import LogoWithName from "@/assets/logo-name.png";
-import { identificationInstance } from "@/shared/Identification ";
+import { identificationInstance } from "@/shared/Identification";
+import { useMutation } from "react-query";
 
-const Login = () => {
+const schema = Yup.object().shape({
+  name: Yup.string().required(),
+  password: Yup.string().required(),
+});
+
+const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as any)?.from || "/";
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const clearError = useCallback(() => {
-    setErrorMessage("");
-  }, []);
-
-  const onSubmit = useCallback(async () => {
-    clearError();
-    setLoading(true);
-    const { data, isValid, message } = await login({ name, password });
-
-    setLoading(false);
-    if (isValid && data) {
-      identificationInstance.saveToken(data.token);
-      navigate(from || "/flow", { replace: true });
-    } else {
-      if (message) {
-        setErrorMessage(message);
-      }
-      setLoading(false);
-    }
-  }, [name, password, clearError, navigate, from]);
-
+  const loginMutation = useMutation(login);
   if (identificationInstance.isValidLogin) {
     return <Navigate to="/flow" replace />;
   }
@@ -52,48 +34,68 @@ const Login = () => {
           </Link>
         </p>
       </header>
-      <form
-        className="bg-white p-6 rounded-lg shadow w-96"
-        action=""
-        onSubmit={(e) => {
-          e.preventDefault();
+      <Formik
+        initialValues={{
+          name: "",
+          password: "",
+        }}
+        validationSchema={schema}
+        onSubmit={async (values, { setFieldError }) => {
+          const { isValid, message, data } = await loginMutation.mutateAsync(values);
+          if (isValid && data) {
+            identificationInstance.saveToken(data.token);
+            navigate(from || "/flow", { replace: true });
+          } else {
+            setFieldError("password", message);
+          }
         }}
       >
-        <div className="mb-10 text-3xl text-center">
-          <img src={LogoWithName} alt="logo" className="h-10 mx-auto" />
-          <p className="text-sm mt-2 text-gray-400 font-mono">you agree to the storing of cookies on your device</p>
-        </div>
-        <Input
-          block
-          placeholder="账号"
-          value={name}
-          onInput={clearError}
-          autoComplete="username"
-          onChange={handleStringChange(setName)}
-        />
+        {({ handleBlur, handleChange, errors, values, touched }) => {
+          return (
+            <Form className="bg-white p-6 rounded-lg shadow w-96">
+              <div className="mb-10 text-3xl text-center">
+                <img src={LogoWithName} alt="logo" className="h-10 mx-auto" />
+                <p className="text-sm mt-2 text-gray-400 font-mono">
+                  you agree to the storing of cookies on your device
+                </p>
+              </div>
+              <TextField
+                fullWidth
+                placeholder="账号"
+                name="name"
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                label={(touched.name && errors.name) ?? ""}
+                error={touched.name && !!errors.name}
+              />
 
-        <Input
-          className="mt-4"
-          type="password"
-          placeholder="密码"
-          block
-          onInput={clearError}
-          maxLength={20}
-          autoComplete="current-password"
-          onChange={handleStringChange(setPassword)}
-        />
-        {errorMessage && <p className="text-red-400">{errorMessage}</p>}
-        <Button
-          onClick={onSubmit}
-          className="mt-4"
-          fullWidth
-          color="primary"
-          variant="contained"
-          disabled={!name || !password}
-        >
-          登录
-        </Button>
-      </form>
+              <TextField
+                sx={{ mt: 2 }}
+                fullWidth
+                type="password"
+                name="password"
+                placeholder="密码"
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                label={(touched.password && errors.password) ?? ""}
+                error={touched.password && !!errors.password}
+              />
+              <Button
+                disabled={loginMutation.isLoading}
+                type="submit"
+                sx={{ mt: 2 }}
+                fullWidth
+                color="primary"
+                variant="contained"
+              >
+                登录
+              </Button>
+            </Form>
+          );
+        }}
+      </Formik>
     </div>
   );
 };
