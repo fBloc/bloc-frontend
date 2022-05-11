@@ -19,9 +19,6 @@ export * from "./overlay";
 
 export * from "./form";
 
-export { default as Popover } from "./popover";
-export * from "./popover";
-
 export { default as LazyComponent } from "./lazy";
 
 export { default as Skeleton } from "./skeleton";
