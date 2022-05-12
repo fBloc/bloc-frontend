@@ -44,6 +44,8 @@ export function useSyncFlow() {
     if (alive.current) {
       setFlowState((previous) => ({ ...previous, updating: false }));
     }
+    if (result.isValid) {
+    }
     return result;
   }, [flow, setFlowState, nodes]);
   useEffect(() => {

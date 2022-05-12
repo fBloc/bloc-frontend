@@ -89,21 +89,22 @@ export const toSourceNodes = (nodes: BlocNodeItem[]): FlowDetailT["nodeToBlocMap
       position: item.position,
       sourceNodeIds: item.voidIpt,
       targetNodeIds: item.voidOpt,
-      paramIpts: item.paramIpt.reduce((acc: EditAtom[][], param) => {
-        return [
-          ...acc,
-          param.atoms.map(({ unset, value, iptWay, valueType, sourceNode, sourceParam }) => {
-            return {
-              unset,
-              value,
-              iptWay,
-              valueType,
-              sourceNode,
-              sourceParam,
-            };
-          }),
-        ];
-      }, []),
+      paramIpts:
+        item.paramIpt?.reduce((acc: EditAtom[][], param) => {
+          return [
+            ...acc,
+            param.atoms.map(({ unset, value, iptWay, valueType, sourceNode, sourceParam }) => {
+              return {
+                unset,
+                value,
+                iptWay,
+                valueType,
+                sourceNode,
+                sourceParam,
+              };
+            }),
+          ];
+        }, []) || [],
     };
     return {
       ...acc,
