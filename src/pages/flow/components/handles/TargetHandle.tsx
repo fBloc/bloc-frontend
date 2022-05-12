@@ -3,29 +3,20 @@ import { Handle, Position } from "react-flow-renderer";
 import classNames from "classnames";
 import { useQuery } from "react-query";
 import { useRecoilState } from "recoil";
-import { Popover, Divider } from "@mui/material";
+import { Popover } from "@mui/material";
 import { Tooltip } from "@/components";
 import { getBlocRecordDetail, StatefulMergedIptParam } from "@/api/flow";
 import { BLOC_FLOW_HANDLE_ID } from "@/shared/constants";
-import { FlowDisplayPage, IptWay, MergedIptParamStatus } from "@/shared/enums";
-import { TextFallback } from "@/shared/jsxUtils";
+import { FlowDisplayPage, MergedIptParamStatus } from "@/shared/enums";
 import { BlocNodeData, Connectable } from "@/shared/types";
-import { FaExclamationCircle, FaCheckCircle } from "@/components/icons";
+import { FaExclamationCircle } from "@/components/icons";
 import { runningRecord } from "@/recoil/flow/node";
-import styles from "../handles/handle.module.scss";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-const percentage = (value: number) => {
-  return `${Math.round(value * 100)}%`;
-};
+import styles from "../handles/handle.module.scss";
 
-const getIptWayText = (iptway: IptWay) => {
-  const texts = {
-    [IptWay.UserIpt]: "用户输入",
-    [IptWay.Connection]: "关联",
-  };
-  return texts[iptway];
-};
+import { TargetValue } from "./Value";
+
 const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNodeData } & Connectable> = ({
   detail,
   nodeData,
@@ -96,26 +87,37 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
             )}
           ></div>
         ) : (
-          <div className="w-2.5 h-2.5 absolute left-0 top-0 border border-solid border-gray-200 rounded-full pointer-events-none">
-            <CircularProgressbar
-              value={detail.progress * 100}
-              strokeWidth={50}
-              backgroundPadding={0}
-              background
-              styles={{
-                background: {
-                  backgroundColor: "red",
-                  background: "blue",
-                },
-                path: {
-                  strokeLinecap: "butt",
-                  stroke: "#4ade80",
-                },
-                trail: {
-                  stroke: "white",
-                },
-              }}
-            />
+          <div
+            className={classNames(
+              "w-2.5 h-2.5 absolute left-0 top-0 border border-solid border-gray-200 rounded-full pointer-events-none",
+              nodeData.mode !== FlowDisplayPage.draft
+                ? detail.status === MergedIptParamStatus.avaliable
+                  ? "bg-success"
+                  : "bg-white"
+                : "",
+            )}
+          >
+            {nodeData.mode === FlowDisplayPage.draft && (
+              <CircularProgressbar
+                value={detail.progress * 100}
+                strokeWidth={50}
+                backgroundPadding={0}
+                background
+                styles={{
+                  background: {
+                    backgroundColor: "red",
+                    background: "blue",
+                  },
+                  path: {
+                    strokeLinecap: "butt",
+                    stroke: "#4ade80",
+                  },
+                  trail: {
+                    stroke: "white",
+                  },
+                }}
+              />
+            )}
           </div>
         )}
       </div>
@@ -145,34 +147,7 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
         <div className="w-60 p-3">
           {nodeData.mode === FlowDisplayPage.draft && (
             <>
-              {/* <div className="text-gray-400">
-                <span>已完成: {percentage(detail.progress)}</span>
-              </div>
-              <Divider sx={{ my: 2 }} /> */}
-              <p>{TextFallback(detail.description, "缺少描述")}</p>
-              <p className="text-xs text-gray-400">{detail.key}</p>
-              <Divider sx={{ my: 2 }} />
-
-              <ul>
-                {detail.atoms?.map((atom, i) => (
-                  <li key={i} className="mt-2">
-                    <div className="text-xs text-gray-400">
-                      {i + 1}. {TextFallback(atom.description, "缺少描述")}
-                    </div>
-                    <div className="mt-1 bg-gray-100 rounded">
-                      {!atom.unset && atom.iptWay === IptWay.UserIpt && (
-                        <div className="p-2 bg-gray-500 text-white rounded-t text-sm simple-ellipsis">
-                          {atom.readableValue}
-                        </div>
-                      )}
-                      <p className="text-xs p-1 text-gray-400 flex items-center justify-between">
-                        {atom.unset ? "未设置" : `通过 ${getIptWayText(atom.iptWay)} 设置`}
-                        {!atom.unset && <FaCheckCircle className="ml-2 text-green-400" size={12} />}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <TargetValue isLoading={isLoading} param={detail} />
               {detail.status === MergedIptParamStatus.unavaliable && nodeData.isConnecting && (
                 <div className="mt-2 mb-1 text-red-400 flex items-center">
                   <FaExclamationCircle className="mr-1" />
@@ -181,58 +156,9 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
               )}
             </>
           )}
-          {nodeData.mode === FlowDisplayPage.flow && (
-            <>
-              <p>{TextFallback(detail.description, "缺少描述")}</p>
-              <p className="text-xs text-gray-400">{detail.key}</p>
-              <Divider sx={{ my: 2 }} />
-
-              <ul>
-                {detail.atoms?.map((atom, i) => (
-                  <li key={i} className="mt-2">
-                    <div className="text-xs text-gray-400">
-                      {i + 1}. {TextFallback(atom.description, "缺少描述")}
-                    </div>
-                    <div className="mt-1 bg-gray-100 rounded">
-                      {!atom.unset && atom.iptWay === IptWay.UserIpt && (
-                        <div className="p-2 bg-gray-500 text-white rounded-t text-sm simple-ellipsis">
-                          {atom.readableValue}
-                        </div>
-                      )}
-                      <p className="text-xs p-1 text-gray-400 flex items-center justify-between">
-                        {atom.unset ? "未设置" : `通过 ${getIptWayText(atom.iptWay)} 设置`}
-                        {!atom.unset && <FaCheckCircle className="ml-2 text-green-400" size={12} />}
-                      </p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              {detail.status === MergedIptParamStatus.unavaliable && nodeData.isConnecting && (
-                <div className="mt-2 mb-1 text-red-400 flex items-center">
-                  <FaExclamationCircle className="mr-1" />
-                  当前节点不可匹配
-                </div>
-              )}
-            </>
-          )}
+          {nodeData.mode === FlowDisplayPage.flow && <TargetValue isLoading={isLoading} param={detail} />}
           {[FlowDisplayPage.history, FlowDisplayPage.preview].includes(nodeData.mode) && (
-            <>
-              <p className="text-sm">{TextFallback(detail.description, "缺少描述")}</p>
-              <p className="text-gray-400 text-xs">{detail.key}</p>
-              <Divider sx={{ mt: 1 }} />
-              <ul>
-                {detail.atoms?.map((atom, i) => (
-                  <li key={i} className="mt-2">
-                    <div className="text-xs text-gray-400 flex items-center justify-between">
-                      {i + 1}. {TextFallback(atom.description, "缺少描述")}
-                    </div>
-                    <div className="mt-1 p-2 bg-gray-500 text-white rounded text-sm simple-ellipsis">
-                      {isLoading ? "loading..." : TextFallback(atoms[i]?.brief, "数据为空")}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </>
+            <TargetValue isLoading={isLoading} param={detail} result={atoms} />
           )}
         </div>
       </Popover>

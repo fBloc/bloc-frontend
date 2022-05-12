@@ -17,8 +17,6 @@ export * from "./tooltip";
 export { default as Overlay } from "./overlay";
 export * from "./overlay";
 
-export * from "./form";
-
 export { default as LazyComponent } from "./lazy";
 
 export { default as Skeleton } from "./skeleton";
@@ -28,8 +26,6 @@ export { default as ErrorBoundary } from "./boundary";
 
 export { default as List } from "./list";
 export * from "./list";
-
-export { default as Switch } from "./switch";
 
 export { default as Empty } from "./empty";
 export * from "./empty";

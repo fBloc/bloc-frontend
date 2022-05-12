@@ -12,7 +12,7 @@ import styles from "./handle.module.scss";
 import classNames from "classnames";
 import { FlowDisplayPage } from "@/shared/enums";
 import { TextFallback } from "@/shared/jsxUtils";
-
+import Value from "./Value";
 const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Connectable> = ({
   detail,
   isConnectable,
@@ -84,10 +84,8 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
       >
         <div className="w-60 p-3">
           <p className="mt-1">{detail.description}</p>
-          <p className="text-xs text-gray-400">{detail.key}</p>
-          {!readFlowMode && (
-            <div className="mt-2 bg-gray-50 p-2 rounded break-all">{TextFallback(paramDetail?.brief, "数据为空")}</div>
-          )}
+          <p className="mb-2 text-xs text-gray-400">{detail.key}</p>
+          {!readFlowMode && <Value className="rounded" isLoading={isLoading} valueResult={paramDetail} canViewAll />}
         </div>
       </Popover>
     </>

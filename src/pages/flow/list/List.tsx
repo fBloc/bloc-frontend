@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { Tooltip, TextField, IconButton, Button, Box, Theme, SxProps, Fab } from "@mui/material";
+import { TextField, IconButton, Box, Theme, SxProps, Fab, Tabs, Tab } from "@mui/material";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
@@ -21,9 +21,8 @@ import { readableTime } from "@/shared/time";
 import { FaBolt, FaPlay, FaStopCircle, FaSearch } from "@/components/icons";
 import { flowDetailState, listCurrentOriginId } from "@/recoil/flow/flow";
 import { flowListTab } from "@/recoil/flow/list";
+import { Tooltip } from "@/components";
 import styles from "./index.module.scss";
-import { Tabs, Tab } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 
 const tabs = [
   {
@@ -241,7 +240,7 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
                           </p>
                         </>
                       ) : (
-                        <span></span>
+                        false
                       )
                     }
                     placement="top-start"

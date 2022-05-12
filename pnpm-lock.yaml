@@ -8,7 +8,6 @@ specifiers:
   '@types/d3': ^7.1.0
   '@types/lodash-es': ^4.17.5
   '@types/node': ^16.11.10
-  '@types/rc-tooltip': ^3.7.6
   '@types/react': ^17.0.0
   '@types/react-copy-to-clipboard': ^5.0.2
   '@types/react-dom': ^17.0.0
@@ -111,7 +110,6 @@ devDependencies:
   '@types/d3': 7.1.0
   '@types/lodash-es': 4.17.6
   '@types/node': 16.11.26
-  '@types/rc-tooltip': 3.7.6
   '@types/react': 17.0.39
   '@types/react-copy-to-clipboard': 5.0.2
   '@types/react-dom': 17.0.13
@@ -1181,12 +1179,6 @@ packages:
 
   /@types/prop-types/15.7.4:
     resolution: {integrity: sha512-rZ5drC/jWjrArrS8BR6SIr4cWpW09RNTYt9AMZo3Jwwif+iacXAqgVjm0B0Bv/S1jhDXKHqRVNCbACkJ89RAnQ==}
-
-  /@types/rc-tooltip/3.7.6:
-    resolution: {integrity: sha512-Otouf6HW49RSwtTa3EBdp0+BZoOQy3KDTEcVgLdZEgcYp4HB5nP6N3S6bTUkPtq3H5KmYBzEOaiq0SNMB/MY2g==}
-    dependencies:
-      '@types/react': 17.0.39
-    dev: true
 
   /@types/react-copy-to-clipboard/5.0.2:
     resolution: {integrity: sha512-O29AThfxrkUFRsZXjfSWR2yaWo0ppB1yLEnHA+Oh24oNetjBAwTDu1PmolIqdJKzsZiO4J1jn6R6TmO96uBvGg==}
