@@ -12,6 +12,7 @@ specifiers:
   '@types/react-copy-to-clipboard': ^5.0.2
   '@types/react-dom': ^17.0.0
   '@types/react-window': ^1.8.5
+  '@types/recoilize': ^0.8.0
   '@typescript-eslint/eslint-plugin': ^4.28.1
   '@typescript-eslint/parser': ^4.28.1
   '@vitejs/plugin-react': ^1.2.0
@@ -58,6 +59,7 @@ specifiers:
   react-router-dom: '6'
   react-window: ^1.8.7
   recoil: ^0.5.2
+  recoilize: ^3.1.6
   sass: ^1.43.5
   semantic-ui-css: ^2.4.1
   semantic-ui-react: ^2.1.2
@@ -114,6 +116,7 @@ devDependencies:
   '@types/react-copy-to-clipboard': 5.0.2
   '@types/react-dom': 17.0.13
   '@types/react-window': 1.8.5
+  '@types/recoilize': 0.8.0
   '@typescript-eslint/eslint-plugin': 4.33.0_65e88d2733f36d3624b406e590cf0b3b
   '@typescript-eslint/parser': 4.33.0_eslint@7.32.0+typescript@4.6.2
   '@vitejs/plugin-react': 1.2.0
@@ -134,6 +137,7 @@ devDependencies:
   postcss: 8.4.7
   prettier: 2.5.1
   react-icons: 4.3.1_react@17.0.2
+  recoilize: 3.1.6_850789a36f09fcfbd728ee79dc9d5fa1
   sass: 1.49.9
   stylelint: 13.13.1
   stylelint-config-standard: 22.0.0_stylelint@13.13.1
@@ -1216,6 +1220,10 @@ packages:
       '@types/prop-types': 15.7.4
       '@types/scheduler': 0.16.2
       csstype: 3.0.11
+
+  /@types/recoilize/0.8.0:
+    resolution: {integrity: sha512-h4Rm8J/8XH1wZIZC5gOeN9EDJWBhK2sLEs5voSHyZKB5cynIDbohuYS6rEdv2kNPrwoYQyt7D3yeXI9ODvZDlw==}
+    dev: true
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
@@ -4764,6 +4772,18 @@ packages:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false
+
+  /recoilize/3.1.6_850789a36f09fcfbd728ee79dc9d5fa1:
+    resolution: {integrity: sha512-UxdkpMvnEYvnUIcIbk5NAe9tZFBkxbMaP8BUKDj1DQ9ZBYO03c8xi/jnWYSsIvRV5D3eYO8rhTzmegI86o2FBw==}
+    peerDependencies:
+      react: ^16.13.1
+      react-dom: ^16.13.1
+      recoil: ^0.1.2
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      recoil: 0.5.2_react-dom@17.0.2+react@17.0.2
+    dev: true
 
   /redent/3.0.0:
     resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}

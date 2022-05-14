@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
-import { Nullable } from "@/shared/types";
 import { showToast } from "@/components/toast";
 import { isObject, mergeUrlQuery } from "./tools";
 import { identificationInstance } from "./Identification";
@@ -23,7 +22,7 @@ export function normalizeResponse<T>(
 }
 const instance = axios.create({
   timeout: 60000,
-  baseURL: __HTTP_URL__,
+  baseURL: window.bloc_app_env.BASE_URL,
 });
 instance.interceptors.request.use((request) => {
   const token = identificationInstance.token;
@@ -56,7 +55,7 @@ export type ResponseResult<T = null> = {
   data: T | null;
 };
 class Request {
-  request<T>(config: AxiosRequestConfig): Promise<ResponseResult<Nullable<T>>> {
+  request<T>(config: AxiosRequestConfig): Promise<ResponseResult<T | null>> {
     return instance
       .request<ServerResponse<T>>({
         ...config,

@@ -14,12 +14,15 @@
 
 ---
 
-**修改运行端口**
+**docker**
 
-修改根目录`vite.config.ts`文件中`server` -> `port`（默认3338）
+生成镜像： `docker build -t blocf .`
 
----
+运行:
+```bash
+docker run --name bloc -e BASE_URL="YOUR API BASE URL" -p 8083:80 blocf:latest
 
-**修改http请求地址**
+# BASE_URL指API域名
+```
 
-修改根目录`vite.config.ts`文件中`define` -> `__HTTP_URL__`。此处注意，由于是直接替换文本，所以请务必像初始值一样，是`"'XXX'"`的形式，而非`"XXX"`(注意引号的区别)。
+浏览器打开: `http://localhost:8083/flow`

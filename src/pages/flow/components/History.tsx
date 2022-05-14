@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import classNames from "classnames";
-import { Tooltip, Link as MdLink, Box } from "@mui/material";
+import { Tooltip, Box, Pagination } from "@mui/material";
 import { FlowRunningStatus, getLatestRunningRecords } from "@/api/flow";
 import {
   getRunningIcon,
@@ -12,7 +12,7 @@ import {
   TriggerTypes,
 } from "@/shared/enums";
 import { FaUserCircle, FaBolt, FaClock, FaQuestionCircle } from "@/components/icons";
-import { Pagination, Skeleton } from "@/components";
+import { Skeleton } from "@/components";
 import Empty from "@/components/empty";
 import { diffSeconds, readableTime } from "@/shared/time";
 
@@ -168,14 +168,11 @@ const FlowHistory = () => {
           </tbody>
         </table>
       )}
+
       <Pagination
-        className="mt-4 justify-end"
-        total={records.total}
-        disabled={loading}
-        pageSize={pageSize}
-        currentPage={pageNum}
-        onCurrentPageChange={(pageNum) => {
-          document.documentElement.scrollTop = 0;
+        count={Math.ceil(records.total / 20)}
+        sx={{ mt: 2, display: "flex", justifyContent: "center" }}
+        onChange={(_, pageNum) => {
           fetchNext(pageNum);
         }}
       />

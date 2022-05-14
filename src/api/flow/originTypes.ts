@@ -1,5 +1,5 @@
 import { IptWay, ParamValueType, RunningStatusEnum } from "@/shared/enums";
-import { Nullable } from "@/shared/types";
+
 import { Position, PrimitivePostionInfo, ReadablePositionInfo } from "./common";
 import { FlowRunningStatus } from "./launched";
 
@@ -15,7 +15,7 @@ export interface OriginEditAtom {
 export interface OriginFlowBlocNode<T = Position[]> {
   function_id: string;
   note: string;
-  position: Nullable<T>;
+  position: T | null;
   upstream_flowfunction_ids: string[];
   downstream_flowfunction_ids: string[];
   param_ipts: OriginEditAtom[][];
@@ -52,18 +52,17 @@ export interface OriginBaseFlow<PositionT = PrimitivePostionInfo> {
   execute: boolean;
   delete: boolean;
   assign_permission: boolean;
-  latest_run: Nullable<FlowRunningStatus>; //TODO 位置
-  latestRun_flowFunctionID_map_functionRunInfo: Nullable<
-    Record<
-      string,
-      Nullable<{
+  latest_run: FlowRunningStatus | null; //TODO 位置
+  latestRun_flowFunctionID_map_functionRunInfo: Record<
+    string,
+    | {
         function_run_record_id: string;
         status: RunningStatusEnum;
         start_time: number | null;
         end_time: number | null;
-      }>
-    >
-  >;
+      }
+    | undefined
+  > | null;
 }
 
 export type ReadableOriginBaseFlow = OriginBaseFlow<ReadablePositionInfo>;

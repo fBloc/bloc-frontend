@@ -3,8 +3,6 @@ import { FnAtom, FunctionItem } from "@/api/functions";
 import { NodeProps } from "react-flow-renderer";
 import { FlowDisplayPage } from "./enums";
 
-export type Nullable<T> = T | null | undefined;
-
 /**
  * 最小单位的参数设置类型
  */

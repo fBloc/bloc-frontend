@@ -4,6 +4,7 @@ import RouterView from "./router";
 import { RecoilRoot } from "recoil";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import shadows from "@mui/material/styles/shadows";
+import Recoilize from "recoilize";
 export const queryClient = new QueryClient();
 
 // import primary from "@mui/material/colors/deepPurple";
@@ -39,6 +40,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <RecoilRoot>
+          <Recoilize />
           <RouterView />
         </RecoilRoot>
       </QueryClientProvider>

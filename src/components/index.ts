@@ -3,9 +3,6 @@ export * from "./transition";
 export { default as Portal } from "./portal";
 export * from "./portal";
 
-export { default as Input } from "./input";
-export * from "./input";
-
 export * from "./tab";
 
 export { default as Loading } from "./loading";
@@ -29,9 +26,6 @@ export * from "./list";
 
 export { default as Empty } from "./empty";
 export * from "./empty";
-
-export { default as Pagination } from "./pagination";
-export * from "./pagination";
 
 export { default as EditableText } from "./editableText";
 export * from "./editableText";

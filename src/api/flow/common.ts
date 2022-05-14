@@ -1,6 +1,5 @@
 import { RunningStatusEnum } from "@/shared/enums";
 import { blocId, isObject } from "@/shared/tools";
-import { Nullable } from "@/shared/types";
 import { isPlainObject } from "lodash-es";
 import { OriginFlowBlocNode, OriginBaseFlow, OriginEditAtom, ReadableOriginBaseFlow } from "./originTypes";
 import { BaseFlow, EditAtom, FlowBlocNode, FlowDetailT } from "./types";
@@ -12,7 +11,7 @@ export type ReadablePositionInfo = Partial<Record<Position[keyof Position], numb
 
 export interface WithPositionFlowItem<PositionT = PrimitivePostionInfo> {
   id: string;
-  position: Nullable<PositionT>;
+  position: PositionT | null;
   flowFunctionID_map_flowFunction: Record<string, OriginFlowBlocNode<PositionT>>;
 }
 
@@ -81,7 +80,7 @@ const transformPosition = (source: any): ReadablePositionInfo => {
   }, {});
 };
 
-export function normalizeFlowDetail<T extends { data?: Nullable<OriginBaseFlow> }>(
+export function normalizeFlowDetail<T extends { data?: OriginBaseFlow | null }>(
   source: T,
 ): Omit<T, "data"> & {
   data: BaseFlow<ReadablePositionInfo> | null;

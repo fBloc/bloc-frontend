@@ -1,6 +1,5 @@
 import request from "@/shared/request";
 import { normalizeFlowDetail, ResultState } from "@/api/flow/common";
-import { Nullable } from "@/shared/types";
 import { OriginBaseFlow } from "../originTypes";
 import { FlowDetailT } from "../types";
 import { RunningStatusEnum, TriggerTypes } from "@/shared/enums";
@@ -13,7 +12,7 @@ export function triggerRun({ flowOriginId }: { flowOriginId: string }) {
 }
 
 export interface FlowRunningStatusResponse {
-  items: Nullable<FlowRunningStatus[]>;
+  items: FlowRunningStatus[] | null;
   total: number;
 }
 export interface FlowRunningStatus {
@@ -187,7 +186,7 @@ export type BlocRecordDetail = Pick<
   processStages: OriginBlocRecordDetail["process_stages"];
 };
 
-export function washRecordDetail(detail: Nullable<OriginBlocRecordDetail>): BlocRecordDetail | null {
+export function washRecordDetail(detail: OriginBlocRecordDetail | null): BlocRecordDetail | null {
   if (!detail) return null;
   const {
     id,

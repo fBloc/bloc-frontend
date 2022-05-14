@@ -1,5 +1,5 @@
 import { IptWay, MergedIptParamStatus, ParamValueType, RunningStatusEnum } from "@/shared/enums";
-import { Nullable, ValueType } from "@/shared/types";
+import { ValueType } from "@/shared/types";
 import { FnAtom, IptParam } from "../functions";
 import { Position, PrimitivePostionInfo, ReadablePositionInfo } from "./common";
 import { FlowRunningStatus } from "./launched";
@@ -129,7 +129,7 @@ export type ParamOpt = {
 export interface FlowBlocNode<T = Position[]> {
   functionId: string;
   note: string;
-  position: Nullable<T>;
+  position: T | null;
   sourceNodeIds: string[];
   targetNodeIds: string[];
   paramIpts: EditAtom[][];
