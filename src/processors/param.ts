@@ -1,6 +1,6 @@
 import { FullStateAtom, ParamOpt } from "@/api/flow";
 import { BlocNodeItem, ParamConnectionEnd } from "@/shared/types";
-
+import i18n from "@/i18n";
 export function collectParams(
   nodes: BlocNodeItem[],
   filter: (source: ParamOpt) => (atom: FullStateAtom) => boolean,
@@ -67,7 +67,7 @@ export function getAtomPickerAttrs(
         ...atom,
         avaliable: canTypeMatch && isUnset,
         isTypeMatch: canTypeMatch,
-        message: canTypeMatch ? "" : "数据类型不一致，无法关联",
+        message: canTypeMatch ? "" : i18n.t("typeNotMatch"),
       };
     }),
   };

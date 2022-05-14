@@ -1,7 +1,7 @@
 import { atom, selector } from "recoil";
 import { FlowDetailT, FlowRunningStatus } from "@/api/flow";
 import { FlowDisplayPage, RunningStatusEnum } from "@/shared/enums";
-
+import i18n from "@/i18n";
 export const flowDetailState = atom<FlowDetailT | null>({
   key: "flowDetail",
   default: null,
@@ -60,10 +60,10 @@ const getCanExcute = (flow: FlowDetailT) => {
   const allowParallelRun = flow.allowParallelRun;
   let reason = "";
   if (isRunning && !allowParallelRun) {
-    reason = "当前flow不支持并行运行";
+    reason = i18n.t("parallelRunDisabld");
   }
   if (!hasAccess) {
-    reason = "你没有执行权限";
+    reason = i18n.t("noExcutePermission");
   }
   return {
     reason,

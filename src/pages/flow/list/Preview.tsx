@@ -1,10 +1,11 @@
 import React from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useQuery } from "react-query";
+import { useTranslation } from "react-i18next";
 import LaunchedFlowOperations, { DraftFlowOperations } from "./Operations";
 import FlowBody from "../components/FlowBody";
 import { useReadonlyBoard } from "@/recoil/hooks/useReadonlyBoard";
 import { flowDetailState, listCurrentOriginId, projectSettings } from "@/recoil/flow/flow";
-import { useQuery } from "react-query";
 import { getDetail, getDraft } from "@/api/flow";
 import Board from "../components/Board";
 import { flowListTab } from "@/recoil/flow/list";
@@ -19,6 +20,7 @@ type PreviewProps = {
 const Preview: React.FC<PreviewProps> = ({ children }) => {
   const [flow, setFlow] = useRecoilState(flowDetailState);
   const setProject = useSetRecoilState(projectSettings);
+  const { t } = useTranslation();
 
   const originId = useRecoilValue(listCurrentOriginId);
   const flowTab = useRecoilValue(flowListTab);
@@ -50,7 +52,7 @@ const Preview: React.FC<PreviewProps> = ({ children }) => {
           </>
         ) : (
           <div className="absolute left-0 top-0 w-full h-full flex justify-center items-center">
-            <p className="text-gray-500 text-sm">选择一个Flow进行查看</p>
+            <p className="text-gray-500 text-sm">{t("selectFlowToView")}</p>
           </div>
         )}
       </div>

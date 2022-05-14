@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
 import classNames from "classnames";
 import { Tooltip, Dialog, DialogProps, Box, Button, IconButton } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { FaQuestionCircle, FaTimes } from "@/components/icons";
 import { TextFallback } from "@/shared/jsxUtils";
 import { AtomKey, currentBlocNode } from "@/recoil/flow/node";
@@ -24,7 +25,6 @@ const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, 
   const target = useRecoilValue(tempConnectionTarget);
   const resetSource = useResetRecoilState(tempConnectionSource);
   const resetTarget = useResetRecoilState(tempConnectionTarget);
-  const records = useRecoilValue(operationRecords);
   const { tempAddConnection, tempRemoveConnection } = useTempConnection();
   const updateAtom = useUpdateAtomValue();
   const clearAtoms = useClearAllAtoms();
@@ -33,6 +33,7 @@ const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, 
   const { param: currentParam, open } = attrs;
   const currentNode = useRecoilValue(currentBlocNode);
   const addConnection = useAddConnection();
+  const { t } = useTranslation();
   const onInternalExit = useCallback(
     (e: HTMLElement) => {
       onExit?.(e);
@@ -129,9 +130,12 @@ const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, 
             <FaTimes size={14} />
           </IconButton>
         </p>
-        <p className="text-lg text-center font-medium">选择一个子项</p>
+        <p className="text-lg text-center font-medium">{t("selectAnItem")}</p>
         <p className="mt-1 text-center text-gray-400">
-          目标参数「{currentParam?.key}」有{currentParam?.atoms?.length}个子项
+          {t("paramAtoms", {
+            key: currentParam?.key,
+            atomSize: currentParam?.atoms?.length,
+          })}
         </p>
         <ul className="mt-8 mb-6 max-h-[80vh] overflow-auto">
           {currentParam?.atoms?.map((atom, _atomIndex) => (
@@ -149,7 +153,7 @@ const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, 
             >
               <div className={classNames("flex justify-between items-center rounded-lg")}>
                 <p className="flex items-center flex-grow justify-between">
-                  {TextFallback(atom.description, "缺少描述")}
+                  {TextFallback(atom.description, t("noDescription"))}
                   {atom.message && (
                     <Tooltip title={atom.message} placement="left">
                       <span className="ml-1 cursor-default">
@@ -175,7 +179,7 @@ const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, 
                         resetAtom(atom);
                       }}
                     >
-                      清除
+                      {t("clear")}
                     </span>
                     <span
                       className={classNames(
@@ -183,7 +187,7 @@ const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, 
                         atom.isTypeMatch ? "group-hover:hidden" : "",
                       )}
                     >
-                      已设置
+                      {t("alreadySet")}
                     </span>
                   </div>
                 )}

@@ -5,6 +5,8 @@ import classNames from "classnames";
 import { TextField, Switch as MdSwitch, Button as MdButon, Tooltip, IconButton } from "@mui/material";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
+
 import { showToast } from "@/components/toast";
 
 import { FaClipboard } from "@/components/icons";
@@ -12,17 +14,26 @@ import { useTheme } from "@mui/material/styles";
 import { flowDetailState } from "@/recoil/flow/flow";
 import { useUpdateFlow } from "@/recoil/hooks/useUpdateFlow";
 import { useDeleteFlow } from "@/recoil/hooks/useDeleteFlow";
+import i18n from "@/i18n";
+
 export type SettingsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const SettingsSchema = Yup.object().shape({
-  crontab: Yup.string().max(999, "太长了"),
-  timeoutInSeconds: Yup.number().integer("必须是整数").min(0, "不能小于0").max(Number.MAX_SAFE_INTEGER),
-  retryAmount: Yup.number().integer("必须是整数").min(0, "不能小于0").max(Number.MAX_SAFE_INTEGER),
-  retryIntervalInSecond: Yup.number().integer("必须是整数").min(0, "不能小于0").max(Number.MAX_SAFE_INTEGER),
+  crontab: Yup.string().max(99, i18n.t("crontabTooLong")),
+  timeoutInSeconds: Yup.number()
+    .integer(i18n.t("mustBeInteger"))
+    .min(0, i18n.t("mustGt0"))
+    .max(Number.MAX_SAFE_INTEGER),
+  retryAmount: Yup.number().integer(i18n.t("mustBeInteger")).min(0, i18n.t("mustGt0")).max(Number.MAX_SAFE_INTEGER),
+  retryIntervalInSecond: Yup.number()
+    .integer(i18n.t("mustBeInteger"))
+    .min(0, i18n.t("mustGt0"))
+    .max(Number.MAX_SAFE_INTEGER),
 }); // TODO 文案完善
 
 const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
   const flow = useRecoilValue(flowDetailState);
+  const { t } = useTranslation();
   const {
     allowParallelRun,
     allowTriggerByKey,
@@ -62,7 +73,7 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
         const isvalid = await updateFlow(values);
         if (isvalid) {
           showToast({
-            children: "保存成功",
+            children: t("saved"),
             autoHideDuration: 1500,
           });
         }
@@ -73,10 +84,10 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
           <Form>
             <div className={classNames("mx-auto max-w-md", className)} {...rest}>
               <div className="my-4 bg-white p-4 rounded-lg relative border-solid border-gray-200 border">
-                <p className="mb-3 text-lg font-medium flex items-center justify-between">触发设置</p>
-                <p className="text-sm">crontab表达式</p>
+                <p className="mb-3 text-lg font-medium flex items-center justify-between">{t("triggerSeeings")}</p>
+                <p className="text-sm">{t("crontabStr")}</p>
                 <TextField
-                  placeholder="输入crontab表达式"
+                  placeholder={t("crontabStr")}
                   fullWidth
                   name="crontab"
                   value={values.crontab}
@@ -96,7 +107,7 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                 </p>
                 <div className="mt-4">
                   <p className="flex items-center justify-between">
-                    <span>允许使用key触发运行</span>
+                    <span>{t("allowTriggerByKey")}</span>
                     <MdSwitch
                       name="allowTriggerByKey"
                       checked={values.allowTriggerByKey}
@@ -115,7 +126,6 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                     <div className={classNames("mt-2 relative")}>
                       <TextField
                         className="bg-gray-50"
-                        placeholder="输入key"
                         fullWidth
                         disabled
                         value={triggerKey}
@@ -128,13 +138,13 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                         text={triggerKey || ""}
                         onCopy={() => {
                           showToast({
-                            children: "已复制到粘贴板",
+                            children: t("copied"),
                             autoHideDuration: 1500,
                           });
                         }}
                       >
                         <span>
-                          <Tooltip title="复制到粘贴板" placement="left">
+                          <Tooltip title={t("copyToClipboard")} placement="left">
                             <IconButton
                               sx={{
                                 position: "absolute",
@@ -152,14 +162,14 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                   </div>
                 </div>
 
-                <p className="mt-6 text-lg font-medium">运行设置</p>
-                <p className="mt-3 text-sm mb-1">超时设置（秒）</p>
+                <p className="mt-6 text-lg font-medium">{t("runSettings")}</p>
+                <p className="mt-3 text-sm mb-1">{t("timeoutValue")}</p>
 
                 <TextField
                   value={values.timeoutInSeconds}
                   name="timeoutInSeconds"
                   type="number"
-                  placeholder="超时时间"
+                  placeholder={t("timeoutValue")}
                   fullWidth
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -177,10 +187,10 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                 </p>
                 <div className="mt-1 flex">
                   <div className="flex-1 mr-4">
-                    <p className="mt-2 text-sm mb-1">重试次数</p>
+                    <p className="mt-2 text-sm mb-1">{t("retryTimes")}</p>
 
                     <TextField
-                      placeholder="输入重试次数"
+                      placeholder={t("retryTimes")}
                       fullWidth
                       value={values.retryAmount}
                       type="number"
@@ -201,10 +211,10 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                     </p>
                   </div>
                   <div className="flex-1">
-                    <p className="mt-2 text-sm mb-1">重试间隔（秒）</p>
+                    <p className="mt-2 text-sm mb-1">{t("retryInterval")}</p>
 
                     <TextField
-                      placeholder="输入重试间隔"
+                      placeholder={t("retryInterval")}
                       fullWidth
                       type="number"
                       value={values.retryIntervalInSecond}
@@ -226,7 +236,7 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                   </div>
                 </div>
                 <p className="mt-4 flex items-center justify-between">
-                  <span>允许多个任务同时运行</span>
+                  <span>{t("allowParallelRun")}</span>
 
                   <MdSwitch
                     checked={values.allowParallelRun}
@@ -246,7 +256,7 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                   disableElevation
                   type="submit"
                 >
-                  {canModifySettings ? "更新设置" : "你没有修改设置的权限"}
+                  {canModifySettings ? t("updateSettings") : t("noUpdateSettingsPermission")}
                 </MdButon>
                 <MdButon
                   sx={{ mt: 2 }}
@@ -257,7 +267,7 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                   disabled={!canDelete}
                   onClick={deleteFlow}
                 >
-                  {canDelete ? "删除此项目" : "你没有删除此项目的权限"}
+                  {canDelete ? t("deleteFlow") : t("noDeletePermission")}
                 </MdButon>
               </div>
             </div>

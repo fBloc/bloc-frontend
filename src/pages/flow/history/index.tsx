@@ -27,7 +27,7 @@ const FlowHistory = () => {
   const node = query.get("node");
   const operation = query.get("operation");
   const [flow, setFlow] = useRecoilState(flowDetailState);
-  const [attrs, setOperationAttrs] = useRecoilState(operationAttrs);
+  const setOperationAttrs = useSetRecoilState(operationAttrs);
   const setProject = useSetRecoilState(projectSettings);
   const [initited, setInitiated] = useState(false);
   const { nodes, edges } = useReadonlyBoard();

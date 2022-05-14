@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { FieldArray, useFormikContext } from "formik";
 import { get } from "lodash-es";
+import { useTranslation } from "react-i18next";
 import { Button, TextField, TextFieldProps } from "@mui/material";
 import { FormControlType, ParamValueType } from "@/shared/enums";
 import { FaPlus } from "@/components/icons";
@@ -22,8 +23,9 @@ type UserInputProps = TextFieldProps & {
   formType: FormControlType;
   valueType: ParamValueType;
 };
-const UserInput: React.FC<UserInputProps> = ({ isArray, formType, valueType, name, ...props }) => {
+const UserInput: React.FC<UserInputProps> = ({ isArray, valueType, name, ...props }) => {
   const { values } = useFormikContext();
+  const { t } = useTranslation();
   const inputType = useMemo(
     () => ([ParamValueType.int, ParamValueType.float].includes(valueType) ? "number" : "text"),
     [valueType],
@@ -58,7 +60,7 @@ const UserInput: React.FC<UserInputProps> = ({ isArray, formType, valueType, nam
                     }}
                   >
                     <FaPlus size={10} className="mr-2" />
-                    添加一条数据
+                    {t("addInputItem")}
                   </Button>
                 </div>
               ))}

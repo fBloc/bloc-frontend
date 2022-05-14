@@ -22,7 +22,6 @@ interface LoginForm {
 }
 
 export const login = (user: LoginForm) => {
-  if (!user.name || !user.password) return interceptRequest({ message: "账号或密码不能为空。" });
   return request.post<LoginUserInfo>("/api/v1/login", user);
 };
 

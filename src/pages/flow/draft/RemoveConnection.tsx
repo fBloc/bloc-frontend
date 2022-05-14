@@ -1,10 +1,11 @@
 import React, { useCallback, useMemo } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { Dialog, Box, Button, IconButton } from "@mui/material";
-import { beingRemovedConnectionAttrs } from "@/recoil/flow/connections";
+import { useTranslation } from "react-i18next";
 import { FaTimes } from "@/components/icons";
 import { useQueries } from "@/recoil/hooks/useQueries";
 import { isTruthyValue } from "@/shared/tools";
+import { beingRemovedConnectionAttrs } from "@/recoil/flow/connections";
 
 import { useRemoveConnection } from "@/recoil/hooks/useRemoveConnection";
 import { TextFallback } from "@/shared/jsxUtils";
@@ -15,6 +16,7 @@ const RemoveConnection = () => {
   const resetAttrs = useResetRecoilState(beingRemovedConnectionAttrs);
   const { queryNode, queryTargetAtom } = useQueries();
   const removeConnection = useRemoveConnection();
+  const { t } = useTranslation();
   const targeAtoms = useMemo(() => {
     if (!attrs.connection) return [];
     const { targetNode, targetParam, targetAtomIndex = [] } = attrs.connection;
@@ -47,9 +49,11 @@ const RemoveConnection = () => {
             <FaTimes size={14} />
           </IconButton>
         </p>
-        <p className="text-lg text-center font-medium">选择要取消关联的子项</p>
+        <p className="text-lg text-center font-medium">{t("disconnectItem")}</p>
         <p className="mt-1 text-center text-gray-400">
-          目标参数关联了{attrs.connection?.targetAtomIndex?.length}个子项
+          {t("connctedSize", {
+            size: attrs.connection?.targetAtomIndex?.length,
+          })}
         </p>
         <div className="mt-6 ">
           {targeAtoms.map((atom) => (
@@ -57,7 +61,7 @@ const RemoveConnection = () => {
               key={atom.atomIndex}
               className="mt-3 p-3 border border-solid rounded-md flex items-center justify-between group"
             >
-              {TextFallback(atom.description, "暂无描述")}
+              {TextFallback(atom.description, t("noDescription"))}
               <Button
                 className="ml-2"
                 size="small"
@@ -72,12 +76,12 @@ const RemoveConnection = () => {
                     open: false,
                   }));
                   showToast({
-                    children: "已取消关联",
+                    children: t("disconnected"),
                     autoHideDuration: 1500,
                   });
                 }}
               >
-                取消关联
+                {t("disconnect")}
               </Button>
             </p>
           ))}

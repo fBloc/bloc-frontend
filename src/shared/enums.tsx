@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { FaCheckCircle, FaTimesCircle, FaPauseCircle, FaStopCircle, FaBan } from "@/components/icons";
 import { FlowDetailT, FlowRunningStatus } from "@/api/flow";
-
+import i18n from "@/i18n";
 /**
  * 参数设置值的类型
  */
@@ -105,6 +105,7 @@ export enum TriggerTypes {
   key,
 }
 
+// TODO 语意完善
 export const getTriggerLabel = (type?: TriggerTypes) => {
   if (!type) return "-";
   const values = {

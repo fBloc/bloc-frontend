@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Handle, Position } from "react-flow-renderer";
 import classNames from "classnames";
 import { useQuery } from "react-query";
+import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 import { Popover } from "@mui/material";
 import { Tooltip } from "@/components";
@@ -37,7 +38,7 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
     return recordDetail?.ipt?.[detail.index] || [];
   }, [detail.index, recordDetail]);
   const readFlowMode = useMemo(() => [FlowDisplayPage.flow, FlowDisplayPage.draft].includes(nodeData.mode), [nodeData]);
-
+  const { t } = useTranslation();
   return (
     <>
       <div
@@ -57,9 +58,7 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
         }}
       >
         <Tooltip
-          title={
-            [FlowDisplayPage.preview, FlowDisplayPage.history].includes(nodeData.mode) ? "点击查看数据详情" : false
-          }
+          title={[FlowDisplayPage.preview, FlowDisplayPage.history].includes(nodeData.mode) ? t("viewData") : false}
         >
           <Handle
             isConnectable={false}
@@ -169,16 +168,18 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
 export default TargetHandle;
 
 export const VoidTargetHandle: React.FC<Connectable & { nodeData: BlocNodeData }> = ({ isConnectable, nodeData }) => {
+  const { t } = useTranslation();
+
   return (
     <Tooltip
       arrow
       title={
         <div className="max-w-xs">
-          <p className="text-sm">流程输入</p>
+          <p className="text-sm">{t("flowInput")}</p>
           {!nodeData.connectableNodeIds.includes(nodeData.id) && nodeData.isConnecting && (
             <div className="mt-2 mb-1 text-red-400 flex items-center">
               <FaExclamationCircle className="mr-1" />
-              当前节点不可匹配
+              {t("notConnectable")}
             </div>
           )}
         </div>

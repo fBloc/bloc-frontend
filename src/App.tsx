@@ -1,10 +1,11 @@
 import React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import Recoilize from "recoilize";
 import RouterView from "./router";
 import { RecoilRoot } from "recoil";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import shadows from "@mui/material/styles/shadows";
-import Recoilize from "recoilize";
+import "./i18n";
 export const queryClient = new QueryClient();
 
 // import primary from "@mui/material/colors/deepPurple";

@@ -1,5 +1,6 @@
 import React, { memo, useCallback, useMemo } from "react";
 import { ListItemText, MenuItem, OutlinedInput, Select, SelectProps, Button } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { FixedSizeList } from "react-window";
 import { isValidValue } from "@/shared/tools";
 import { FaCheck } from "@/components/icons";
@@ -76,6 +77,8 @@ const UserSelect: React.FC<UserSelectProps> = ({
     [options],
   );
   const isUnset = Array.isArray(value) ? value.filter(isValidValue).length === 0 : !isValidValue(value);
+  const { t } = useTranslation();
+
   return (
     <Select
       {...props}
@@ -100,7 +103,7 @@ const UserSelect: React.FC<UserSelectProps> = ({
               onValueChange(_value); // TODO 提取逻辑
             }}
           >
-            填入默认值
+            {t("useDefaultValue")}
           </Button>
         ) : null
       }
@@ -108,7 +111,7 @@ const UserSelect: React.FC<UserSelectProps> = ({
       <FixedSizeList itemSize={40} height={Math.min(200, 40 * options.length)} itemCount={options.length} width="100%">
         {(defaultProps) => Row({ ...defaultProps, options, value, isMultiple, onValueChange })}
       </FixedSizeList>
-      {options.length === 0 && <p className="text-center py-5 text-gray-400">无可用项</p>}
+      {options.length === 0 && <p className="text-center py-5 text-gray-400">{t("noData")}</p>}
     </Select>
   );
 };

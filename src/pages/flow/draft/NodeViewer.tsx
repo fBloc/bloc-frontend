@@ -3,6 +3,7 @@ import { useRecoilCallback, useRecoilState, useRecoilValue, useResetRecoilState 
 import { Circle } from "rc-progress";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
+import { useTranslation } from "react-i18next";
 import { EditableText, showConfirm } from "@/components";
 import { TabPanel } from "@/components";
 import { Button as MdButton, Drawer, DrawerProps, IconButton, Tabs, Tab, Tooltip } from "@mui/material";
@@ -20,7 +21,7 @@ import { valueEqualsUnset } from "@/processors/value";
 import { useUpdateBlocNode } from "@/recoil/hooks/useUpdateBlocNode";
 import { TextFallback } from "@/shared/jsxUtils";
 import { useClearAllAtoms } from "@/recoil/hooks/useClearAtom";
-
+import i18n from "@/i18n";
 export type NodeViewerProps = DrawerProps & {};
 
 function isJson(str?: string) {
@@ -47,27 +48,27 @@ const getSchema = (atom: FullStateAtom) => {
     case ParamValueType.bool:
       const booleanItemSchema = Yup.boolean();
       schema = booleanItemSchema;
-      message = "不是有效的数据";
+      message = i18n.t("notBool");
       break;
     case ParamValueType.json:
-      const jsonItemSchema = Yup.string().test("isJson", "不是有效的json", isJson);
+      const jsonItemSchema = Yup.string().test("isJson", i18n.t("notValidJson"), isJson);
       schema = jsonItemSchema;
-      message = "不是有效的json";
+      message = i18n.t("notValidJson");
       break;
     case ParamValueType.string:
       const strItemSchema = Yup.string();
       schema = strItemSchema;
-      message = "不是字符串";
+      message = i18n.t("notString");
       break;
     case ParamValueType.int:
       const intItemSchema = Yup.number().integer();
       schema = intItemSchema;
-      message = "不是整数";
+      message = i18n.t("mustBeInteger");
       break;
     case ParamValueType.float:
       const numItemSchema = Yup.number();
       schema = numItemSchema;
-      message = "不是数字";
+      message = i18n.t("notNumber");
       break;
   }
   return {
@@ -84,7 +85,7 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
   const updateAtom = useUpdateAtomValue();
   const clearAllAtoms = useClearAllAtoms();
   const [currentNodeId, setCurrenBlocId] = useRecoilState(currentBlocNodeId);
-
+  const { t } = useTranslation();
   const resetTabView = useCallback(() => {
     setAttrs((previous) => ({
       ...previous,
@@ -124,7 +125,7 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
             return Yup.object().shape({
               value: Yup.mixed().test({
                 name: "paramItemValueValidation",
-                message: "请输入有效的数据",
+                message: t("notValidData"), // 正常应该不会使用此处信息
                 test: (_, context) => {
                   const atom = (context as any).from[1].value as FullStateAtom; // 层级关系
                   const v = context.parent.value;
@@ -134,7 +135,7 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                     return true;
                   } catch (error) {
                     return new Yup.ValidationError(
-                      [null, undefined, ""].includes(v) ? "值不能为空" : message,
+                      [null, undefined, ""].includes(v) ? t("nullableDisallowed") : message,
                       v,
                       context.path,
                     );
@@ -155,7 +156,7 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
               then: Yup.array().of(atomValueSchema as any),
               otherwise: Yup.mixed().test({
                 name: "paramListValueValidation",
-                message: "请输入有效的数据",
+                message: t("notValidData"),
                 test: (_, context) => {
                   const atom = context.parent as FullStateAtom;
                   const { schema, message } = getSchema(atom);
@@ -251,10 +252,10 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
               <div className="p-4 w-96 flex flex-col">
                 <div className="mb-6 flex items-center justify-between">
                   <div className="flex-grow">
-                    <Tooltip title="重命名" placement="bottom-start">
+                    <Tooltip title={t("rename")} placement="bottom-start">
                       <EditableText
                         defaultValue={data?.note || data?.function?.name}
-                        placeholder="bloc标题"
+                        placeholder={t("rename")}
                         inputProps={{
                           className: "hover:bg-gray-50 rounded !px-2 focus:bg-gray-100",
                         }}
@@ -274,7 +275,7 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                     onClick={async () => {
                       if (dirty) {
                         const confirmed = await showConfirm({
-                          title: "有未保存的更改，确认关闭吗？",
+                          title: t("unsavedChanges"),
                         });
                         if (confirmed) {
                           onInternalExit({} as any);
@@ -288,8 +289,8 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                   </IconButton>
                 </div>
                 <Tabs value={attrs.tabView} onChange={onTabViewChange}>
-                  <Tab label={`输入(${data?.statefulMergedIpts?.length})`} value="input" />
-                  <Tab label={`输出(${data?.paramOpts.length})`} value="output" />
+                  <Tab label={`${t("input")}(${data?.statefulMergedIpts?.length})`} value="input" />
+                  <Tab label={`${t("output")}(${data?.paramOpts.length})`} value="output" />
                 </Tabs>
                 <TabPanel index="input" value={attrs.tabView}>
                   {data?.statefulMergedIpts?.map((param, paramIndex) => (
@@ -311,7 +312,7 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                           <p className="flex items-center">
                             {param.description}
                             {param.required && (
-                              <Tooltip title="此参数为必填项" placement="right">
+                              <Tooltip title={t("paramRequired")} placement="right">
                                 <span>
                                   <FaSnowflake size={10} className="ml-2 text-red-400" />
                                 </span>
@@ -361,13 +362,13 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                               <p className="text-xs text-gray-400">
                                 {TextFallback(
                                   queryNode(target.nodeId)?.note || queryNode(target.nodeId)?.function?.name,
-                                  "暂无描述",
+                                  t("noDescription"),
                                 )}
                               </p>
                               <div className="mt-4 flex">
                                 <ArrowConnection />
                                 <p className="ml-2 mt-2">
-                                  {TextFallback(getTargetAtom(target)?.description, "暂无描述")}
+                                  {TextFallback(getTargetAtom(target)?.description, t("noDescription"))}
                                 </p>
                               </div>
                             </div>
@@ -376,7 +377,7 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                       </div>
                       {param.targetList.length === 0 && (
                         <div className="ml-10 h-24 border border-solid border-gray-200 rounded-md flex justify-center items-center text-gray-400">
-                          暂未关联至其他节点
+                          {t("notConnected")}
                         </div>
                       )}
                     </div>
@@ -384,9 +385,8 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                 </TabPanel>
                 <div className="mt-4 flex justify-end items-center px-4 sticky bottom-4 bg-white">
                   <MdButton type="submit" fullWidth variant="outlined">
-                    保存
+                    {t("save")}
                   </MdButton>
-                  {JSON.stringify(errors)}
                 </div>
               </div>
             </Form>

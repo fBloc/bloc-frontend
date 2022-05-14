@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Menu, MenuItem, Chip, IconButton } from "@mui/material";
+import { Menu, MenuItem, IconButton } from "@mui/material";
 import { FaEllipsisV } from "@/components/icons";
 import { PAGES } from "@/router/pages";
 import Logo from "@/assets/logo-name.png";

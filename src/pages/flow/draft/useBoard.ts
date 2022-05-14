@@ -9,7 +9,7 @@ import { useAddNode } from "@/recoil/hooks/useAddNode";
 import { useAddConnection } from "@/recoil/hooks/useAddConnection";
 import { blocNodeList, connectableNodeIds, currentBlocNodeId } from "@/recoil/flow/node";
 import { nodeViewAttrs, paramAtomsPickerAttrs } from "@/recoil/flow/board";
-import { BlocNodeData, ParamConnectionEnd } from "@/shared/types";
+import { BlocNodeData } from "@/shared/types";
 import { useReadonlyBoard } from "@/recoil/hooks/useReadonlyBoard";
 import { getAtomPickerAttrs } from "@/processors/param";
 import { flowDetailState } from "@/recoil/flow/flow";

@@ -9,7 +9,7 @@ import {
   Button,
   DialogContentText,
 } from "@mui/material";
-
+import i18n from "@/i18n";
 export type Confirmprops = DialogProps &
   CmdComponentProps<boolean> & {
     body?: React.ReactNode;
@@ -25,8 +25,8 @@ const Confirm: React.FC<Confirmprops> = ({
   onExited: cmdOnExited,
   title,
   body,
-  cancelText = "取消",
-  confirmText = "确认",
+  cancelText = i18n.t("cancel"),
+  confirmText = i18n.t("confirm"),
   open,
   ...rest
 }) => {

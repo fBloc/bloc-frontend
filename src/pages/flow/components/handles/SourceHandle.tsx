@@ -3,6 +3,7 @@ import { Handle, Position } from "react-flow-renderer";
 import { Popover, Tooltip } from "@mui/material";
 import { useRecoilState } from "recoil";
 import { useQuery } from "react-query";
+import { useTranslation } from "react-i18next";
 import { OptParam } from "@/api/functions";
 import { BLOC_FLOW_HANDLE_ID } from "@/shared/constants";
 import { BlocNodeData, Connectable } from "@/shared/types";
@@ -11,7 +12,6 @@ import { getBlocRecordDetail } from "@/api/flow";
 import styles from "./handle.module.scss";
 import classNames from "classnames";
 import { FlowDisplayPage } from "@/shared/enums";
-import { TextFallback } from "@/shared/jsxUtils";
 import Value from "./Value";
 const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Connectable> = ({
   detail,
@@ -95,8 +95,9 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
 export default SourceHandle;
 
 export const VoidSourceHandle: React.FC<Connectable & { nodeData: BlocNodeData }> = ({ isConnectable }) => {
+  const { t } = useTranslation();
   return (
-    <Tooltip title="流程输出" placement="top">
+    <Tooltip title={t("flowOutput")} placement="top">
       <div className="relative">
         <Handle
           isConnectable={isConnectable}

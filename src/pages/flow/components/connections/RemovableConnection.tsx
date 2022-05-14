@@ -1,6 +1,7 @@
 import React from "react";
 import { useSetRecoilState } from "recoil";
 import { getBezierPath, getEdgeCenter, EdgeProps } from "react-flow-renderer";
+import { useTranslation } from "react-i18next";
 import { FaTimes } from "@/components/icons";
 import { Tooltip, Button } from "@mui/material";
 import { EdgeData } from "@/shared/types";
@@ -27,6 +28,7 @@ export default function CustomEdge({
   targetHandleId,
   ...rest
 }: EdgeProps<EdgeData>) {
+  const { t } = useTranslation();
   const edgePath = getBezierPath({
     sourceX,
     sourceY,
@@ -60,7 +62,7 @@ export default function CustomEdge({
               <FaEllipsisH size={12} />
             </button> */}
             <div className="h-full flex items-center justify-between absolute w-full">
-              <Tooltip title="解除关联">
+              <Tooltip title={t("disconnect")}>
                 <Button
                   disableElevation
                   sx={{

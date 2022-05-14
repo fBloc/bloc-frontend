@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useFormikContext } from "formik";
 import { FormControlType, IptWay, ParamValueType } from "@/shared/enums";
 import InputView from "./UserInput";
 import { DEFAULT_EDIT_ATOM_DESCCRIPTOR } from "@/shared/defaults";
@@ -7,7 +8,6 @@ import Connection from "./Connection";
 import { atomEditState, AtomKey, currentBlocNodeId } from "@/recoil/flow/node";
 import { operationRecords } from "@/recoil/flow/param";
 import UserSelet from "./UserSelect";
-import { useFormikContext } from "formik";
 import { useSetAtomValue } from "@/recoil/hooks/useSetAtomValue";
 
 export type AtomFormProps = {

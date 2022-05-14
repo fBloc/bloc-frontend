@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useRecoilValue } from "recoil";
 import { Tooltip, IconButton } from "@mui/material";
 import { FaChevronLeft } from "@/components/icons";
@@ -13,6 +14,7 @@ import { PAGES } from "@/router/pages";
 const LaunchedFlowHeader = () => {
   const flow = useRecoilValue(flowDetailState);
   const latestRun = useMemo(() => flow?.latestRun, [flow]);
+
   return (
     <>
       <div
@@ -45,6 +47,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
   const [query] = useSearchParams();
   const originId = query.get("id");
   const node = query.get("node");
+  const { t } = useTranslation();
 
   const target = useMemo(() => {
     if (node) return PAGES.flowList;
@@ -57,7 +60,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
         {...rest}
       >
         <div className="flex-1 flex items-center flex-shrink-0">
-          <Tooltip title="返回">
+          <Tooltip title={t("goBack")}>
             <Link to={target}>
               <IconButton>
                 <FaChevronLeft size={14} />
@@ -66,16 +69,18 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
           </Tooltip>
           <div className="ml-4">
             <p className="font-medium">{flow?.name}</p>
-            <p className="mt-1 text-xs text-gray-400">{readableTime(flow?.latestRun?.trigger_time)} 触发</p>
+            <p className="mt-1 text-xs text-gray-400">
+              {t("triggeredTime", {
+                time: readableTime(flow?.latestRun?.trigger_time),
+              })}
+            </p>
           </div>
         </div>
         <LaunchedFlowHeader />
         {children}
       </div>
       {flow?.newest === false && (
-        <div className="bg-yellow-100 tetx-center p-2 text-yellow-600 text-center">
-          这是旧版本的flow，最新版本flow的逻辑和编排可能会发生变化
-        </div>
+        <div className="bg-yellow-100 tetx-center p-2 text-yellow-600 text-center">{t("oldVersionFlow")}</div>
       )}
     </div>
   );

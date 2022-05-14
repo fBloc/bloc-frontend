@@ -30,8 +30,5 @@ export * from "./empty";
 export { default as EditableText } from "./editableText";
 export * from "./editableText";
 
-export { default as TextArea } from "./textarea";
-export * from "./textarea";
-
 export * from "./confirm";
 export { default as Confirm } from "./confirm";

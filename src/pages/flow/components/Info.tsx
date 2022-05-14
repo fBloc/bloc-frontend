@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import { useRecoilValue } from "recoil";
+import { useTranslation } from "react-i18next";
 import { FaCheck, FaTimes } from "@/components/icons";
 import { IconButton, DialogTitle, Divider, DialogProps, Dialog } from "@mui/material";
 import { readableTime } from "@/shared/time";
@@ -32,11 +33,12 @@ const AccessTag: React.FC<React.HTMLAttributes<HTMLSpanElement> & { active?: boo
 
 const Info: React.FC<DialogProps> = ({ className, ...rest }) => {
   const flow = useRecoilValue(flowDetailState);
+  const { t } = useTranslation();
   return (
     <Dialog maxWidth="sm" {...rest}>
       <div className={classNames(className, "p-4")}>
         <DialogTitle className="flex justify-between !p-0">
-          <span>基本信息</span>
+          <span>{t("basicInfo")}</span>
           <IconButton
             onClick={(e) => {
               rest.TransitionProps?.onExit?.(e.currentTarget);
@@ -46,15 +48,15 @@ const Info: React.FC<DialogProps> = ({ className, ...rest }) => {
           </IconButton>
         </DialogTitle>
         <p className="flex justify-between items-center my-4">
-          <span className="bloc-description flex-shrink-0 mr-4">名称</span>
+          <span className="bloc-description flex-shrink-0 mr-4">{t("name")}</span>
           <span>{formatText(flow?.name)}</span>
         </p>
         <p className="flex justify-between items-center mb-4">
-          <span className="bloc-description flex-shrink-0 mr-4">创建人</span>
+          <span className="bloc-description flex-shrink-0 mr-4">{t("createdBy")}</span>
           <span>{formatText(flow?.createUserName)}</span>
         </p>
         <p className="flex justify-between items-center mb-4">
-          <span className="bloc-description flex-shrink-0 mr-4">创建时间</span>
+          <span className="bloc-description flex-shrink-0 mr-4">{t("createdAt")}</span>
           <span>{readableTime(flow?.createTime)}</span>
         </p>
         <Divider
@@ -63,20 +65,20 @@ const Info: React.FC<DialogProps> = ({ className, ...rest }) => {
           }}
         />
         <div>
-          <p className="bloc-description">我的权限</p>
+          <p className="bloc-description">{t("myPermissions")}</p>
           <p className="mt-2 flex whitespace-nowrap">
-            <AccessTag active={flow?.read}>查看</AccessTag>
+            <AccessTag active={flow?.read}>{t("view")}</AccessTag>
             <AccessTag className="ml-1.5" active={flow?.write}>
-              编辑
+              {t("edit")}
             </AccessTag>
             <AccessTag className="ml-1.5" active={flow?.execute}>
-              执行
+              {t("excute")}
             </AccessTag>
             <AccessTag className="ml-1.5" active={flow?.delete}>
-              删除
+              {t("delete")}
             </AccessTag>
             <AccessTag className="ml-1.5" active={flow?.assignPermission}>
-              分配权限
+              {t("assignPermission")}
             </AccessTag>
           </p>
         </div>

@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { Drawer, DrawerProps, IconButton, DialogTitle, Divider, CircularProgress } from "@mui/material";
@@ -18,6 +19,8 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
   const setOperationAttrs = useSetRecoilState(operationAttrs);
   const record = useMemo(() => internalLogAttrs.nodeData?.latestRunningInfo, [internalLogAttrs]);
   const recordId = useMemo(() => record?.recordId || "", [record]);
+  const { t } = useTranslation();
+
   const { data: logData, isFetching } = useQuery(["getRecordLogData", recordId], () => getLog(recordId || ""), {
     enabled: !!recordId && internalLogAttrs.open,
     refetchOnWindowFocus: false,
@@ -84,7 +87,7 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
           <div className="ml-2">
             <p className="font-medium">{getRunningStateText(record?.status)}</p>
             {record?.status && record.status > RunningStatusEnum.running && (
-              <p className="mt-1 text-xs text-gray-400">历时{diffSeconds(record?.startTime, record?.endTime)}</p>
+              <p className="mt-1 text-xs text-gray-400">{diffSeconds(record?.startTime, record?.endTime)}</p>
             )}
           </div>
         </div>
@@ -102,7 +105,7 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
               <p className="ml-2">{item.data}</p>
             </div>
           ))}
-          {logData?.data?.length === 0 && <p className="pt-10 text-center text-gray-200">暂无日志</p>}
+          {logData?.data?.length === 0 && <p className="pt-10 text-center text-gray-200">{t("noData")}</p>}
           {isFetching && <CircularProgress sx={{ ml: 1 }} className="!text-white" size={14} />}
         </div>
       </div>

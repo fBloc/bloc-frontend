@@ -1,9 +1,9 @@
+import { uniq } from "lodash-es";
 import { EditAtom, FullStateAtom, StatefulMergedIptParam } from "@/api/flow";
 import { correctValue } from "@/processors/correctAtomValue";
 import { IptWay } from "@/shared/enums";
 import { isTruthyValue } from "@/shared/tools";
 import { BlocNodeItem, ParamConnectionEnd } from "@/shared/types";
-import { uniq } from "lodash-es";
 
 export function flatParamAtoms(ipts: StatefulMergedIptParam[]) {
   return ipts.reduce((acc: FullStateAtom[], param) => {

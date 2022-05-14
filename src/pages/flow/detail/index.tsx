@@ -14,12 +14,12 @@ import { flowDetailState, projectSettings } from "@/recoil/flow/flow";
 import { useReadonlyBoard } from "@/recoil/hooks/useReadonlyBoard";
 import { useResetFlowWhenDestroy } from "@/recoil/hooks/useResetFlow";
 import { FlowDisplayPage } from "@/shared/enums";
-
+import i18n from "@/i18n";
 const sideTabItems: SideTabProps<string>["items"] = [
   {
     label: <FaProjectDiagram size={20} />,
     tooltip: {
-      title: "流程图",
+      title: i18n.t("flowChart") as string,
       placement: "right",
     },
     value: "flow",
@@ -27,7 +27,7 @@ const sideTabItems: SideTabProps<string>["items"] = [
   {
     label: <FaHistory size={20} />,
     tooltip: {
-      title: "运行历史",
+      title: i18n.t("runningRecords") as string,
       placement: "right",
     },
     value: "history",
@@ -35,7 +35,7 @@ const sideTabItems: SideTabProps<string>["items"] = [
   {
     label: <FaCog size={20} />,
     tooltip: {
-      title: "设置",
+      title: i18n.t("settings") as string,
       placement: "right",
     },
     value: "settings",

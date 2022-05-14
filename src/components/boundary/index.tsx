@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@mui/material";
 import loadingIcon from "./loading.svg";
+import i18n from "@/i18n";
 class ErrorBoundary extends React.Component<{ hasError: boolean }> {
   constructor(props: any) {
     super(props);
@@ -22,14 +23,14 @@ class ErrorBoundary extends React.Component<{ hasError: boolean }> {
           <div className="text-center">
             <img className="w-96" src={loadingIcon} alt="" />
 
-            <p className="font-mono text-2xl">ops！出现了一个未知错误</p>
+            <p className="font-mono text-2xl">{i18n.t("unknownError")}</p>
             <div
               className="mt-6"
               onClick={() => {
                 window.location.href = `${import.meta.env.BASE_URL}flow`;
               }}
             >
-              <Button variant="outlined">回到首页</Button>
+              <Button variant="outlined">{i18n.t("toHomePage")}</Button>
               <Button
                 sx={{
                   ml: 2,
@@ -40,7 +41,7 @@ class ErrorBoundary extends React.Component<{ hasError: boolean }> {
                   window.location.reload();
                 }}
               >
-                刷新页面
+                {i18n.t("reloadPage")}
               </Button>
             </div>
           </div>

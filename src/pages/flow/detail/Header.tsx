@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { useMutation } from "react-query";
+import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { Menu, MenuItem, IconButton, Tooltip, Divider } from "@mui/material";
 import { FaHome, FaPlayCircle, FaEdit, FaEllipsisV } from "@/components/icons";
@@ -20,6 +21,7 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, ...res
   const flow = useRecoilValue(flowDetailState);
   const [infoVisible, setInfoVisible] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const showInfo = useCallback(() => {
     setInfoVisible(true);
   }, []);
@@ -30,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, ...res
     onSuccess: ({ isValid, data }) => {
       if (isValid) {
         showToast({
-          children: "已触发",
+          children: t("triggered"),
           autoHideDuration: 1500,
         });
         navigate(`/flow/history/${data?.flow_run_record_id}?id=${flow?.originId}`);
@@ -55,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, ...res
           <div className="flex-1 flex items-center">
             <Link to={PAGES.flowList}>
               <div className="w-14 h-14 flex justify-center items-center bg-gray-800 text-white">
-                <Tooltip title="回到首页">
+                <Tooltip title={t("toHomePage")}>
                   <span>
                     <FaHome size={18} />
                   </span>
@@ -65,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, ...res
           </div>
           <div className="flex-1 flex justify-center">{flow?.name}</div>
           <div className={classNames("flex-1 flex justify-end items-center", tab === "flow" ? "" : "invisible")}>
-            <Tooltip title="更多">
+            <Tooltip title={t("more")}>
               <IconButton onClick={handleClick} sx={{ mr: 2 }}>
                 <FaEllipsisV size={14} />
               </IconButton>
@@ -90,12 +92,12 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, ...res
                   }
                 }}
               >
-                创建副本
+                {t("duplicate")}
               </MenuItem>
               <Divider />
-              <MenuItem onClick={showInfo}>基本信息</MenuItem>
+              <MenuItem onClick={showInfo}>{t("basicInfo")}</MenuItem>
             </Menu>
-            <Tooltip title="修改流程" placement="bottom">
+            <Tooltip title={t("edit")} placement="bottom">
               <Link to={`/flow/draft/${flow?.originId || ""}`}>
                 <IconButton>
                   <FaEdit size={18} />
@@ -103,7 +105,7 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, ...res
               </Link>
             </Tooltip>
 
-            <Tooltip title={getters.canExcute ? "立即运行" : getters.disableExcuteReason} placement="bottom">
+            <Tooltip title={getters.canExcute ? t("run") : getters.disableExcuteReason} placement="bottom">
               <IconButton
                 sx={{
                   ml: 2,

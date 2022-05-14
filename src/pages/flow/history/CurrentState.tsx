@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { FaTimes, FaInfoCircle } from "@/components/icons";
 import classNames from "classnames";
+import { useTranslation } from "react-i18next";
 import { getRunningIcon, getRunningStateClass, getRunningStateText, getTriggerLabel } from "@/shared/enums";
 import { formatText } from "@/shared/tools";
 import { diffSeconds, readableTime } from "@/shared/time";
@@ -14,6 +15,8 @@ const CurrentState = () => {
   const state = useMemo(() => flow?.latestRun, [flow]);
   const [visible, setVisible] = useState(false);
   const latest = useRecoilValue(isLatestRecordState);
+  const { t } = useTranslation();
+
   const close = useCallback(() => {
     setVisible(false);
   }, []);
@@ -28,7 +31,7 @@ const CurrentState = () => {
       </IconButton>
       <Dialog open={visible} maxWidth="xs" fullWidth>
         <DialogTitle className="flex justify-between items-center">
-          <span>运行情况</span>
+          <span>{t("runningInfo")}</span>
 
           <IconButton onClick={close}>
             <FaTimes size={14} />
@@ -37,9 +40,9 @@ const CurrentState = () => {
         <div className="px-6 pb-6">
           <p className="flex justify-between">
             <span className="bloc-description flex items-center">
-              运行状态
+              {t("status")}
               <span className={classNames("text-xs bg-gray-100 py-0.5 px-2 rounded-lg m-1", latest ? "" : "invisible")}>
-                最近一次
+                {t("latest")}
               </span>
             </span>
             <span
@@ -58,49 +61,51 @@ const CurrentState = () => {
             <p className="mt-2 bg-red-50 px-2 py-1 rounded text-red-400">
               {state.cancel_user_name ? (
                 <>
-                  <span className="font-medium">{state.cancel_user_name}</span> 取消了此次运行
+                  {t("canceledByUser", {
+                    userName: state.cancel_user_name,
+                  })}
                 </>
               ) : (
-                "超时取消"
+                t("timeoutCanceled")
               )}
             </p>
           )}
 
           {state?.error_msg && (
             <p className="mt-2 flex justify-between items-center">
-              <span className="mr-4 bloc-description flex-shrink-0">错误原因</span>
+              <span className="mr-4 bloc-description flex-shrink-0">{t("errorMessage")}</span>
               <span className="text-red-400 break-all">{state?.error_msg}</span>
             </p>
           )}
 
           {state?.retried_amount ? (
             <p className="mt-2 flex justify-between items-center">
-              <span className="bloc-description">重试次数</span>
+              <span className="bloc-description">{t("retryTimes")}</span>
               <span>{state?.retried_amount}</span>
             </p>
           ) : null}
           <p className="mt-2 flex justify-between items-center">
-            <span className="bloc-description">开始时间</span>
+            <span className="bloc-description">{t("startRunAt")}</span>
             <span>{readableTime(state?.start_time)}</span>
           </p>
           <p className="mt-2 flex justify-between items-center">
-            <span className="bloc-description">结束时间</span>
+            <span className="bloc-description">{t("endRunAt")}</span>
             <span>{readableTime(state?.end_time)}</span>
           </p>
           {state?.start_time && state.end_time && (
             <p className="mt-2 flex justify-between items-center">
-              <span className="bloc-description">历时</span>
+              <span className="bloc-description">{t("duration")}</span>
               <span>{diffSeconds(state?.start_time, state?.end_time)}</span>
             </p>
           )}
           <hr className="my-4" />
           <p className="flex justify-between items-center">
-            <span className="bloc-description">触发类型</span>
+            <span className="bloc-description">{t("triggerType")}</span>
             <span>{getTriggerLabel(state?.trigger_type)}</span>
           </p>
           {state?.trigger_key && (
             <p className="mt-2 flex justify-between items-center">
-              <span className="bloc-description">触发key</span>
+              <span className="bloc-description">{t("triggerKey")}</span>
               <span className="max-w-[150px] overflow-hidden overflow-ellipsis whitespace-nowrap">
                 {state?.trigger_key}
               </span>
@@ -108,13 +113,13 @@ const CurrentState = () => {
           )}
           {state?.trigger_time && (
             <p className="mt-2 flex justify-between items-center">
-              <span className="bloc-description">触发时间</span>
+              <span className="bloc-description">{t("triggerAt")}</span>
               <span>{readableTime(state?.trigger_time)}</span>
             </p>
           )}
           {state?.trigger_user_name && (
             <p className="mt-2 flex justify-between items-center">
-              <span className="bloc-description">触发运行的用户</span>
+              <span className="bloc-description">{t("triggerUser")}</span>
               <span>{state?.trigger_user_name}</span>
             </p>
           )}

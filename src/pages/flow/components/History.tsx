@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import classNames from "classnames";
+import { useTranslation } from "react-i18next";
 import { Tooltip, Box, Pagination } from "@mui/material";
 import { FlowRunningStatus, getLatestRunningRecords } from "@/api/flow";
 import {
@@ -27,7 +28,7 @@ const TriggerType: React.FC<{ triggerKey: string; triggerUser: string; type: Tri
   type,
 }) => {
   return (
-    <Tooltip title={`${getTriggerLabel(type)}触发`}>
+    <Tooltip title={`${getTriggerLabel(type)}`}>
       <span
         className={classNames(
           "mt-1 text-xs mr-2 px-2 py-1 rounded font-medium inline-flex items-center bg-gray-100 text-gray-500",
@@ -49,6 +50,7 @@ const TriggerType: React.FC<{ triggerKey: string; triggerUser: string; type: Tri
 const pageSize = 20;
 
 const FlowHistory = () => {
+  const { t } = useTranslation();
   const { originId } = useParams<"originId">();
   const [pageNum, setPageNum] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -106,27 +108,27 @@ const FlowHistory = () => {
               <th className="w-[80px] py-4 px-2">
                 <span className="inline-flex items-center">
                   版本
-                  <Tooltip title="数字越大，代表版本越新" arrow>
+                  <Tooltip title={t("versionDescription")} arrow>
                     <span>
                       <FaQuestionCircle className="ml-1" />
                     </span>
                   </Tooltip>
                 </span>
               </th>
-              <th className="w-[180px] py-4 px-2">触发时间</th>
-              <th className="w-[180px] py-4">开始运行时间</th>
-              <th className="w-[180px] py-4">结束运行时间</th>
-              <th className="w-[100px] py-4">历时</th>
-              <th className="w-[160px] py-4">状态</th>
-              <th className="w-[160px] py-4">触发方式</th>
-              <th className="px-2 py-4">操作</th>
+              <th className="w-[180px] py-4 px-2">{t("triggerAt")}</th>
+              <th className="w-[180px] py-4">{t("startRunAt")}</th>
+              <th className="w-[180px] py-4">{t("endRunAt")}</th>
+              <th className="w-[100px] py-4">{t("duration")}</th>
+              <th className="w-[160px] py-4">{t("status")}</th>
+              <th className="w-[160px] py-4">{t("triggerMethod")}</th>
+              <th className="px-2 py-4">{t("operations")}</th>
             </tr>
           </thead>
           <tbody>
             {!loading && records.items.length === 0 && (
               <tr>
                 <td colSpan={7}>
-                  <Empty text="没有运行历史" className="mt-40" />
+                  <Empty text={t("noRunningRecords")} className="mt-40" />
                 </td>
               </tr>
             )}
@@ -159,7 +161,7 @@ const FlowHistory = () => {
                     className="hover:underline inline-block"
                   >
                     <Link to={`/flow/history/${item.id}?id=${item.flow_origin_id}`} target="_blank">
-                      查看
+                      {t("view")}
                     </Link>
                   </Box>
                 </td>

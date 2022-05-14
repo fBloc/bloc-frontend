@@ -1,14 +1,15 @@
 import React from "react";
 import { Form, Formik } from "formik";
-import { Button, TextField } from "@mui/material";
 import * as Yup from "yup";
-
+import { Button, TextField } from "@mui/material";
+import { useTranslation } from "react-i18next";
 const schema = Yup.object().shape({
   name: Yup.string().required(),
   password: Yup.string().required(),
 });
 
 const Admin = () => {
+  const { t } = useTranslation();
   return (
     <div className="h-screen flex items-start pt-20 justify-center">
       <Formik
@@ -24,10 +25,10 @@ const Admin = () => {
         {({ handleBlur, handleChange, errors, values, touched }) => {
           return (
             <Form className="bg-white p-6 rounded-lg shadow w-96" id="new-user">
-              <p className="text-xl font-medium text-center mb-4">添加新用户</p>
+              <p className="text-xl font-medium text-center mb-4">t('createAccount')</p>
               <TextField
                 fullWidth
-                placeholder="账号"
+                placeholder={t("account")}
                 name="name"
                 value={values.name}
                 onChange={handleChange}
@@ -42,7 +43,7 @@ const Admin = () => {
                 fullWidth
                 type="password"
                 name="password"
-                placeholder="密码"
+                placeholder={t("password")}
                 value={values.password}
                 autoComplete="new-password"
                 id="new-password"
@@ -59,7 +60,7 @@ const Admin = () => {
                 color="primary"
                 variant="contained"
               >
-                添加
+                {t("confirmCreate")}
               </Button>
             </Form>
           );

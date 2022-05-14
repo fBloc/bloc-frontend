@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { useMutation } from "react-query";
-import classNames from "classnames";
+import { useTranslation } from "react-i18next";
 import { Tooltip, Button } from "@mui/material";
 import { FaEdit, FaHistory, FaPlayCircle, FaProjectDiagram } from "@/components/icons";
 import { flowDetailState, flowGetters } from "@/recoil/flow/flow";
@@ -12,6 +12,8 @@ import { showToast } from "@/components/toast";
 const LaunchedFlowOperations: React.FC = ({ children }) => {
   const flow = useRecoilValue(flowDetailState);
   const getters = useRecoilValue(flowGetters);
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const triggerRunMutation = useMutation(triggerRun, {
     onSuccess: ({ isValid, data }) => {
@@ -26,7 +28,7 @@ const LaunchedFlowOperations: React.FC = ({ children }) => {
   });
   return (
     <>
-      <Tooltip title="运行历史" placement="bottom">
+      <Tooltip title={t("runningRecords")} placement="bottom">
         <Link to={`/flow/detail/${flow?.originId || ""}?tab=history`} target="_blank">
           <Button
             variant="text"
@@ -39,7 +41,7 @@ const LaunchedFlowOperations: React.FC = ({ children }) => {
           </Button>
         </Link>
       </Tooltip>
-      <Tooltip title="Flow详情" placement="bottom">
+      <Tooltip title={t("flowDetail")} placement="bottom">
         <Link to={`/flow/detail/${flow?.originId || ""}`} target="_blank">
           <Button
             variant="text"
@@ -52,7 +54,7 @@ const LaunchedFlowOperations: React.FC = ({ children }) => {
           </Button>
         </Link>
       </Tooltip>
-      <Tooltip title={getters.canExcute ? "立即运行" : getters.disableExcuteReason} placement="bottom-end">
+      <Tooltip title={getters.canExcute ? t("run") : getters.disableExcuteReason} placement="bottom-end">
         <Button
           onClick={async () => {
             if (getters.canExcute) {
@@ -79,9 +81,11 @@ export default LaunchedFlowOperations;
 
 export const DraftFlowOperations: React.FC = ({ children }) => {
   const flow = useRecoilValue(flowDetailState);
+  const { t } = useTranslation();
+
   return (
     <>
-      <Tooltip title="继续编辑">
+      <Tooltip title={t("edit")}>
         <Link to={`/flow/draft/${flow?.originId || ""}`} target="_blank">
           <Button
             variant="text"

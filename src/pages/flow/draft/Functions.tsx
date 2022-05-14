@@ -3,6 +3,7 @@ import { useRecoilValue } from "recoil";
 import classNames from "classnames";
 import { useDrag } from "react-dnd";
 import { Tooltip, Divider } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { FaExclamationCircle } from "@/components/icons";
 import type { FunctionItem as FunctionItemT } from "@/api/functions";
 import { flatFunctionState, functionGroupState } from "@/recoil/functions";
@@ -12,6 +13,7 @@ const FunctionItem: React.FC<React.HTMLAttributes<HTMLDivElement> & { item: Func
   className,
   ...rest
 }) => {
+  const { t } = useTranslation();
   const [, dragRef] = useDrag(
     () => ({
       type: "functionItem",
@@ -30,7 +32,7 @@ const FunctionItem: React.FC<React.HTMLAttributes<HTMLDivElement> & { item: Func
       <p className="mb-2 flex items-center justify-between">
         {item.name}
         {!item.avaliable && (
-          <Tooltip title="较长时间未收到此function的心跳，此function可能无法正常运行" placement="top">
+          <Tooltip title={t("functionMayUnavaliable")} placement="top">
             <span>
               <FaExclamationCircle className="text-yellow-500" />
             </span>
@@ -39,7 +41,11 @@ const FunctionItem: React.FC<React.HTMLAttributes<HTMLDivElement> & { item: Func
       </p>
       <p className="text-gray-500 text-xs leading-5">{item.description}</p>
       <Divider sx={{ my: 1, opacity: 0.5 }} />
-      <p className="text-xs text-gray-500">由 {item.provider} 提供</p>
+      <p className="text-xs text-gray-500">
+        {t("fucntionProvidedBy", {
+          provider: item.provider,
+        })}
+      </p>
     </div>
   );
 };
@@ -49,11 +55,16 @@ type FunctionsProps = React.HTMLAttributes<HTMLDivElement> & {
 const Functions: React.FC<FunctionsProps> = ({ children }) => {
   const functionGroups = useRecoilValue(functionGroupState);
   const flatFunctions = useRecoilValue(flatFunctionState);
+  const { t } = useTranslation();
+
   return (
     <div className="absolute left-0 top-0 h-full z-10 p-2">
       <div className="h-full bg-white p-4 rounded-lg shadow-sm w-80 overflow-auto">
         <p className="mb-4 text-xs">
-          共{functionGroups.length}个分组，{flatFunctions.length}个函数
+          {t("functionNum", {
+            groupSize: functionGroups.length,
+            functionSize: flatFunctions.length,
+          })}
         </p>
         <Divider sx={{ mb: 2 }} />
         <div>

@@ -3,6 +3,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useLocation, Link, useNavigate, Navigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { login } from "@/api/auth";
 import Logo from "@/assets/logo.png";
 import LogoWithName from "@/assets/logo-name.png";
@@ -18,6 +19,8 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as any)?.from || "/";
+  const { t } = useTranslation();
+
   const loginMutation = useMutation(login);
   if (identificationInstance.isValidLogin) {
     return <Navigate to="/flow" replace />;
@@ -27,12 +30,6 @@ const Login: React.FC = () => {
     <div className="h-screen flex flex-col items-center bg-gray-50">
       <header className="p-6 flex items-center justify-between w-full">
         <img src={Logo} alt="logo" className="w-12" />
-        <p>
-          <span className="mr-2 text-gray-400">第一次来到Bloc?</span>
-          <Link to="/about" target="_blank">
-            查看简介
-          </Link>
-        </p>
       </header>
       <Formik
         initialValues={{
@@ -61,7 +58,7 @@ const Login: React.FC = () => {
               </div>
               <TextField
                 fullWidth
-                placeholder="账号"
+                placeholder={t("account")}
                 name="name"
                 value={values.name}
                 onChange={handleChange}
@@ -75,7 +72,7 @@ const Login: React.FC = () => {
                 fullWidth
                 type="password"
                 name="password"
-                placeholder="密码"
+                placeholder={t("password")}
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -90,7 +87,7 @@ const Login: React.FC = () => {
                 color="primary"
                 variant="contained"
               >
-                登录
+                {t("login")}
               </Button>
             </Form>
           );

@@ -3,6 +3,7 @@ import { useRecoilValue } from "recoil";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Tooltip, IconButton, Button, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
 import { FaChevronLeft, FaEllipsisV, FaRegPaperPlane, FaTrashAlt } from "@/components/icons";
 import { EditableText, showConfirm } from "@/components";
@@ -15,17 +16,19 @@ import { useUpdateFlow } from "@/recoil/hooks/useUpdateFlow";
 import { useMutation } from "react-query";
 import { useSyncFlow } from "@/recoil/hooks/useSave";
 import { useCheckFlow } from "@/recoil/hooks/useCheckFlow";
+
 const DraftFlowHeader = () => {
   const flow = useRecoilValue(flowDetailState);
   const navigate = useNavigate();
   const syncFlow = useSyncFlow();
   const deleteDraftMutaion = useMutation(deleteDraft);
   const check = useCheckFlow();
+  const { t } = useTranslation();
   const launchFlowMutation = useMutation(launch, {
     onSuccess: ({ isValid, data }) => {
       if (isValid) {
         showToast({
-          children: "已发布！",
+          children: t("launched"),
           autoHideDuration: 1500,
         });
         navigate(`/flow/detail/${data?.originId}`);
@@ -71,7 +74,7 @@ const DraftFlowHeader = () => {
           }}
         >
           <FaRegPaperPlane className="inline-block mr-2" size={12} />
-          发布
+          {t("launch")}
         </Button>
       </div>
       <Menu
@@ -87,7 +90,7 @@ const DraftFlowHeader = () => {
           disabled={deleteDraftMutaion.isLoading}
           onClick={async () => {
             const confirmed = await showConfirm({
-              title: "确认要删除草稿吗？",
+              title: t("deleteDraftConfirm"),
             });
             if (!confirmed) {
               handleClose();
@@ -97,7 +100,7 @@ const DraftFlowHeader = () => {
             handleClose();
             if (isValid) {
               showToast({
-                children: "草稿已删除",
+                children: t("deleted"),
                 autoHideDuration: 1500,
               });
               navigate(PAGES.flowList);
@@ -107,7 +110,7 @@ const DraftFlowHeader = () => {
           <ListItemIcon>
             <FaTrashAlt size={14} />
           </ListItemIcon>
-          <ListItemText>删除此草稿</ListItemText>
+          <ListItemText>{t("deleteDraft")}</ListItemText>
         </MenuItem>
       </Menu>
     </>

@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useTranslation } from "react-i18next";
 import { NodeProps } from "react-flow-renderer";
 import { IconButton, Tooltip } from "@mui/material";
 import { getRunningStateText, getRunningStateClass, getRunningIcon, FlowDisplayPage } from "@/shared/enums";
@@ -18,7 +19,7 @@ import styles from "../handles/handle.module.scss";
 import { useNavigate } from "react-router-dom";
 import { flowDetailState } from "@/recoil/flow/flow";
 import { showConfirm } from "@/components";
-
+import i18n from "@/i18n";
 /**
  * 编辑状态时atom的相关数据信息
  */
@@ -48,7 +49,7 @@ const RunningState: React.FC<Pick<BlocNodeProps["data"], "latestRunningInfo">> =
 };
 const askPermission = () => {
   return showConfirm({
-    title: "将会跳转到运行详情页，确认继续吗？",
+    title: i18n.t("toHistoryDetailPageConfirm"),
   });
 };
 const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, type, ...rest }) => {
@@ -78,7 +79,7 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
     [data, flow, navigate, setOperationAttrs],
   );
   const { showNodeViewer } = useNodeOperations();
-
+  const { t } = useTranslation();
   return (
     <BaseNode
       className={classNames(
@@ -100,7 +101,7 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
       <p className="mt-2 text-gray-400 leading-4 text-xs">{data?.function?.description}</p>
       {[FlowDisplayPage.preview, FlowDisplayPage.history].includes(data.mode) && (
         <RunningState latestRunningInfo={data.latestRunningInfo}>
-          <Tooltip title="查看日志" placement="bottom">
+          <Tooltip title={t("viewLog")} placement="bottom">
             <IconButton
               onClick={() => {
                 onClick(RunningHistoryOperation.LOG);
@@ -112,7 +113,7 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
               <FaDatabase size={12} />
             </IconButton>
           </Tooltip>
-          <Tooltip title="数据详情" placement="bottom">
+          <Tooltip title={t("viewData")} placement="bottom">
             <IconButton
               onClick={() => {
                 onClick(RunningHistoryOperation.RESULT);

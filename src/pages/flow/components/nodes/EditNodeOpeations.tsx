@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
 import { useRecoilValue } from "recoil";
 import classNames from "classnames";
+import { useTranslation } from "react-i18next";
 import { IconButton, Tooltip } from "@mui/material";
 import { FaPen, FaTrashAlt } from "@/components/icons";
 import { tempConnectionSource } from "@/recoil/flow/connections";
 import { useNodeOperations } from "@/recoil/hooks/useNodeOperations";
-
 export type EditNodeOperationsProps = React.HTMLAttributes<HTMLDivElement> & {
   selected?: boolean;
   nodeId?: string;
@@ -25,6 +25,7 @@ const EditNodeOpeations: React.FC<EditNodeOperationsProps> = ({
   const onPreviewNode = useCallback(() => {
     showNodeViewer(nodeId);
   }, [nodeId, showNodeViewer]);
+  const { t } = useTranslation();
   return (
     <div
       className={classNames(
@@ -37,12 +38,12 @@ const EditNodeOpeations: React.FC<EditNodeOperationsProps> = ({
       )}
       {...rest}
     >
-      <Tooltip title="移除此节点" placement="right" arrow>
+      <Tooltip title={t("removeNode")} placement="right" arrow>
         <IconButton onClick={_onRemoveNode}>
           <FaTrashAlt size={10} className="text-red-400" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="编辑节点" placement="right" arrow>
+      <Tooltip title={t("editNode")} placement="right" arrow>
         <IconButton onClick={onPreviewNode}>
           <FaPen size={8} />
         </IconButton>

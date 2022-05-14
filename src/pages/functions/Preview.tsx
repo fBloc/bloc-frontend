@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Dialog, DialogProps, Tabs, Tab, DialogTitle, IconButton } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { FaTimes } from "@/components/icons";
 import { FunctionItem } from "@/api/functions";
 import { TextFallback } from "@/shared/jsxUtils";
 import { TabPanel } from "@/components";
 const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | null }> = ({ fn, onExit, ...props }) => {
   const [tab, setTab] = useState("input");
+  const { t } = useTranslation();
 
   return (
     <Dialog
@@ -19,7 +21,7 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
       fullWidth
     >
       <DialogTitle className="flex justify-between items-center">
-        <span>函数详情</span>
+        <span>{t("functionDetail")}</span>
         <IconButton
           onClick={onExit}
           sx={{
@@ -31,7 +33,7 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
       </DialogTitle>
       <div className="px-6 pb-6">
         <p className="mt-2 text-lg mb-1">{fn?.name}</p>
-        <p className="text-gray-400">{TextFallback(fn?.description, "暂无描述")}</p>
+        <p className="text-gray-400">{TextFallback(fn?.description, t("noDescription"))}</p>
         <Tabs
           sx={{ mt: 2 }}
           value={tab}
@@ -39,8 +41,8 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
             setTab(v);
           }}
         >
-          <Tab label={`输入参数(${fn?.ipt.length})`} value="input" />
-          <Tab label={`输出参数(${fn?.opt.length})`} value="output" />
+          <Tab label={`${t("input")}(${fn?.ipt.length})`} value="input" />
+          <Tab label={`${t("output")}(${fn?.opt.length})`} value="output" />
         </Tabs>
         <TabPanel value={tab} index="input">
           <div>
@@ -56,7 +58,7 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
                     <div className="mt-2 grid grid-cols-2 gap-2">
                       {param.atoms.map((atom, index) => (
                         <div key={index} className="bg-gray-50 p-4 rounded">
-                          <p className="text-sm">{TextFallback(atom.description, "暂无描述")}</p>
+                          <p className="text-sm">{TextFallback(atom.description, t("noDescription"))}</p>
                           <p className="mt-3 text-gray-500 text-xs">
                             <span>{atom.valueType}</span>
                           </p>
@@ -89,7 +91,9 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
                 </div>
               </div>
             ))}
-            {fn?.opt.length === 0 && <p className="text-center bg-gray-50 p-5 rounded text-gray-400">无输出参数</p>}
+            {fn?.opt.length === 0 && (
+              <p className="text-center bg-gray-50 p-5 rounded text-gray-400">{t("noOutputParams")}</p>
+            )}
           </div>
         </TabPanel>
       </div>
