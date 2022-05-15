@@ -1,13 +1,14 @@
 import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useRecoilValue, useResetRecoilState } from "recoil";
 import { Menu, MenuItem, IconButton } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { FaEllipsisV } from "@/components/icons";
 import { PAGES } from "@/router/pages";
 import Logo from "@/assets/logo-name.png";
 import { identificationInstance } from "@/shared/Identification";
 import { auth } from "@/recoil/app/auth";
-import { useRecoilValue, useResetRecoilState } from "recoil";
 
 const paths = [
   {
@@ -24,6 +25,7 @@ const SideNav = () => {
   const user = useRecoilValue(auth);
   const resetAuth = useResetRecoilState(auth);
   const navigate = useNavigate();
+  const { t } = useTranslation("auth");
   const handleClose = useCallback(() => {
     setAnchor(null);
   }, []);
@@ -58,17 +60,19 @@ const SideNav = () => {
                   )
                 }
               >
-                添加用户
+                {t("createAccount")}
               </NavLink>
             </li>
           )}
         </ul>
         <p className="mt-auto w-full cursor-default flex items-center justify-between">
-          <span className="p-2 rounded flex w-full">
-            <span className="w-8 h-8 rounded-full bg-primary-300 inline-flex items-center justify-center text-white font-medium">
+          <span className="p-2 rounded flex flex-grow overflow-hidden">
+            <span className="w-8 h-8 rounded-full bg-primary-300 inline-flex items-center justify-center text-white font-medium  flex-shrink-0">
               {user?.name[0]}
             </span>
-            <span className="ml-2 font-medium text-xl">{user?.name}</span>
+            <span className="flex-grow ml-2 font-medium text-xl overflow-hidden">
+              <span className="w-full inline-block text-ellipsis overflow-hidden whitespace-nowrap">{user?.name}</span>
+            </span>
           </span>
           <IconButton
             onClick={(e) => {
@@ -93,10 +97,10 @@ const SideNav = () => {
             identificationInstance.removeToken();
             handleClose();
             resetAuth();
-            navigate(`/${PAGES.login}`);
+            navigate(PAGES.login);
           }}
         >
-          退出登录
+          {t("logout")}
         </MenuItem>
       </Menu>
     </>

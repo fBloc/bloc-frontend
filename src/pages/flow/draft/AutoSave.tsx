@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState, memo } from "react";
 import classNames from "classnames";
-import { useRecoilValue, useResetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { FaCircleNotch } from "@/components/icons";
 import { blocNodeList } from "@/recoil/flow/node";
 import { useSyncFlow } from "@/recoil/hooks/useSave";
-import { toSourceNodes } from "@/processors/convert";
 import { flowDetailState } from "@/recoil/flow/flow";
-import { DEFAULT_POSITION } from "@/shared/defaults";
-
+import { useTranslation } from "react-i18next";
 export type AutoSaveProps = React.HTMLAttributes<HTMLDivElement>;
 const AutoSave = React.forwardRef<HTMLDivElement, AutoSaveProps>(({ className, children, ...rest }, ref) => {
   const nodes = useRecoilValue(blocNodeList);
@@ -15,6 +13,7 @@ const AutoSave = React.forwardRef<HTMLDivElement, AutoSaveProps>(({ className, c
   const [loading, setLoading] = useState(false);
   const lock = useRef<number | null>(null);
   const syncFlow = useSyncFlow();
+  const { t } = useTranslation();
 
   useEffect(() => {
     let alive = true;
@@ -43,7 +42,7 @@ const AutoSave = React.forwardRef<HTMLDivElement, AutoSaveProps>(({ className, c
       {loading && (
         <>
           <FaCircleNotch className="animate-spin mr-1" size={12} />
-          保存中...
+          {t("saving")}
         </>
       )}
       {children}

@@ -1,15 +1,31 @@
-import { StatefulMergedIptParam } from "@/api/flow";
 import { useCallback } from "react";
 import { useRecoilValue } from "recoil";
+import { useTranslation } from "react-i18next";
+import { uniq } from "lodash-es";
+import { StatefulMergedIptParam } from "@/api/flow";
+import { isTruthyValue } from "@/shared/tools";
 import { blocNodeList } from "../flow/node";
 
 export function useCheckFlow() {
   const nodes = useRecoilValue(blocNodeList);
+  const { t } = useTranslation("flow");
+
   /**
    * param是否正确设置
    */
   const isParamsValid = useCallback(() => {
-    const result = nodes.reduce((acc: StatefulMergedIptParam[], item) => {
+    const actualNodes = nodes
+      .reduce((acc: string[], node) => {
+        const paramOpts = node.paramOpt.reduce((acc: string[], param) => {
+          return [...acc, ...param.targetList.map((target) => target.nodeId).filter(isTruthyValue)];
+        }, []);
+        const flowOpts = node.voidOpt;
+        return [...acc, ...uniq([...paramOpts, ...flowOpts])];
+      }, [])
+      .map((item) => nodes.find((node) => node.id === item))
+      .filter(isTruthyValue);
+
+    const result = actualNodes.reduce((acc: StatefulMergedIptParam[], item) => {
       const params = item.paramIpt.filter((param) => {
         return param.required && param.atoms.filter((atom) => atom.unset).length > 0;
       });
@@ -19,9 +35,9 @@ export function useCheckFlow() {
     return {
       isValid,
       result,
-      message: isValid ? "" : "部分参数未设置",
+      message: isValid ? "" : t("params.unset"),
     };
-  }, [nodes]);
+  }, [nodes, t]);
 
   //此处flow指流程，并非业务flwo
   const isFlowValid = useCallback(() => {
@@ -29,19 +45,12 @@ export function useCheckFlow() {
     const isValid = (startNode?.voidOpt?.length || 0) > 0;
     return {
       isValid,
-      message: isValid ? "" : "请将开始节点至少关联至一个流程节点",
+      message: isValid ? "" : t("atLeastOneNode"),
     };
-  }, [nodes]);
-  const isNodesValid = useCallback(() => {
-    const isValid = nodes.length > 1;
-    return {
-      isValid,
-      message: isValid ? "" : "至少需要两个节点",
-    };
-  }, [nodes]);
+  }, [nodes, t]);
 
   const check = useCallback(() => {
-    const validations = [isFlowValid, isNodesValid, isParamsValid];
+    const validations = [isFlowValid, isParamsValid];
     let error: { isValid: boolean; message: string } | null = null;
     for (const validation of validations) {
       const result = validation();
@@ -51,6 +60,6 @@ export function useCheckFlow() {
       }
     }
     return error;
-  }, [isNodesValid, isParamsValid, isFlowValid]);
+  }, [isParamsValid, isFlowValid]);
   return check;
 }

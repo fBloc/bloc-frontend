@@ -33,7 +33,7 @@ const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, 
   const { param: currentParam, open } = attrs;
   const currentNode = useRecoilValue(currentBlocNode);
   const addConnection = useAddConnection();
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
   const onInternalExit = useCallback(
     (e: HTMLElement) => {
       onExit?.(e);
@@ -130,9 +130,9 @@ const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, 
             <FaTimes size={14} />
           </IconButton>
         </p>
-        <p className="text-lg text-center font-medium">{t("selectAnItem")}</p>
+        <p className="text-lg text-center font-medium">{t("params.selectAnItem")}</p>
         <p className="mt-1 text-center text-gray-400">
-          {t("paramAtoms", {
+          {t("params.subItems", {
             key: currentParam?.key,
             atomSize: currentParam?.atoms?.length,
           })}
@@ -153,7 +153,12 @@ const AtomPicker: React.FC<Omit<AtomPickerProps, "open">> = ({ TransitionProps, 
             >
               <div className={classNames("flex justify-between items-center rounded-lg")}>
                 <p className="flex items-center flex-grow justify-between">
-                  {TextFallback(atom.description, t("noDescription"))}
+                  {TextFallback(
+                    atom.description,
+                    t("noDescription", {
+                      ns: "common",
+                    }),
+                  )}
                   {atom.message && (
                     <Tooltip title={atom.message} placement="left">
                       <span className="ml-1 cursor-default">

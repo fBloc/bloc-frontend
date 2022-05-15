@@ -1,0 +1,11 @@
+{
+  "crontabTooLong": "长度超过限制",
+  "mustBeInteger": "必须是整数",
+  "mustGt0": "必须大于0",
+  "notValidJson": "不是有效的JSON",
+  "notValidData": "不是有效的数据",
+  "nullableDisallowed": "值不能为空",
+  "notString": "不是字符串",
+  "notNumber": "不是数字",
+  "notBool": "不是布尔值"
+}

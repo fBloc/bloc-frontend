@@ -15,7 +15,7 @@ import {
 import { FaUserCircle, FaBolt, FaClock, FaQuestionCircle } from "@/components/icons";
 import { Skeleton } from "@/components";
 import Empty from "@/components/empty";
-import { diffSeconds, readableTime } from "@/shared/time";
+import { readableDuration, readableTime } from "@/shared/time";
 
 const icons = {
   [TriggerTypes.crontab]: <FaClock size={11} />,
@@ -50,7 +50,7 @@ const TriggerType: React.FC<{ triggerKey: string; triggerUser: string; type: Tri
 const pageSize = 20;
 
 const FlowHistory = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
   const { originId } = useParams<"originId">();
   const [pageNum, setPageNum] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -107,28 +107,38 @@ const FlowHistory = () => {
             <tr className="text-gray-400">
               <th className="w-[80px] py-4 px-2">
                 <span className="inline-flex items-center">
-                  版本
-                  <Tooltip title={t("versionDescription")} arrow>
+                  {t("version", {
+                    ns: "common",
+                  })}
+                  <Tooltip title={t("run.versionDescription")} arrow>
                     <span>
                       <FaQuestionCircle className="ml-1" />
                     </span>
                   </Tooltip>
                 </span>
               </th>
-              <th className="w-[180px] py-4 px-2">{t("triggerAt")}</th>
-              <th className="w-[180px] py-4">{t("startRunAt")}</th>
-              <th className="w-[180px] py-4">{t("endRunAt")}</th>
-              <th className="w-[100px] py-4">{t("duration")}</th>
-              <th className="w-[160px] py-4">{t("status")}</th>
-              <th className="w-[160px] py-4">{t("triggerMethod")}</th>
-              <th className="px-2 py-4">{t("operations")}</th>
+              <th className="w-[180px] py-4 px-2">{t("run.triggerAt")}</th>
+              <th className="w-[180px] py-4">{t("run.startRunAt")}</th>
+              <th className="w-[180px] py-4">{t("run.endRunAt")}</th>
+              <th className="w-[100px] py-4">{t("run.duration")}</th>
+              <th className="w-[160px] py-4">
+                {t("status", {
+                  ns: "common",
+                })}
+              </th>
+              <th className="w-[160px] py-4">{t("run.triggerMethod")}</th>
+              <th className="px-2 py-4">
+                {t("operations", {
+                  ns: "common",
+                })}
+              </th>
             </tr>
           </thead>
           <tbody>
             {!loading && records.items.length === 0 && (
               <tr>
                 <td colSpan={7}>
-                  <Empty text={t("noRunningRecords")} className="mt-40" />
+                  <Empty text={t("run.noRunningRecords")} className="mt-40" />
                 </td>
               </tr>
             )}
@@ -138,7 +148,7 @@ const FlowHistory = () => {
                 <td className="py-4 px-2">{readableTime(item.trigger_time)}</td>
                 <td className="py-4">{readableTime(item.start_time)}</td>
                 <td className="py-4">{readableTime(item.end_time)}</td>
-                <td className="py-4">{diffSeconds(item.trigger_time, item.end_time)}</td>
+                <td className="py-4">{readableDuration(item.trigger_time, item.end_time)}</td>
 
                 <td className="py-4">
                   <span className="flex items-center">
@@ -161,7 +171,9 @@ const FlowHistory = () => {
                     className="hover:underline inline-block"
                   >
                     <Link to={`/flow/history/${item.id}?id=${item.flow_origin_id}`} target="_blank">
-                      {t("view")}
+                      {t("view", {
+                        ns: "common",
+                      })}
                     </Link>
                   </Box>
                 </td>

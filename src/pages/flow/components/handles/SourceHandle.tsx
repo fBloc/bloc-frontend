@@ -95,9 +95,9 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
 export default SourceHandle;
 
 export const VoidSourceHandle: React.FC<Connectable & { nodeData: BlocNodeData }> = ({ isConnectable }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
   return (
-    <Tooltip title={t("flowOutput")} placement="top">
+    <Tooltip title={t("node.output")} placement="top">
       <div className="relative">
         <Handle
           isConnectable={isConnectable}

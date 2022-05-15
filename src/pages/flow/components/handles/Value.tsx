@@ -47,8 +47,12 @@ export default Value;
 
 const getIptWayText = (iptway: IptWay) => {
   const texts = {
-    [IptWay.UserIpt]: i18n.t('userInput"'),
-    [IptWay.Connection]: i18n.t("connection"),
+    [IptWay.UserIpt]: i18n.t("params.userInput", {
+      ns: "flow",
+    }),
+    [IptWay.Connection]: i18n.t("params.connection", {
+      ns: "flow",
+    }),
   };
   return texts[iptway];
 };
@@ -90,7 +94,7 @@ const TargetValue: React.FC<{
                 ) : (
                   <>
                     {atom.iptWay === IptWay.Connection ? <FaSitemap /> : <FaKeyboard />}
-                    <span className="mr-auto ml-1">{`${t("via")} ${getIptWayText(atom.iptWay)}`}</span>
+                    <span className="mr-auto ml-1">{`${getIptWayText(atom.iptWay)}`}</span>
                   </>
                 )}
               </p>

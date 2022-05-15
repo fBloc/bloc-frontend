@@ -49,7 +49,9 @@ const RunningState: React.FC<Pick<BlocNodeProps["data"], "latestRunningInfo">> =
 };
 const askPermission = () => {
   return showConfirm({
-    title: i18n.t("toHistoryDetailPageConfirm"),
+    title: i18n.t("toHistoryDetailPageConfirm", {
+      ns: "flow",
+    }),
   });
 };
 const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, type, ...rest }) => {

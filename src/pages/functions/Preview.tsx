@@ -7,7 +7,7 @@ import { TextFallback } from "@/shared/jsxUtils";
 import { TabPanel } from "@/components";
 const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | null }> = ({ fn, onExit, ...props }) => {
   const [tab, setTab] = useState("input");
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
 
   return (
     <Dialog
@@ -21,7 +21,7 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
       fullWidth
     >
       <DialogTitle className="flex justify-between items-center">
-        <span>{t("functionDetail")}</span>
+        <span>{t("function.detail")}</span>
         <IconButton
           onClick={onExit}
           sx={{
@@ -33,7 +33,14 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
       </DialogTitle>
       <div className="px-6 pb-6">
         <p className="mt-2 text-lg mb-1">{fn?.name}</p>
-        <p className="text-gray-400">{TextFallback(fn?.description, t("noDescription"))}</p>
+        <p className="text-gray-400">
+          {TextFallback(
+            fn?.description,
+            t("noDescription", {
+              ns: "common",
+            }),
+          )}
+        </p>
         <Tabs
           sx={{ mt: 2 }}
           value={tab}
@@ -41,8 +48,8 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
             setTab(v);
           }}
         >
-          <Tab label={`${t("input")}(${fn?.ipt.length})`} value="input" />
-          <Tab label={`${t("output")}(${fn?.opt.length})`} value="output" />
+          <Tab label={`${t("function.input")}(${fn?.ipt.length})`} value="input" />
+          <Tab label={`${t("function.output")}(${fn?.opt.length})`} value="output" />
         </Tabs>
         <TabPanel value={tab} index="input">
           <div>
@@ -58,7 +65,14 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
                     <div className="mt-2 grid grid-cols-2 gap-2">
                       {param.atoms.map((atom, index) => (
                         <div key={index} className="bg-gray-50 p-4 rounded">
-                          <p className="text-sm">{TextFallback(atom.description, t("noDescription"))}</p>
+                          <p className="text-sm">
+                            {TextFallback(
+                              atom.description,
+                              t("noDescription", {
+                                ns: "common",
+                              }),
+                            )}
+                          </p>
                           <p className="mt-3 text-gray-500 text-xs">
                             <span>{atom.valueType}</span>
                           </p>
@@ -92,7 +106,7 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
               </div>
             ))}
             {fn?.opt.length === 0 && (
-              <p className="text-center bg-gray-50 p-5 rounded text-gray-400">{t("noOutputParams")}</p>
+              <p className="text-center bg-gray-50 p-5 rounded text-gray-400">{t("node.noOutputParams")}</p>
             )}
           </div>
         </TabPanel>

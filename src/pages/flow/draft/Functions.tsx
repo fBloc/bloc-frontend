@@ -13,7 +13,7 @@ const FunctionItem: React.FC<React.HTMLAttributes<HTMLDivElement> & { item: Func
   className,
   ...rest
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
   const [, dragRef] = useDrag(
     () => ({
       type: "functionItem",
@@ -32,7 +32,7 @@ const FunctionItem: React.FC<React.HTMLAttributes<HTMLDivElement> & { item: Func
       <p className="mb-2 flex items-center justify-between">
         {item.name}
         {!item.avaliable && (
-          <Tooltip title={t("functionMayUnavaliable")} placement="top">
+          <Tooltip title={t("function.mayUnavaliable")} placement="top">
             <span>
               <FaExclamationCircle className="text-yellow-500" />
             </span>
@@ -42,7 +42,7 @@ const FunctionItem: React.FC<React.HTMLAttributes<HTMLDivElement> & { item: Func
       <p className="text-gray-500 text-xs leading-5">{item.description}</p>
       <Divider sx={{ my: 1, opacity: 0.5 }} />
       <p className="text-xs text-gray-500">
-        {t("fucntionProvidedBy", {
+        {t("fucntion.providedBy", {
           provider: item.provider,
         })}
       </p>
@@ -61,7 +61,7 @@ const Functions: React.FC<FunctionsProps> = ({ children }) => {
     <div className="absolute left-0 top-0 h-full z-10 p-2">
       <div className="h-full bg-white p-4 rounded-lg shadow-sm w-80 overflow-auto">
         <p className="mb-4 text-xs">
-          {t("functionNum", {
+          {t("function.size", {
             groupSize: functionGroups.length,
             functionSize: flatFunctions.length,
           })}

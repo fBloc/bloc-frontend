@@ -67,7 +67,11 @@ export function getAtomPickerAttrs(
         ...atom,
         avaliable: canTypeMatch && isUnset,
         isTypeMatch: canTypeMatch,
-        message: canTypeMatch ? "" : i18n.t("typeNotMatch"),
+        message: canTypeMatch
+          ? ""
+          : i18n.t("params.typeNotMatch", {
+              ns: "flow",
+            }),
       };
     }),
   };

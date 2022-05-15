@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import i18n from "@/i18n";
 import { showToast } from "@/components/toast";
 import { isObject, mergeUrlQuery } from "./tools";
 import { identificationInstance } from "./Identification";
@@ -28,7 +29,7 @@ instance.interceptors.request.use((request) => {
   const token = identificationInstance.token;
 
   if (!token && !request.url?.includes("/login")) {
-    return Promise.reject(new Error("1011:未登录！"));
+    return Promise.reject(new Error(`1011:${i18n.t("unLogin")}`));
   }
   if (request.headers) {
     request.headers["token"] = token;
@@ -69,7 +70,7 @@ class Request {
         };
       })
       .catch((error) => {
-        const message = error.isAxiosError ? "网络错误，请重试。" : error.message;
+        const message = error.isAxiosError ? i18n.t("networkError") : error.message;
 
         showToast({
           children: message,

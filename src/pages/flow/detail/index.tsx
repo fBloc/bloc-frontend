@@ -19,7 +19,9 @@ const sideTabItems: SideTabProps<string>["items"] = [
   {
     label: <FaProjectDiagram size={20} />,
     tooltip: {
-      title: i18n.t("flowChart") as string,
+      title: i18n.t("flowChart", {
+        ns: "flow",
+      }) as string,
       placement: "right",
     },
     value: "flow",

@@ -48,27 +48,37 @@ const getSchema = (atom: FullStateAtom) => {
     case ParamValueType.bool:
       const booleanItemSchema = Yup.boolean();
       schema = booleanItemSchema;
-      message = i18n.t("notBool");
+      message = i18n.t("notBool", {
+        ns: "validation",
+      });
       break;
     case ParamValueType.json:
       const jsonItemSchema = Yup.string().test("isJson", i18n.t("notValidJson"), isJson);
       schema = jsonItemSchema;
-      message = i18n.t("notValidJson");
+      message = i18n.t("notValidJson", {
+        ns: "validation",
+      });
       break;
     case ParamValueType.string:
       const strItemSchema = Yup.string();
       schema = strItemSchema;
-      message = i18n.t("notString");
+      message = i18n.t("notString", {
+        ns: "validation",
+      });
       break;
     case ParamValueType.int:
       const intItemSchema = Yup.number().integer();
       schema = intItemSchema;
-      message = i18n.t("mustBeInteger");
+      message = i18n.t("mustBeInteger", {
+        ns: "validation",
+      });
       break;
     case ParamValueType.float:
       const numItemSchema = Yup.number();
       schema = numItemSchema;
-      message = i18n.t("notNumber");
+      message = i18n.t("notNumber", {
+        ns: "validation",
+      });
       break;
   }
   return {
@@ -125,7 +135,9 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
             return Yup.object().shape({
               value: Yup.mixed().test({
                 name: "paramItemValueValidation",
-                message: t("notValidData"), // 正常应该不会使用此处信息
+                message: t("notValidData", {
+                  ns: "validation",
+                }), // 正常应该不会使用此处信息
                 test: (_, context) => {
                   const atom = (context as any).from[1].value as FullStateAtom; // 层级关系
                   const v = context.parent.value;
@@ -135,7 +147,11 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                     return true;
                   } catch (error) {
                     return new Yup.ValidationError(
-                      [null, undefined, ""].includes(v) ? t("nullableDisallowed") : message,
+                      [null, undefined, ""].includes(v)
+                        ? t("nullableDisallowed", {
+                            ns: "validation",
+                          })
+                        : message,
                       v,
                       context.path,
                     );
@@ -156,7 +172,9 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
               then: Yup.array().of(atomValueSchema as any),
               otherwise: Yup.mixed().test({
                 name: "paramListValueValidation",
-                message: t("notValidData"),
+                message: t("notValidData", {
+                  ns: "validation",
+                }),
                 test: (_, context) => {
                   const atom = context.parent as FullStateAtom;
                   const { schema, message } = getSchema(atom);
@@ -289,8 +307,18 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                   </IconButton>
                 </div>
                 <Tabs value={attrs.tabView} onChange={onTabViewChange}>
-                  <Tab label={`${t("input")}(${data?.statefulMergedIpts?.length})`} value="input" />
-                  <Tab label={`${t("output")}(${data?.paramOpts.length})`} value="output" />
+                  <Tab
+                    label={`${t("function.input", {
+                      ns: "flow",
+                    })}(${data?.statefulMergedIpts?.length})`}
+                    value="input"
+                  />
+                  <Tab
+                    label={`${t("function.output", {
+                      ns: "flow",
+                    })}(${data?.paramOpts.length})`}
+                    value="output"
+                  />
                 </Tabs>
                 <TabPanel index="input" value={attrs.tabView}>
                   {data?.statefulMergedIpts?.map((param, paramIndex) => (
@@ -312,7 +340,12 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                           <p className="flex items-center">
                             {param.description}
                             {param.required && (
-                              <Tooltip title={t("paramRequired")} placement="right">
+                              <Tooltip
+                                title={t("params.required", {
+                                  ns: "flow",
+                                })}
+                                placement="right"
+                              >
                                 <span>
                                   <FaSnowflake size={10} className="ml-2 text-red-400" />
                                 </span>
@@ -377,7 +410,9 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                       </div>
                       {param.targetList.length === 0 && (
                         <div className="ml-10 h-24 border border-solid border-gray-200 rounded-md flex justify-center items-center text-gray-400">
-                          {t("notConnected")}
+                          {t("params.notConnected", {
+                            ns: "flow",
+                          })}
                         </div>
                       )}
                     </div>

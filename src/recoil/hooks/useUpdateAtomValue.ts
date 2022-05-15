@@ -10,7 +10,6 @@ import { FullStateAtom } from "@/api/flow";
 export function useUpdateAtomValue() {
   const [nodes, setBlocNodeList] = useRecoilState(blocNodeList);
   const blocNode = useRecoilValue(currentBlocNode);
-  // const records = useRecoilValue(operationRecords);
   const fetchEditValue = useRecoilCallback(
     ({ snapshot }) =>
       (key: AtomKey) => {

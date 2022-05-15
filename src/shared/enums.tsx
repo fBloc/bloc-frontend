@@ -111,7 +111,7 @@ export const getTriggerLabel = (type?: TriggerTypes) => {
   const values = {
     [TriggerTypes.crontab]: "crontab",
     [TriggerTypes.key]: "key",
-    [TriggerTypes.user]: "用户手动",
+    [TriggerTypes.user]: i18n.t("manually"),
   };
   return values[type];
 };
@@ -135,19 +135,40 @@ export const getTriggerValue = ({
   return values[type].trim() || "-";
 };
 export const runningStateTexts: Record<RunningStatusEnum, string> = {
-  [RunningStatusEnum.created]: "创建成功",
-  [RunningStatusEnum.queue]: "排队中",
-  [RunningStatusEnum.running]: "运行中",
-  [RunningStatusEnum.userCancel]: "用户取消",
-  [RunningStatusEnum.systemCancel]: "超时取消",
-  [RunningStatusEnum.success]: "成功",
-  [RunningStatusEnum.failed]: "失败",
-  [RunningStatusEnum.intercepted]: "被拦截",
-  [RunningStatusEnum.rejected]: "禁止并行运行",
+  [RunningStatusEnum.created]: i18n.t("status.created", {
+    ns: "flow",
+  }),
+  [RunningStatusEnum.queue]: i18n.t("status.queue", {
+    ns: "flow",
+  }),
+  [RunningStatusEnum.running]: i18n.t("status.running", {
+    ns: "flow",
+  }),
+  [RunningStatusEnum.userCancel]: i18n.t("status.userCanceled", {
+    ns: "flow",
+  }),
+  [RunningStatusEnum.systemCancel]: i18n.t("status.timeoutCanceled", {
+    ns: "flow",
+  }),
+  [RunningStatusEnum.success]: i18n.t("status.succeed", {
+    ns: "flow",
+  }),
+  [RunningStatusEnum.failed]: i18n.t("status.failed", {
+    ns: "flow",
+  }),
+  [RunningStatusEnum.intercepted]: i18n.t("status.intercepted", {
+    ns: "flow",
+  }),
+  [RunningStatusEnum.rejected]: i18n.t("status.rejected", {
+    ns: "flow",
+  }),
 };
 
 export const getRunningStateText = (state?: RunningStatusEnum | null) => {
-  if (!state) return "从未运行";
+  if (!state)
+    return i18n.t("status.neverRunned", {
+      ns: "flow",
+    });
   return runningStateTexts[state];
 };
 const icons: Record<RunningStatusEnum, JSX.Element> = {

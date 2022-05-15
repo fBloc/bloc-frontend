@@ -25,24 +25,5 @@ export function useSetAtomValue() {
       });
     };
   });
-  // const setAtomValue = useCallback(
-  //   (value: unknown, reset = false) => {
-  //     setCurrentAtom((previous) => {
-  //       const result = {
-  //         ...previous,
-  //         value,
-  //         unset: valueEqualsUnset({
-  //           ...previous,
-  //           value,
-  //         }),
-  //       };
-  //       return {
-  //         ...result,
-  //         ...(reset ? getDefaultEditAtom(result) : {}),
-  //       };
-  //     });
-  //   },
-  //   [setCurrentAtom],
-  // );
   return setAtomValue;
 }

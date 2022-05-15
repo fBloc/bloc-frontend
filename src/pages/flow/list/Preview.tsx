@@ -20,7 +20,7 @@ type PreviewProps = {
 const Preview: React.FC<PreviewProps> = ({ children }) => {
   const [flow, setFlow] = useRecoilState(flowDetailState);
   const setProject = useSetRecoilState(projectSettings);
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
 
   const originId = useRecoilValue(listCurrentOriginId);
   const flowTab = useRecoilValue(flowListTab);

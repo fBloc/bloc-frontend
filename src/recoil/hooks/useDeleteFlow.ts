@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useMutation } from "react-query";
+import { useTranslation } from "react-i18next";
 import { deleteItem } from "@/api/flow";
 import { showConfirm } from "@/components";
 import { useRecoilValue } from "recoil";
@@ -12,23 +13,25 @@ export function useDeleteFlow() {
   const deleteFlowMutation = useMutation(deleteItem);
   const flow = useRecoilValue(flowDetailState);
   const navigate = useNavigate();
+  const { t } = useTranslation("flow");
+
   const deleteFlow = useCallback(async () => {
     const originId = flow?.originId;
     if (!originId) return;
     const confirmed = await showConfirm({
-      title: "确认删除吗？",
-      body: "此flow及其运行所产生的历史数据都将被删除。",
+      title: t("confirmDeleteTitle"),
+      body: t("confirmDeleteBody"),
     });
     if (confirmed) {
       const { isValid } = await deleteFlowMutation.mutateAsync(originId);
       if (isValid) {
         showToast({
-          children: "操作成功",
+          children: t("done"),
           autoHideDuration: 1500,
         });
         navigate(PAGES.flowList);
       }
     }
-  }, [flow?.originId, deleteFlowMutation, navigate]);
+  }, [flow?.originId, deleteFlowMutation, navigate, t]);
   return deleteFlow;
 }

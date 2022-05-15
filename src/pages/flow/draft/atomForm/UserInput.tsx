@@ -25,7 +25,7 @@ type UserInputProps = TextFieldProps & {
 };
 const UserInput: React.FC<UserInputProps> = ({ isArray, valueType, name, ...props }) => {
   const { values } = useFormikContext();
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
   const inputType = useMemo(
     () => ([ParamValueType.int, ParamValueType.float].includes(valueType) ? "number" : "text"),
     [valueType],
@@ -60,7 +60,7 @@ const UserInput: React.FC<UserInputProps> = ({ isArray, valueType, name, ...prop
                     }}
                   >
                     <FaPlus size={10} className="mr-2" />
-                    {t("addInputItem")}
+                    {t("params.addInputItem")}
                   </Button>
                 </div>
               ))}

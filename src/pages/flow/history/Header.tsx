@@ -47,7 +47,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
   const [query] = useSearchParams();
   const originId = query.get("id");
   const node = query.get("node");
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
 
   const target = useMemo(() => {
     if (node) return PAGES.flowList;
@@ -60,7 +60,11 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
         {...rest}
       >
         <div className="flex-1 flex items-center flex-shrink-0">
-          <Tooltip title={t("goBack")}>
+          <Tooltip
+            title={t("goback", {
+              ns: "common",
+            })}
+          >
             <Link to={target}>
               <IconButton>
                 <FaChevronLeft size={14} />
@@ -70,7 +74,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
           <div className="ml-4">
             <p className="font-medium">{flow?.name}</p>
             <p className="mt-1 text-xs text-gray-400">
-              {t("triggeredTime", {
+              {t("run.triggeredTime", {
                 time: readableTime(flow?.latestRun?.trigger_time),
               })}
             </p>
@@ -80,7 +84,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
         {children}
       </div>
       {flow?.newest === false && (
-        <div className="bg-yellow-100 tetx-center p-2 text-yellow-600 text-center">{t("oldVersionFlow")}</div>
+        <div className="bg-yellow-100 tetx-center p-2 text-yellow-600 text-center">{t("run.oldVersionFlow")}</div>
       )}
     </div>
   );

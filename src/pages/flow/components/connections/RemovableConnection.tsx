@@ -28,7 +28,7 @@ export default function CustomEdge({
   targetHandleId,
   ...rest
 }: EdgeProps<EdgeData>) {
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
   const edgePath = getBezierPath({
     sourceX,
     sourceY,
@@ -62,7 +62,7 @@ export default function CustomEdge({
               <FaEllipsisH size={12} />
             </button> */}
             <div className="h-full flex items-center justify-between absolute w-full">
-              <Tooltip title={t("disconnect")}>
+              <Tooltip title={t("params.disconnect")}>
                 <Button
                   disableElevation
                   sx={{

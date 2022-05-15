@@ -1,4 +1,4 @@
-import request, { interceptRequest, ResponseResult } from "@/shared/request";
+import request, { ResponseResult } from "@/shared/request";
 export interface LoginUserInfo {
   id: string;
   name: string;
@@ -23,6 +23,10 @@ interface LoginForm {
 
 export const login = (user: LoginForm) => {
   return request.post<LoginUserInfo>("/api/v1/login", user);
+};
+
+export const addUser = (user: LoginForm) => {
+  return request.post("/api/v1/user", user);
 };
 
 export const getUserInfo = (): Promise<ResponseResult<UserInfo>> => {

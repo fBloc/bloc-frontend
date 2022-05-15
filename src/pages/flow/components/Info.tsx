@@ -65,7 +65,7 @@ const Info: React.FC<DialogProps> = ({ className, ...rest }) => {
           }}
         />
         <div>
-          <p className="bloc-description">{t("myPermissions")}</p>
+          <p className="bloc-description">{t("permissions.my")}</p>
           <p className="mt-2 flex whitespace-nowrap">
             <AccessTag active={flow?.read}>{t("view")}</AccessTag>
             <AccessTag className="ml-1.5" active={flow?.write}>
@@ -78,7 +78,7 @@ const Info: React.FC<DialogProps> = ({ className, ...rest }) => {
               {t("delete")}
             </AccessTag>
             <AccessTag className="ml-1.5" active={flow?.assignPermission}>
-              {t("assignPermission")}
+              {t("permissions.assign")}
             </AccessTag>
           </p>
         </div>

@@ -77,7 +77,7 @@ const UserSelect: React.FC<UserSelectProps> = ({
     [options],
   );
   const isUnset = Array.isArray(value) ? value.filter(isValidValue).length === 0 : !isValidValue(value);
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
 
   return (
     <Select
@@ -103,7 +103,7 @@ const UserSelect: React.FC<UserSelectProps> = ({
               onValueChange(_value); // TODO 提取逻辑
             }}
           >
-            {t("useDefaultValue")}
+            {t("params.useDefaultValue")}
           </Button>
         ) : null
       }
@@ -111,7 +111,13 @@ const UserSelect: React.FC<UserSelectProps> = ({
       <FixedSizeList itemSize={40} height={Math.min(200, 40 * options.length)} itemCount={options.length} width="100%">
         {(defaultProps) => Row({ ...defaultProps, options, value, isMultiple, onValueChange })}
       </FixedSizeList>
-      {options.length === 0 && <p className="text-center py-5 text-gray-400">{t("noData")}</p>}
+      {options.length === 0 && (
+        <p className="text-center py-5 text-gray-400">
+          {t("noData", {
+            ns: "common",
+          })}
+        </p>
+      )}
     </Select>
   );
 };

@@ -3,7 +3,7 @@ import { FlowDetailT, FlowRunningStatus } from "@/api/flow";
 import { FlowDisplayPage, RunningStatusEnum } from "@/shared/enums";
 import i18n from "@/i18n";
 export const flowDetailState = atom<FlowDetailT | null>({
-  key: "flowDetail",
+  key: "DetailOf",
   default: null,
 });
 
@@ -60,10 +60,12 @@ const getCanExcute = (flow: FlowDetailT) => {
   const allowParallelRun = flow.allowParallelRun;
   let reason = "";
   if (isRunning && !allowParallelRun) {
-    reason = i18n.t("parallelRunDisabld");
+    reason = i18n.t("info.parallelRunDisabld", {
+      ns: "flow",
+    });
   }
   if (!hasAccess) {
-    reason = i18n.t("noExcutePermission");
+    reason = i18n.t("permission.noExcute");
   }
   return {
     reason,

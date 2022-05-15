@@ -1,5 +1,5 @@
 import React from "react";
-
-export const TextFallback = (text?: string | number, fallback = "缺少数据") => {
+import i18n from "@/i18n";
+export const TextFallback = (text?: string | number, fallback = i18n.t("noData")) => {
   return text?.toString() || <span className="italic">{fallback}</span>;
 };

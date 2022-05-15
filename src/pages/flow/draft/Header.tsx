@@ -91,6 +91,8 @@ const DraftFlowHeader = () => {
           onClick={async () => {
             const confirmed = await showConfirm({
               title: t("deleteDraftConfirm"),
+              fullWidth: true,
+              maxWidth: "xs",
             });
             if (!confirmed) {
               handleClose();
@@ -145,7 +147,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) =
                 const value = e.target.value;
                 if (value !== flow?.name) {
                   setInfo({
-                    name: e.target.value || "未命名项目",
+                    name: e.target.value || t("untitled"),
                   });
                 }
               }}

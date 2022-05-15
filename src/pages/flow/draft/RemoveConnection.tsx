@@ -16,7 +16,7 @@ const RemoveConnection = () => {
   const resetAttrs = useResetRecoilState(beingRemovedConnectionAttrs);
   const { queryNode, queryTargetAtom } = useQueries();
   const removeConnection = useRemoveConnection();
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
   const targeAtoms = useMemo(() => {
     if (!attrs.connection) return [];
     const { targetNode, targetParam, targetAtomIndex = [] } = attrs.connection;
@@ -49,9 +49,9 @@ const RemoveConnection = () => {
             <FaTimes size={14} />
           </IconButton>
         </p>
-        <p className="text-lg text-center font-medium">{t("disconnectItem")}</p>
+        <p className="text-lg text-center font-medium">{t("params.disconnect")}</p>
         <p className="mt-1 text-center text-gray-400">
-          {t("connctedSize", {
+          {t("params.connctedSize", {
             size: attrs.connection?.targetAtomIndex?.length,
           })}
         </p>
@@ -61,7 +61,12 @@ const RemoveConnection = () => {
               key={atom.atomIndex}
               className="mt-3 p-3 border border-solid rounded-md flex items-center justify-between group"
             >
-              {TextFallback(atom.description, t("noDescription"))}
+              {TextFallback(
+                atom.description,
+                t("noDescription", {
+                  ns: "common",
+                }),
+              )}
               <Button
                 className="ml-2"
                 size="small"
@@ -76,12 +81,12 @@ const RemoveConnection = () => {
                     open: false,
                   }));
                   showToast({
-                    children: t("disconnected"),
+                    children: t("params.disconnected"),
                     autoHideDuration: 1500,
                   });
                 }}
               >
-                {t("disconnect")}
+                {t("params.disconnect")}
               </Button>
             </p>
           ))}

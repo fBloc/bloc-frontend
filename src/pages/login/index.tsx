@@ -1,7 +1,7 @@
 import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { useLocation, Link, useNavigate, Navigate } from "react-router-dom";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import { Button, TextField } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { login } from "@/api/auth";
@@ -19,7 +19,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as any)?.from || "/";
-  const { t } = useTranslation();
+  const { t } = useTranslation("auth");
 
   const loginMutation = useMutation(login);
   if (identificationInstance.isValidLogin) {

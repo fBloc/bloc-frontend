@@ -38,12 +38,12 @@ const EditNodeOpeations: React.FC<EditNodeOperationsProps> = ({
       )}
       {...rest}
     >
-      <Tooltip title={t("removeNode")} placement="right" arrow>
+      <Tooltip title={t("node.remove")} placement="right" arrow>
         <IconButton onClick={_onRemoveNode}>
           <FaTrashAlt size={10} className="text-red-400" />
         </IconButton>
       </Tooltip>
-      <Tooltip title={t("editNode")} placement="right" arrow>
+      <Tooltip title={t("node.edit")} placement="right" arrow>
         <IconButton onClick={onPreviewNode}>
           <FaPen size={8} />
         </IconButton>

@@ -168,18 +168,18 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
 export default TargetHandle;
 
 export const VoidTargetHandle: React.FC<Connectable & { nodeData: BlocNodeData }> = ({ isConnectable, nodeData }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
 
   return (
     <Tooltip
       arrow
       title={
         <div className="max-w-xs">
-          <p className="text-sm">{t("flowInput")}</p>
+          <p className="text-sm">{t("node.input")}</p>
           {!nodeData.connectableNodeIds.includes(nodeData.id) && nodeData.isConnecting && (
             <div className="mt-2 mb-1 text-red-400 flex items-center">
               <FaExclamationCircle className="mr-1" />
-              {t("notConnectable")}
+              {t("node.notConnectable")}
             </div>
           )}
         </div>

@@ -13,13 +13,12 @@ const LaunchedFlowOperations: React.FC = ({ children }) => {
   const flow = useRecoilValue(flowDetailState);
   const getters = useRecoilValue(flowGetters);
   const { t } = useTranslation();
-
   const navigate = useNavigate();
   const triggerRunMutation = useMutation(triggerRun, {
     onSuccess: ({ isValid, data }) => {
       if (isValid) {
         showToast({
-          children: "已触发运行",
+          children: t("done"),
           autoHideDuration: 1500,
         });
         navigate(`/flow/history/${data?.flow_run_record_id}?id=${flow?.originId}`);
@@ -41,7 +40,12 @@ const LaunchedFlowOperations: React.FC = ({ children }) => {
           </Button>
         </Link>
       </Tooltip>
-      <Tooltip title={t("flowDetail")} placement="bottom">
+      <Tooltip
+        title={t("DetailOf", {
+          type: "flow",
+        })}
+        placement="bottom"
+      >
         <Link to={`/flow/detail/${flow?.originId || ""}`} target="_blank">
           <Button
             variant="text"

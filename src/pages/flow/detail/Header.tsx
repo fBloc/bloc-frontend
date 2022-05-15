@@ -32,7 +32,9 @@ const Header: React.FC<HeaderProps> = ({ className, tab, loading = false, ...res
     onSuccess: ({ isValid, data }) => {
       if (isValid) {
         showToast({
-          children: t("triggered"),
+          children: t("run.triggered", {
+            ns: "flow",
+          }),
           autoHideDuration: 1500,
         });
         navigate(`/flow/history/${data?.flow_run_record_id}?id=${flow?.originId}`);

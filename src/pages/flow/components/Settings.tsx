@@ -19,21 +19,51 @@ import i18n from "@/i18n";
 export type SettingsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const SettingsSchema = Yup.object().shape({
-  crontab: Yup.string().max(99, i18n.t("crontabTooLong")),
+  crontab: Yup.string().max(
+    99,
+    i18n.t("crontabTooLong", {
+      ns: "validation",
+    }),
+  ),
   timeoutInSeconds: Yup.number()
-    .integer(i18n.t("mustBeInteger"))
+    .integer(
+      i18n.t("mustBeInteger", {
+        ns: "validation",
+      }),
+    )
+    .min(
+      0,
+      i18n.t("mustGt0", {
+        ns: "validation",
+      }),
+    )
+    .max(Number.MAX_SAFE_INTEGER),
+  retryAmount: Yup.number()
+    .integer(
+      i18n.t("mustBeInteger", {
+        ns: "validation",
+      }),
+    )
     .min(0, i18n.t("mustGt0"))
     .max(Number.MAX_SAFE_INTEGER),
-  retryAmount: Yup.number().integer(i18n.t("mustBeInteger")).min(0, i18n.t("mustGt0")).max(Number.MAX_SAFE_INTEGER),
   retryIntervalInSecond: Yup.number()
-    .integer(i18n.t("mustBeInteger"))
-    .min(0, i18n.t("mustGt0"))
+    .integer(
+      i18n.t("mustBeInteger", {
+        ns: "validation",
+      }),
+    )
+    .min(
+      0,
+      i18n.t("mustGt0", {
+        ns: "validation",
+      }),
+    )
     .max(Number.MAX_SAFE_INTEGER),
 }); // TODO 文案完善
 
 const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
   const flow = useRecoilValue(flowDetailState);
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
   const {
     allowParallelRun,
     allowTriggerByKey,
@@ -73,7 +103,9 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
         const isvalid = await updateFlow(values);
         if (isvalid) {
           showToast({
-            children: t("saved"),
+            children: t("saved", {
+              ns: "common",
+            }),
             autoHideDuration: 1500,
           });
         }
@@ -84,10 +116,10 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
           <Form>
             <div className={classNames("mx-auto max-w-md", className)} {...rest}>
               <div className="my-4 bg-white p-4 rounded-lg relative border-solid border-gray-200 border">
-                <p className="mb-3 text-lg font-medium flex items-center justify-between">{t("triggerSeeings")}</p>
-                <p className="text-sm">{t("crontabStr")}</p>
+                <p className="mb-3 text-lg font-medium flex items-center justify-between">{t("run.triggerSettings")}</p>
+                <p className="text-sm">{t("info.crontabStr")}</p>
                 <TextField
-                  placeholder={t("crontabStr")}
+                  placeholder={t("info.crontabStr")}
                   fullWidth
                   name="crontab"
                   value={values.crontab}
@@ -107,7 +139,7 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                 </p>
                 <div className="mt-4">
                   <p className="flex items-center justify-between">
-                    <span>{t("allowTriggerByKey")}</span>
+                    <span>{t("info.allowTriggerByKey")}</span>
                     <MdSwitch
                       name="allowTriggerByKey"
                       checked={values.allowTriggerByKey}
@@ -138,13 +170,20 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                         text={triggerKey || ""}
                         onCopy={() => {
                           showToast({
-                            children: t("copied"),
+                            children: t("copied", {
+                              ns: "common",
+                            }),
                             autoHideDuration: 1500,
                           });
                         }}
                       >
                         <span>
-                          <Tooltip title={t("copyToClipboard")} placement="left">
+                          <Tooltip
+                            title={t("copyToClipboard", {
+                              ns: "common",
+                            })}
+                            placement="left"
+                          >
                             <IconButton
                               sx={{
                                 position: "absolute",
@@ -162,14 +201,24 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                   </div>
                 </div>
 
-                <p className="mt-6 text-lg font-medium">{t("runSettings")}</p>
-                <p className="mt-3 text-sm mb-1">{t("timeoutValue")}</p>
+                <p className="mt-6 text-lg font-medium">
+                  {t("runSettings", {
+                    ns: "common",
+                  })}
+                </p>
+                <p className="mt-3 text-sm mb-1">
+                  {t("timeoutValue", {
+                    ns: "common",
+                  })}
+                </p>
 
                 <TextField
                   value={values.timeoutInSeconds}
                   name="timeoutInSeconds"
                   type="number"
-                  placeholder={t("timeoutValue")}
+                  placeholder={t("timeoutValue", {
+                    ns: "common",
+                  })}
                   fullWidth
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -187,10 +236,10 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                 </p>
                 <div className="mt-1 flex">
                   <div className="flex-1 mr-4">
-                    <p className="mt-2 text-sm mb-1">{t("retryTimes")}</p>
+                    <p className="mt-2 text-sm mb-1">{t("run.retryTimes")}</p>
 
                     <TextField
-                      placeholder={t("retryTimes")}
+                      placeholder={t("run.retryTimes")}
                       fullWidth
                       value={values.retryAmount}
                       type="number"
@@ -211,10 +260,10 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                     </p>
                   </div>
                   <div className="flex-1">
-                    <p className="mt-2 text-sm mb-1">{t("retryInterval")}</p>
+                    <p className="mt-2 text-sm mb-1">{t("run.retryInterval")}</p>
 
                     <TextField
-                      placeholder={t("retryInterval")}
+                      placeholder={t("run.retryInterval")}
                       fullWidth
                       type="number"
                       value={values.retryIntervalInSecond}
@@ -236,8 +285,7 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                   </div>
                 </div>
                 <p className="mt-4 flex items-center justify-between">
-                  <span>{t("allowParallelRun")}</span>
-
+                  <span>{t("info.allowParallelRun")}</span>
                   <MdSwitch
                     checked={values.allowParallelRun}
                     name="allowParallelRun"
@@ -256,7 +304,13 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                   disableElevation
                   type="submit"
                 >
-                  {canModifySettings ? t("updateSettings") : t("noUpdateSettingsPermission")}
+                  {canModifySettings
+                    ? t("updateSettings", {
+                        ns: "common",
+                      })
+                    : t("permissions.noUpdateSettings", {
+                        ns: "common",
+                      })}
                 </MdButon>
                 <MdButon
                   sx={{ mt: 2 }}
@@ -267,7 +321,13 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                   disabled={!canDelete}
                   onClick={deleteFlow}
                 >
-                  {canDelete ? t("deleteFlow") : t("noDeletePermission")}
+                  {canDelete
+                    ? t("deleteProject", {
+                        ns: "common",
+                      })
+                    : t("permissions.noDelete", {
+                        ns: "common",
+                      })}
                 </MdButon>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { useQuery } from "react-query";
@@ -29,6 +29,16 @@ const FlowItem = () => {
     },
     refetchOnWindowFocus: false,
   });
+  useEffect(() => {
+    const onBeforeUnload: OnBeforeUnloadEventHandler = (event) => {
+      event.preventDefault();
+      return "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", onBeforeUnload);
+    };
+  }, []);
   return (
     <Board loadingFlow={isLoading}>
       <DndProvider backend={HTML5Backend}>

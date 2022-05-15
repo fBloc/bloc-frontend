@@ -8,7 +8,7 @@ import classNames from "classnames";
 import { getBlocRecordDetail, ResultPreview } from "@/api/flow";
 import { getRunningIcon, getRunningStateClass, getRunningStateText, RunningStatusEnum } from "@/shared/enums";
 import { FaTimes } from "@/components/icons";
-import { diffSeconds, readableTime } from "@/shared/time";
+import { readableDuration, readableTime } from "@/shared/time";
 import { operationAttrs, resultAttrs } from "@/recoil/flow/operation";
 import { Dialog, DialogTitle, IconButton, Divider, Tabs, Tab, DialogProps } from "@mui/material";
 
@@ -50,7 +50,7 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
   const currentFunction = useMemo(() => attrs.nodeData?.function, [attrs]);
   const [type, setType] = useState<"input" | "output">("input");
   const recordId = useMemo(() => attrs.nodeData?.latestRunningInfo?.recordId, [attrs]);
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
 
   const { data } = useQuery(["getBlocResult", recordId], () => getBlocRecordDetail(recordId || ""), {
     refetchOnWindowFocus: false,
@@ -114,26 +114,25 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
             {getRunningIcon(stateCode, "mr-0.5")}
             <div className="ml-2">
               <p className="font-medium">{getRunningStateText(stateCode)}</p>
-
               {resultDetail?.errorMsg && <p className="text-xs mt-1">{resultDetail?.errorMsg}</p>}
             </div>
           </div>
 
           <div className="mt-4">
-            <p className="text-gray-400 text-xs">{t("triggerTime")}</p>
+            <p className="text-gray-400 text-xs">{t("run.triggerAt")}</p>
             <p>{readableTime(resultDetail?.trigger)}</p>
           </div>
           <div className="my-4">
-            <p className="text-gray-400 text-xs">{t("startRunAt")}</p>
+            <p className="text-gray-400 text-xs">{t("run.startRunAt")}</p>
             <p>{readableTime(resultDetail?.start)}</p>
           </div>
           <div>
-            <p className="text-gray-400 text-xs">{t("endRunAt")}</p>
+            <p className="text-gray-400 text-xs">{t("run.endRunAt")}</p>
             <p>{readableTime(resultDetail?.end)}</p>
           </div>
           <div className="my-4">
-            <p className="text-gray-400 text-xs">{t("duration")}</p>
-            <p>{diffSeconds(resultDetail?.start, resultDetail?.end)}</p>
+            <p className="text-gray-400 text-xs">{t("run.duration")}</p>
+            <p>{readableDuration(resultDetail?.start, resultDetail?.end)}</p>
           </div>
         </div>
         <Divider orientation="vertical" sx={{ mx: 4, alignSelf: "stretch" }} />
@@ -150,8 +149,8 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
               setType(v);
             }}
           >
-            <Tab label={t("input")} value="input" />
-            <Tab label={t("output")} value="output" />
+            <Tab label={t("function.input")} value="input" />
+            <Tab label={t("function.output")} value="output" />
           </Tabs>
           <TabPanel index="input" value={type}>
             {currentFunction?.ipt.map((ipt, iptIndex) => (
@@ -175,7 +174,7 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
           <TabPanel index="output" value={type}>
             <>
               {currentFunction?.opt.length === 0 ? (
-                <p className="p-10 bg-gray-50 rounded-lg text-center text-gray-400">{t("noOutputParams")}</p>
+                <p className="p-10 bg-gray-50 rounded-lg text-center text-gray-400">{t("node.noOutputParams")}</p>
               ) : (
                 <>
                   {stateCode === RunningStatusEnum.running && (
@@ -185,12 +184,17 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
                         "inline-block mt-4 border px-2 py-1 rounded",
                       )}
                     >
-                      {t("noDataWhileRunning")}
+                      {t("run.noDataWhileRunning")}
                     </p>
                   )}
                   {currentFunction?.opt.map((opt) => (
                     <div key={opt.key} className="mt-6 w-[300px] min-h-[90px]">
-                      <p className="mb-0.5">{opt.description || t("noDescription")}</p>
+                      <p className="mb-0.5">
+                        {opt.description ||
+                          t("noDescription", {
+                            ns: "common",
+                          })}
+                      </p>
                       <p className="font-mono bloc-description">{opt.key}</p>
                       <DataZone preview={resultDetail?.opt?.[opt.key]} className="mt-2" />
                     </div>

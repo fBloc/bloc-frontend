@@ -24,7 +24,7 @@ const Connection: React.FC<ConenctionProps> = ({ value, onReset }) => {
   const targetParam = useMemo(() => {
     return querySourceParam(targetNode, value?.sourceParam);
   }, [targetNode, value, querySourceParam]);
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
   return (
     <>
       <p className="flex items-center">
@@ -34,13 +34,15 @@ const Connection: React.FC<ConenctionProps> = ({ value, onReset }) => {
         <span className="ml-2 text-xs text-gray-400">{targetNode?.note || targetNode?.function?.name || "-"}</span>
         <span className="ml-auto cursor-default">
           <span className="w-12 bg-success bg-opacity-10 text-success text-xs h-5 rounded inline-flex justify-center items-center group-hover:hidden">
-            {t("connected")}
+            {t("params.connected")}
           </span>
           <span
             className="w-12 bg-red-400 bg-opacity-10 text-red-400 text-xs h-5 rounded items-center justify-center hidden group-hover:inline-flex"
             onClick={onReset}
           >
-            {t("clear")}
+            {t("clear", {
+              ns: "common",
+            })}
           </span>
         </span>
       </p>

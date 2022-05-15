@@ -15,21 +15,6 @@ export function isObject(source: any) {
   return Object.prototype.toString.call(source) === "[object Object]";
 }
 
-export function getQuery<T extends string>(target = window.location.href): Partial<Record<T, string | string[]>> {
-  return (
-    decodeURIComponent(target)
-      .split("?")[1]
-      ?.split("&")
-      ?.reduce((acc, item) => {
-        const [key, value] = item.split("=");
-        return {
-          ...acc,
-          [key]: value,
-        };
-      }, {}) || {}
-  );
-}
-
 export function setQueryString(value: PureQuery) {
   const entries = Object.entries(value);
   if (entries.length === 0) return "";
@@ -41,7 +26,6 @@ export function setQueryString(value: PureQuery) {
 export function mergeUrlQuery(url: string, query: PureQuery) {
   const queryAsStr = setQueryString(query);
   const urlHasQuery = url.includes("?");
-  // const queyrSymbol = urlHasQuery ? (url.endsWith("&") ? "" : "&") : "";
   const queyrSymbol = urlHasQuery && !url.endsWith("&") ? "&" : "";
   return `${url}${queyrSymbol}${queryAsStr.slice(urlHasQuery ? 1 : 0)}`;
 }

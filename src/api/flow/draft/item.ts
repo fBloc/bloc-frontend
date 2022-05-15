@@ -2,7 +2,7 @@ import request from "@/shared/request";
 import { simpleNanoId } from "@/shared/tools";
 import { normalizeFlowDetail, ResultState } from "../common";
 import { OriginBaseFlow, ReadableOriginBaseFlow } from "../originTypes";
-
+import i18n from "@/i18n";
 type BaseParams = Partial<Pick<ReadableOriginBaseFlow, "flowFunctionID_map_flowFunction" | "name" | "position">> & {
   origin_id?: string;
 };
@@ -12,7 +12,7 @@ type BaseParams = Partial<Pick<ReadableOriginBaseFlow, "flowFunctionID_map_flowF
 export function createDraft(content?: BaseParams) {
   return request
     .post<OriginBaseFlow>("/api/v1/draft_flow", {
-      name: `未命名flow_${simpleNanoId()}`,
+      name: `${i18n.t("untitled")}_flow_${simpleNanoId()}`,
       ...content,
     })
     .then(normalizeFlowDetail);

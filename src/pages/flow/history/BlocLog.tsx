@@ -8,7 +8,7 @@ import { Drawer, DrawerProps, IconButton, DialogTitle, Divider, CircularProgress
 import { getLog } from "@/api/bloc";
 import { FaTimes } from "@/components/icons";
 import { logAttrs, operationAttrs } from "@/recoil/flow/operation";
-import { diffSeconds } from "@/shared/time";
+import { readableDuration } from "@/shared/time";
 import { getRunningIcon, getRunningStateClass, getRunningStateText, RunningStatusEnum } from "@/shared/enums";
 
 export type BlocLogProps = DrawerProps & {};
@@ -87,7 +87,7 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
           <div className="ml-2">
             <p className="font-medium">{getRunningStateText(record?.status)}</p>
             {record?.status && record.status > RunningStatusEnum.running && (
-              <p className="mt-1 text-xs text-gray-400">{diffSeconds(record?.startTime, record?.endTime)}</p>
+              <p className="mt-1 text-xs text-gray-400">{readableDuration(record?.startTime, record?.endTime)}</p>
             )}
           </div>
         </div>

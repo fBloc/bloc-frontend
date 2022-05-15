@@ -44,7 +44,7 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
   const [apiContains, setApiContains] = useState("");
   const [tab, setTab] = useRecoilState(flowListTab);
   const resetFlow = useResetRecoilState(flowDetailState);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation("flow");
   const fullKeyWord = useMemo(
     () => (apiContains.length > 5 ? `${apiContains.slice(0, 5)}...` : apiContains),
     [apiContains],
@@ -111,8 +111,6 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
             />
           ))}
         </Tabs>
-        <p>{t("Welcome to React")}</p>
-        <p>{i18n.language}</p>
         <div className="flex items-center">
           <form
             className="flex-grow"
@@ -124,7 +122,7 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
             }}
           >
             <TextField
-              placeholder="输入关键词搜索Flow"
+              placeholder={t("searchPlaceholder")}
               fullWidth
               inputProps={{
                 maxLength: 60,
@@ -177,27 +175,27 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
                     title={
                       item.latest_run?.status === RunningStatusEnum.success ? (
                         <>
-                          <p className="mt-2 opacity-60">{t("latestRun")}</p>
+                          <p className="mt-2 opacity-60">{t("run.latestRun")}</p>
                           <hr className="my-3 opacity-10" />
                           <p className="text-xs flex justify-between items-center">
                             <span className="w-4 h-4 inline-flex justify-center items-center rounded-full  text-primary-400">
                               <FaBolt size={10} />
                             </span>
-                            <span className="opacity-60">{t("triggerAt")}</span>
+                            <span className="opacity-60">{t("run.triggerAt")}</span>
                             <span className="ml-6">{readableTime(item.latest_run.trigger_time)}</span>
                           </p>
                           <p className="my-2 text-xs flex justify-between">
                             <span className="w-4 h-4 inline-flex justify-center items-center rounded-full  text-green-400">
                               <FaPlay size={8} />
                             </span>
-                            <span className="opacity-60">{t("startRunAt")}</span>
+                            <span className="opacity-60">{t("run.startRunAt")}</span>
                             <span className="ml-6">{readableTime(item.latest_run.start_time)}</span>
                           </p>
                           <p className="text-xs flex justify-between">
                             <span className="w-4 h-4 inline-flex justify-center items-center rounded-full text-white-400">
                               <FaStopCircle size={10} />
                             </span>
-                            <span className="opacity-60">{t("endRunAt")}</span>
+                            <span className="opacity-60">{t("run.endRunAt")}</span>
                             <span className="ml-6">{readableTime(item.latest_run.end_time)}</span>
                           </p>
                           <hr className="my-4 opacity-10" />
@@ -243,7 +241,12 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
                   </span>
                 </Tooltip>
               </div>
-              <p className="mt-3 text-base">{item.name || t("untitled")}</p>
+              <p className="mt-3 text-base">
+                {item.name ||
+                  t("untitled", {
+                    ns: "common",
+                  })}
+              </p>
             </Box>
           ))}
         </ListComponent>

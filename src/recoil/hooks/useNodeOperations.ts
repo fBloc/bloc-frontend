@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useSetRecoilState } from "recoil";
+import { useTranslation } from "react-i18next";
 import { FullStateAtom, ParamOpt } from "@/api/flow";
 import { showConfirm } from "@/components";
 import { IptWay } from "@/shared/enums";
@@ -13,6 +14,7 @@ export function useNodeOperations() {
   const { queryNode } = useQueries();
   const setNodeViewerProps = useSetRecoilState(nodeViewAttrs);
   const setCurrenBlocId = useSetRecoilState(currentBlocNodeId);
+  const { t } = useTranslation("flow");
 
   const showNodeViewer = useCallback(
     (nodeId: string) => {
@@ -45,8 +47,8 @@ export function useNodeOperations() {
 
       if (needConfirm) {
         const confirmed = await showConfirm({
-          title: "确认删除吗？",
-          body: "将删除此节点，其关联关系也将被一并删除。",
+          title: t("node.confirmDeleteTitle"),
+          body: t("node.confirmDeleteBody"),
         });
         if (confirmed) {
           _removeNode(nodeId);
@@ -55,7 +57,7 @@ export function useNodeOperations() {
         _removeNode(nodeId);
       }
     },
-    [_removeNode, queryNode],
+    [_removeNode, queryNode, t],
   );
   return {
     showNodeViewer,
