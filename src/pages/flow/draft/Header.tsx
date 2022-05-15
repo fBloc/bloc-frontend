@@ -122,6 +122,8 @@ type HeaderBarProps = React.HTMLAttributes<HTMLDivElement> & {};
 const HeaderBar: React.FC<HeaderBarProps> = ({ children, className, ...rest }) => {
   const flow = useRecoilValue(flowDetailState);
   const setInfo = useUpdateFlow();
+  const { t } = useTranslation();
+
   return (
     <div className={classNames("px-3 py-2 bg-white shadow flex items-center justify-between", className)} {...rest}>
       <div className="flex-1 flex items-center">
