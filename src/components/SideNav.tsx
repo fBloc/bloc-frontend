@@ -13,7 +13,7 @@ import { auth } from "@/recoil/app/auth";
 const paths = [
   {
     path: PAGES.flowList,
-    title: "flow",
+    title: "Flows",
   },
   {
     path: PAGES.functions,

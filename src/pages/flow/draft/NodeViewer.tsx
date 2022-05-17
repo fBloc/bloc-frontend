@@ -267,8 +267,8 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
         {({ dirty, errors }) => {
           return (
             <Form>
-              <div className="p-4 w-96 flex flex-col">
-                <div className="mb-6 flex items-center justify-between">
+              <div className="px-4 w-96 h-screen flex flex-col">
+                <div className="mb-2 flex items-center justify-between top-0 py-4 sticky bg-white z-10">
                   <div className="flex-grow">
                     <Tooltip title={t("rename")} placement="bottom-start">
                       <EditableText
@@ -282,6 +282,11 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                             updateBlocNode(currentNodeId, {
                               note: e.target.value,
                             });
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.currentTarget.blur();
                           }
                         }}
                       />
@@ -418,7 +423,8 @@ const NodeViewer: React.FC<NodeViewerProps> = ({ SlideProps, ...rest }) => {
                     </div>
                   ))}
                 </TabPanel>
-                <div className="mt-4 flex justify-end items-center px-4 sticky bottom-4 bg-white">
+
+                <div className="mt-auto flex justify-end items-center py-4 sticky bottom-0 bg-white">
                   <MdButton type="submit" fullWidth variant="outlined">
                     {t("save")}
                   </MdButton>

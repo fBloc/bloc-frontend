@@ -42,7 +42,7 @@ const FunctionItem: React.FC<React.HTMLAttributes<HTMLDivElement> & { item: Func
       <p className="text-gray-500 text-xs leading-5">{item.description}</p>
       <Divider sx={{ my: 1, opacity: 0.5 }} />
       <p className="text-xs text-gray-500">
-        {t("fucntion.providedBy", {
+        {t("function.providedBy", {
           provider: item.provider,
         })}
       </p>
@@ -55,7 +55,7 @@ type FunctionsProps = React.HTMLAttributes<HTMLDivElement> & {
 const Functions: React.FC<FunctionsProps> = ({ children }) => {
   const functionGroups = useRecoilValue(functionGroupState);
   const flatFunctions = useRecoilValue(flatFunctionState);
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
 
   return (
     <div className="absolute left-0 top-0 h-full z-10 p-2">

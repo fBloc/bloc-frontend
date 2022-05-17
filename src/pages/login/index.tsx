@@ -20,7 +20,6 @@ const Login: React.FC = () => {
   const location = useLocation();
   const from = (location.state as any)?.from || "/";
   const { t } = useTranslation("auth");
-
   const loginMutation = useMutation(login);
   if (identificationInstance.isValidLogin) {
     return <Navigate to="/flow" replace />;

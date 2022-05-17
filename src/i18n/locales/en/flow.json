@@ -15,7 +15,11 @@
     "noOutputParams": "no output params",
     "noInputParams": "no input params",
     "notConnectable": "当前节点不可匹配",
-    "start": "start"
+    "start": "start",
+    "idle": "idle",
+    "unableToRun": "unable to run",
+    "progress": "progress",
+    "log": "log"
   },
   "params": {
     "selectAnItem": "select an item",
@@ -31,7 +35,8 @@
     "disconnected": "disconncted",
     "connected": "connected",
     "userInput": "user input",
-    "connection": "connection"
+    "connection": "connection",
+    "allUnset": "此参数未设置"
   },
   "run": {
     "manually": "manally",
@@ -66,7 +71,7 @@
     "canceledByUser": "canceled by {{userName}}",
     "intercepted": "intercepted",
     "rejected": "parallel running disabled",
-    "neverRunned": "never runned"
+    "neverRunned": "idle"
   },
   "function": {
     "input": "input",
@@ -74,7 +79,7 @@
     "mayUnavaliable": "较长时间未收到此function的心跳，此function可能无法正常运行",
     "detail": "Function Detail",
     "providedBy": "provided by {{provider}}",
-    "size": "共{{groupSize}}个分组，{{fucntionSize}}个函数"
+    "size": "共{{groupSize}}个分组，{{functionSize}}个函数"
   },
   "info": {
     "crontabStr": "crontab",

@@ -3,7 +3,7 @@ import { Node } from "react-flow-renderer";
 import { FullStateAtom, BlocRecordDetail } from "@/api/flow";
 import { BlocNodeData, BlocNodeItem } from "@/shared/types";
 import { DEFAULT_EDIT_ATOM_DESCCRIPTOR } from "@/shared/defaults";
-import { collectConnectableNodeIds, extractNodes, flatParamAtoms, withSourceParamStateNodes } from "@/processors";
+import { collectConnectableNodeIds, extractNodes, flatParamAtoms, makeParamsStateful } from "@/processors";
 import { flowDetailState, projectSettings } from "./flow";
 import { tempConnectionSource } from "./connections";
 import { flatFunctionState } from "../functions";
@@ -72,7 +72,6 @@ export const atomEditState = atomFamily<FullStateAtom, AtomKey>({
         }
         const atoms = flatParamAtoms(node.paramIpt);
         const target = atoms.find((atom) => `${atom.nodeId}_${atom.parentParam}_${atom.atomIndex}` === atomKey);
-        console.log(atomKey, "..");
         if (!target) {
           console.log("no target found");
           // TODO error提示
@@ -124,11 +123,13 @@ export const actualBlocNodeList = selector<BlocNodeItem[]>({
     const sourceNodes = get(blocNodeList);
     const sourceParam = get(tempConnectionSource);
     const ids = get(connectableNodeIds);
-    return withSourceParamStateNodes(sourceNodes, {
+    const flow = get(flowDetailState);
+    return makeParamsStateful(sourceNodes, {
       mayConnectableParams: get(mayConnectableParams),
       absConnectableParams: get(absConnectableParams),
       connectableNodeIds: ids,
       sourceParam,
+      flow,
     });
   },
 });

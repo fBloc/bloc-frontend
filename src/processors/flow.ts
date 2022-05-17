@@ -6,7 +6,7 @@ import { FormControlType, IptWay, MergedIptParamStatus } from "@/shared/enums";
 import { isTruthyValue } from "@/shared/tools";
 import { BlocNodeItem, ParamConnectionEnd } from "@/shared/types";
 import { getDefaultEditAtom } from "./node";
-
+import { isPlainObject } from "lodash-es";
 // TODO 类型名称
 type FullEditAtom = EditAtom & { atomIndex: number; targetNode: string; targetParam: string };
 
@@ -94,6 +94,7 @@ function getReadableValue(value: unknown, atom: Omit<FullStateAtom, "readableVal
   const { selectOptions, formType, iptWay } = atom;
   if (iptWay === IptWay.Connection || !isTruthyValue(value)) return "";
   const isValueArray = Array.isArray(value);
+
   if (formType === FormControlType.select) {
     const getLabel = (value: unknown) =>
       (selectOptions?.find((option) => option.value === value)?.label || "").toString();
@@ -102,7 +103,13 @@ function getReadableValue(value: unknown, atom: Omit<FullStateAtom, "readableVal
     }
     return getLabel(value);
   }
-  return isValueArray ? value.map((item) => item.toString()).join(",") : (value as string | number).toString();
+  const toString = (value: unknown) => {
+    if (isPlainObject(value) && (value as any).value) {
+      return (value as any).value || "";
+    }
+    return (value as any)?.toString() || "";
+  };
+  return isValueArray ? value.map(toString).join(",") : (value as string | number).toString();
 }
 
 export function mergeIpts(paramIpts: EditAtom[][], fn: FunctionItem | null, id: string): StatefulMergedIptParam[] {
@@ -168,18 +175,20 @@ function mergeOpts(allAtoms: FullEditAtom[], fn: FunctionItem | null, id: string
   );
 }
 
-export function withSourceParamStateNodes(
+export function makeParamsStateful(
   nodes: BlocNodeItem[],
   {
     mayConnectableParams,
     absConnectableParams,
     connectableNodeIds,
     sourceParam,
+    flow,
   }: {
     mayConnectableParams: string[];
     absConnectableParams: string[];
     connectableNodeIds: string[];
     sourceParam: ParamConnectionEnd | null;
+    flow: FlowDetailT | null;
   },
 ) {
   return nodes.map((node) => {
@@ -216,13 +225,20 @@ export function withSourceParamStateNodes(
         if (!sourceParam) {
           status = allSet ? MergedIptParamStatus.avaliable : status;
         }
+        if (setedLength === 0 && all > 0 && flow?.isDraft === false) {
+          status = MergedIptParamStatus.unset;
+        }
+
         return {
           ...param,
           atoms: param.atoms.map((atom) => ({
             ...atom,
             readableValue: getReadableValue(atom.value, atom),
           })),
-          status,
+          status:
+            flow?.isDraft === false && (flow.latestRun === null || node.latestRunningInfo === null)
+              ? MergedIptParamStatus.unavaliable
+              : status, // 非草稿且节点未运行（flow未运行或节点未运行），则无需状态。
           progress: setedLength / all,
         };
       }),

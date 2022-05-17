@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { IconBaseProps } from "react-icons";
 import { FaCheckCircle, FaTimesCircle, FaPauseCircle, FaStopCircle, FaBan } from "@/components/icons";
 import { FlowDetailT, FlowRunningStatus } from "@/api/flow";
 import i18n from "@/i18n";
@@ -182,12 +183,14 @@ const icons: Record<RunningStatusEnum, JSX.Element> = {
   [RunningStatusEnum.intercepted]: <FaBan />,
   [RunningStatusEnum.rejected]: <FaTimesCircle />,
 };
-export const getRunningIcon = (state?: RunningStatusEnum | null, className = "") => {
+export const getRunningIcon = (state?: RunningStatusEnum | null, props: IconBaseProps = {}) => {
   if (!state) return null;
   const icon = icons[state];
+  const { className = "", ...rest } = props;
   return icon
     ? React.cloneElement(icon, {
         className: classNames(className, ""),
+        ...rest,
       })
     : null;
 };
@@ -222,6 +225,7 @@ export enum MergedIptParamStatus {
   unavaliable,
   avaliable,
   indeterminate,
+  unset,
 }
 
 export enum FlowDisplayPage {

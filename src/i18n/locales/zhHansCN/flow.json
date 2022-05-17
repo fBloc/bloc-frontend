@@ -15,7 +15,11 @@
     "noOutputParams": "无输出参数",
     "noInputParams": "无输入参数",
     "notConnectable": "当前节点不可匹配",
-    "start": "开始节点"
+    "start": "开始节点",
+    "idle": "节点未运行",
+    "unableToRun": "当前节点未能运行",
+    "progress": "进度",
+    "log": "日志"
   },
   "params": {
     "selectAnItem": "选择一个子项",
@@ -31,7 +35,8 @@
     "disconnected": "已解除",
     "connected": "已关联",
     "userInput": "用户输入",
-    "connection": "关联"
+    "connection": "关联",
+    "allUnset": "此参数未设置"
   },
   "run": {
     "manually": "用户手动",
@@ -74,7 +79,7 @@
     "mayUnavaliable": "较长时间未收到此function的心跳，此function可能无法正常运行",
     "detail": "函数详情",
     "providedBy": "由 {{provider}} 提供",
-    "size": "共{{groupSize}}个分组，{{fucntionSize}}个函数"
+    "size": "共{{groupSize}}个分组，{{functionSize}}个函数"
   },
   "info": {
     "crontabStr": "crontab命令",

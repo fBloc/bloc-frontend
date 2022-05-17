@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { functionGroupState } from "@/recoil/functions";
 import { FaUser } from "@/components/icons";
+import { Empty } from "@/components";
 import Preview from "./Preview";
 import { FunctionItem } from "@/api/functions";
 
@@ -12,6 +13,7 @@ const Functions = () => {
   return (
     <>
       <div className="p-10">
+        {functions.length === 0 && <Empty className="mt-40" />}
         {functions.map((group) => (
           <div key={group.groupName} className="mb-8">
             <p className="text-xs mb-2">{group.groupName}</p>

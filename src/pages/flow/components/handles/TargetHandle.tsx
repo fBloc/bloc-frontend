@@ -38,11 +38,24 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
     return recordDetail?.ipt?.[detail.index] || [];
   }, [detail.index, recordDetail]);
   const readFlowMode = useMemo(() => [FlowDisplayPage.flow, FlowDisplayPage.draft].includes(nodeData.mode), [nodeData]);
-  const { t } = useTranslation();
+  const { t } = useTranslation("flow");
+  const tooltipText = useMemo(() => {
+    switch (detail.status) {
+      case MergedIptParamStatus.unavaliable:
+        return t("node.idle");
+      case MergedIptParamStatus.unset:
+        return t("params.allUnset");
+      default:
+        return t("viewData", {
+          ns: "common",
+        });
+    }
+  }, [detail.status, t]);
   return (
     <>
       <div
         className={classNames("relative mx-2 grxoup rounded-full", anchor !== null ? "scale-150 shadow" : "")}
+        data-nn={detail.status}
         onClick={(e) => {
           setAnchor(e.currentTarget);
         }}
@@ -58,7 +71,7 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
         }}
       >
         <Tooltip
-          title={[FlowDisplayPage.preview, FlowDisplayPage.history].includes(nodeData.mode) ? t("viewData") : false}
+          title={[FlowDisplayPage.preview, FlowDisplayPage.history].includes(nodeData.mode) ? tooltipText : false}
         >
           <Handle
             isConnectable={false}
@@ -72,7 +85,6 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
               detail.status === MergedIptParamStatus.unavaliable
                 ? "!bg-gray-100 !border-gray-100 hover:!border-red-400"
                 : "",
-              "hover:!border-gray-400",
             )}
           />
         </Tooltip>
@@ -103,10 +115,6 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
                 backgroundPadding={0}
                 background
                 styles={{
-                  background: {
-                    backgroundColor: "red",
-                    background: "blue",
-                  },
                   path: {
                     strokeLinecap: "butt",
                     stroke: "#4ade80",
@@ -150,7 +158,7 @@ const TargetHandle: React.FC<{ detail: StatefulMergedIptParam; nodeData: BlocNod
               {detail.status === MergedIptParamStatus.unavaliable && nodeData.isConnecting && (
                 <div className="mt-2 mb-1 text-red-400 flex items-center">
                   <FaExclamationCircle className="mr-1" />
-                  当前节点不可匹配
+                  {t("node.notConnectable")}
                 </div>
               )}
             </>

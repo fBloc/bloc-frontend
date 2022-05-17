@@ -23,7 +23,7 @@ const Value: React.FC<{
         "loading..."
       ) : (
         <>
-          <span className="overflow-hidden">
+          <span className="overflow-hidden flex-grow">
             <span className="block w-full text-ellipsis overflow-hidden whitespace-nowrap">
               {TextFallback(value ?? valueResult?.brief, t("noData"))}
             </span>
@@ -63,6 +63,7 @@ const TargetValue: React.FC<{
   param: StatefulMergedIptParam;
 }> = ({ result, isLoading, param }) => {
   const { t } = useTranslation();
+
   return (
     <>
       <p className="text-sm">{TextFallback(param.description, t("noDescription"))}</p>
@@ -89,7 +90,7 @@ const TargetValue: React.FC<{
                 {atom.unset ? (
                   <>
                     <FaExclamationCircle size={12} className="text-warning mr-1" />
-                    {t("unset")}
+                    <span className="mr-auto">{t("unset")}</span>
                   </>
                 ) : (
                   <>

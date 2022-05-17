@@ -1,14 +1,23 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
-import dayjs from "dayjs";
-import { Drawer, DrawerProps, IconButton, DialogTitle, Divider, CircularProgress } from "@mui/material";
+import {
+  Drawer,
+  DrawerProps,
+  IconButton,
+  DialogTitle,
+  Divider,
+  CircularProgress,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
 import { getLog } from "@/api/bloc";
 import { FaTimes } from "@/components/icons";
 import { logAttrs, operationAttrs } from "@/recoil/flow/operation";
-import { readableDuration } from "@/shared/time";
+import { readableDuration, readableTime } from "@/shared/time";
+import RunningInfo from "./BlocRuningInfo";
 import { getRunningIcon, getRunningStateClass, getRunningStateText, RunningStatusEnum } from "@/shared/enums";
 
 export type BlocLogProps = DrawerProps & {};
@@ -20,9 +29,9 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
   const record = useMemo(() => internalLogAttrs.nodeData?.latestRunningInfo, [internalLogAttrs]);
   const recordId = useMemo(() => record?.recordId || "", [record]);
   const { t } = useTranslation();
-
+  const [tab, setTab] = useState("log");
   const { data: logData, isFetching } = useQuery(["getRecordLogData", recordId], () => getLog(recordId || ""), {
-    enabled: !!recordId && internalLogAttrs.open,
+    enabled: !!recordId && internalLogAttrs.open && tab === "log",
     refetchOnWindowFocus: false,
     refetchInterval: record?.status === RunningStatusEnum.running ? 2000 : false,
     onSuccess: ({ isValid }) => {
@@ -51,6 +60,7 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
         ...previous,
         nodeId: "",
       }));
+      setTab("log");
       onExited?.(e);
     },
     [onExited, setOperationAttrs],
@@ -83,31 +93,66 @@ const BlocLog: React.FC<BlocLogProps> = ({ className, SlideProps, ...rest }) => 
       <Divider />
       <div className="p-4">
         <div className="flex items-center">
-          <p className={getRunningStateClass(record?.status)}>{getRunningIcon(record?.status, "mr-0.5")}</p>
+          <p className={getRunningStateClass(record?.status)}>
+            {getRunningIcon(record?.status, {
+              className: "mr-0.5",
+              size: 24,
+            })}
+          </p>
           <div className="ml-2">
             <p className="font-medium">{getRunningStateText(record?.status)}</p>
             {record?.status && record.status > RunningStatusEnum.running && (
               <p className="mt-1 text-xs text-gray-400">{readableDuration(record?.startTime, record?.endTime)}</p>
             )}
           </div>
+          <div className="ml-auto">
+            <ToggleButtonGroup
+              value={tab}
+              exclusive
+              size="small"
+              onChange={(_, v) => {
+                if (v) {
+                  setTab(v);
+                }
+              }}
+            >
+              <ToggleButton value="log">
+                <span className="mx-2">
+                  {t("node.log", {
+                    ns: "flow",
+                  })}
+                </span>
+              </ToggleButton>
+              <ToggleButton value="info">
+                <span className="mx-2">
+                  {t("node.progress", {
+                    ns: "flow",
+                  })}
+                </span>
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
         </div>
-        <div className="mt-4 bg-gray-500 rounded-lg p-4 h-96 overflow-auto" ref={ref}>
-          {logData?.data?.map((item, index) => (
-            <div key={index} className={classNames("px-2 py-1 flex items-center mb-1 text-white", {})}>
-              <p
-                className={classNames("opacity-90 text-xs whitespace-nowrap font-medium", {
-                  "text-yellow-500": item.log_level === "warning",
-                  "text-red-400": item.log_level === "error",
-                })}
-              >
-                [{dayjs(item.time).format("YYYY-MM-DD HH:mm:ss")} {item.log_level.toUpperCase()}] [{item.business}]
-              </p>
-              <p className="ml-2">{item.data}</p>
-            </div>
-          ))}
-          {logData?.data?.length === 0 && <p className="pt-10 text-center text-gray-200">{t("noData")}</p>}
-          {isFetching && <CircularProgress sx={{ ml: 1 }} className="!text-white" size={14} />}
-        </div>
+        {tab === "log" && (
+          <div className="mt-4 bg-gray-500 rounded-lg p-4 h-96 overflow-auto" ref={ref}>
+            {logData?.data?.map((item, index) => (
+              <div key={index} className={classNames("px-2 py-1 flex items-center mb-1 text-white", {})}>
+                <p
+                  className={classNames("opacity-90 text-xs whitespace-nowrap font-medium", {
+                    "text-yellow-500": item.log_level === "warning",
+                    "text-red-400": item.log_level === "error",
+                  })}
+                >
+                  [{readableTime(item.time)} {item.log_level.toUpperCase()}] [{item.business}]
+                </p>
+                <p className="ml-2">{item.data}</p>
+              </div>
+            ))}
+            {logData?.data?.length === 0 && <p className="pt-10 text-center text-gray-200">{t("noData")}</p>}
+            {isFetching && <CircularProgress sx={{ ml: 1 }} className="!text-white" size={14} />}
+          </div>
+        )}
+        {tab === "info" && <RunningInfo recordId={recordId} />}
       </div>
     </Drawer>
   );

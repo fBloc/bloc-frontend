@@ -89,7 +89,7 @@ const AtomForm: React.FC<AtomFormProps> = ({ param, atomIndex, name, value, onCh
         <UserSelet
           fullWidth
           name={name || ""}
-          placeholder={description}
+          placeholder={description ?? __DEFAULT_SELECT_PLACEHOLDER__}
           isMultiple={isArray}
           defaultValue={defaultValue}
           value={value}
@@ -105,6 +105,7 @@ const AtomForm: React.FC<AtomFormProps> = ({ param, atomIndex, name, value, onCh
           isArray={isArray}
           formType={formType}
           valueType={valueType}
+          placeholder={description ?? __DEFAULT_INPUT_PLACEHOLDER__}
           value={value}
           name={name || ""}
           onChange={onChange}

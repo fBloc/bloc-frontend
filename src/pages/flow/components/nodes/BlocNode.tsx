@@ -1,11 +1,12 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { NodeProps } from "react-flow-renderer";
 import { IconButton, Tooltip } from "@mui/material";
 import { getRunningStateText, getRunningStateClass, getRunningIcon, FlowDisplayPage } from "@/shared/enums";
-import { FaInfoCircle, FaDatabase } from "@/components/icons";
+import { FaInfoCircle, FaDatabase, FaExclamationCircle } from "@/components/icons";
 import BaseNode from "./BaseNode";
 import { FnAtom } from "@/api/functions";
 import { BlocNodeData } from "@/shared/types";
@@ -16,7 +17,6 @@ import TargetHandle, { VoidTargetHandle } from "../handles/TargetHandle";
 import EditNodeOpeations from "./EditNodeOpeations";
 import { useNodeOperations } from "@/recoil/hooks/useNodeOperations";
 import styles from "../handles/handle.module.scss";
-import { useNavigate } from "react-router-dom";
 import { flowDetailState } from "@/recoil/flow/flow";
 import { showConfirm } from "@/components";
 import i18n from "@/i18n";
@@ -82,6 +82,14 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
   );
   const { showNodeViewer } = useNodeOperations();
   const { t } = useTranslation();
+  /**节点是否未执行，前提是flow是有状态的*/
+  const isIdleNode = useMemo(
+    () =>
+      [FlowDisplayPage.preview, FlowDisplayPage.history].includes(data.mode) &&
+      !data.latestRunningInfo &&
+      !!flow?.latestRun,
+    [flow, data],
+  );
   return (
     <BaseNode
       className={classNames(
@@ -125,6 +133,14 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
             </IconButton>
           </Tooltip>
         </RunningState>
+      )}
+      {isIdleNode && (
+        <p className="text-warning mt-2 flex items-center text-xs font-medium">
+          <FaExclamationCircle className="mr-1" />
+          {t("node.unableToRun", {
+            ns: "flow",
+          })}
+        </p>
       )}
       <div
         className={classNames("absolute left-0 w-full bottom-0 translate-y-1/2 px-4 flex justify-center items-center")}

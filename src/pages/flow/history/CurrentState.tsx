@@ -57,7 +57,9 @@ const CurrentState = () => {
                 "flex items-center font-medium",
               )}
             >
-              {getRunningIcon(state?.status, "mr-0.5")}
+              {getRunningIcon(state?.status, {
+                className: "mr-0.5",
+              })}
               <span className="ml-1">{formatText(getRunningStateText(state?.status))}</span>
             </span>
           </p>

@@ -120,7 +120,7 @@ const FlowHistory = () => {
               <th className="w-[180px] py-4 px-2">{t("run.triggerAt")}</th>
               <th className="w-[180px] py-4">{t("run.startRunAt")}</th>
               <th className="w-[180px] py-4">{t("run.endRunAt")}</th>
-              <th className="w-[100px] py-4">{t("run.duration")}</th>
+              <th className="w-[180px] py-4">{t("run.duration")}</th>
               <th className="w-[160px] py-4">
                 {t("status", {
                   ns: "common",
@@ -152,7 +152,9 @@ const FlowHistory = () => {
 
                 <td className="py-4">
                   <span className="flex items-center">
-                    {getRunningIcon(item.status, classNames(getRunningStateClass(item.status), "mr-2"))}
+                    {getRunningIcon(item.status, {
+                      className: classNames(getRunningStateClass(item.status), "mr-2"),
+                    })}
                     {getRunningStateText(item.status)}
                   </span>
                 </td>

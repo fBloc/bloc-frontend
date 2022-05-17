@@ -3,14 +3,16 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
 import { useTranslation } from "react-i18next";
-import { TabPanel } from "@/components";
 import classNames from "classnames";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { Dialog, DialogTitle, IconButton, Divider, Tabs, Tab, DialogProps, Tooltip } from "@mui/material";
 import { getBlocRecordDetail, ResultPreview } from "@/api/flow";
 import { getRunningIcon, getRunningStateClass, getRunningStateText, RunningStatusEnum } from "@/shared/enums";
 import { FaTimes } from "@/components/icons";
+import { TabPanel } from "@/components";
 import { readableDuration, readableTime } from "@/shared/time";
 import { operationAttrs, resultAttrs } from "@/recoil/flow/operation";
-import { Dialog, DialogTitle, IconButton, Divider, Tabs, Tab, DialogProps } from "@mui/material";
+import { showToast } from "@/components/toast";
 
 type DataZoneProps = React.HTMLAttributes<HTMLDivElement> & {
   preview?: ResultPreview;
@@ -102,7 +104,7 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
         </IconButton>
       </DialogTitle>
       <div className="px-6 pb-6 flex">
-        <div>
+        <div className="flex-shrink-0 w-40">
           <div
             className={classNames(
               getRunningStateClass(stateCode, {
@@ -111,13 +113,21 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
               "flex items-center mr-4",
             )}
           >
-            {getRunningIcon(stateCode, "mr-0.5")}
+            {getRunningIcon(stateCode, {
+              className: "mr-0.5 flex-shrink-0",
+            })}
             <div className="ml-2">
               <p className="font-medium">{getRunningStateText(stateCode)}</p>
               {resultDetail?.errorMsg && <p className="text-xs mt-1">{resultDetail?.errorMsg}</p>}
+              {resultDetail?.description && <p className="text-xs mt-1 text-gray-400">{resultDetail.description}</p>}
             </div>
           </div>
-
+          {resultDetail?.mayInterceptDownstream && (
+            <p className="text-xs mt-2 text-warning font-medium bg-warning bg-opacity-10 p-2 rounded flex items-center">
+              {/* <FaExclamationCircle className="flex-shrink-0 mr-2" /> */}
+              由于触发了特定条件，当前节点可能会阻断其下游节点的运行。
+            </p>
+          )}
           <div className="mt-4">
             <p className="text-gray-400 text-xs">{t("run.triggerAt")}</p>
             <p>{readableTime(resultDetail?.trigger)}</p>
@@ -134,13 +144,37 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
             <p className="text-gray-400 text-xs">{t("run.duration")}</p>
             <p>{readableDuration(resultDetail?.start, resultDetail?.end)}</p>
           </div>
+          <div>
+            <p className="text-gray-400 text-xs">record id</p>
+            <Tooltip
+              title={t("copyToClipboard", {
+                ns: "common",
+              })}
+            >
+              <p className="whitespace-nowrap overflow-hidden text-ellipsis">
+                <CopyToClipboard
+                  text={resultDetail?.id || ""}
+                  onCopy={() => {
+                    showToast({
+                      autoHideDuration: 1500,
+                      children: t("copied", {
+                        ns: "common",
+                      }),
+                    });
+                  }}
+                >
+                  <span>{resultDetail?.id}</span>
+                </CopyToClipboard>
+              </p>
+            </Tooltip>
+          </div>
         </div>
         <Divider orientation="vertical" sx={{ mx: 4, alignSelf: "stretch" }} />
-        <div>
+        <div className="flex-grow">
           <div className="flex justify-between items-center">
             <div>
-              <p className="text-lg font-medium">{currentFunction?.name}</p>
-              <p className="mt-1 mb-2 text-sm">{attrs.nodeData?.note}</p>
+              <p className="text-lg font-medium">{attrs.nodeData?.note || currentFunction?.name}</p>
+              <p className="mt-1 mb-2 text-sm text-gray-400">{currentFunction?.description}</p>
             </div>
           </div>
           <Tabs
@@ -159,13 +193,9 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
                   <p>{ipt.description}</p>
                   <p className="font-mono text-gray-400 text-xs">{ipt.key}</p>
                 </div>
-                <div className="mt-2 flex">
+                <div className="mt-2 grid gap-2 grid-cols-2">
                   {ipt.atoms.map((_, atomIndex) => (
-                    <DataZone
-                      key={atomIndex}
-                      preview={resultDetail?.ipt?.[iptIndex]?.[atomIndex]}
-                      className="mr-4 w-[300px] min-h-[90px]"
-                    />
+                    <DataZone key={atomIndex} preview={resultDetail?.ipt?.[iptIndex]?.[atomIndex]} />
                   ))}
                 </div>
               </div>
@@ -188,15 +218,15 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
                     </p>
                   )}
                   {currentFunction?.opt.map((opt) => (
-                    <div key={opt.key} className="mt-6 w-[300px] min-h-[90px]">
-                      <p className="mb-0.5">
+                    <div key={opt.key} className="mt-6">
+                      <p>
                         {opt.description ||
                           t("noDescription", {
                             ns: "common",
                           })}
                       </p>
-                      <p className="font-mono bloc-description">{opt.key}</p>
-                      <DataZone preview={resultDetail?.opt?.[opt.key]} className="mt-2" />
+                      <p className="font-mono text-xs text-gray-400">{opt.key}</p>
+                      <DataZone preview={resultDetail?.opt?.[opt.key]} className="mt-2 w-1/2" />
                     </div>
                   ))}
                 </>

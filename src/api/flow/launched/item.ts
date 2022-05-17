@@ -180,7 +180,7 @@ export type BlocRecordDetail = Pick<
   nodeId: OriginBlocRecordDetail["flow_function_id"];
   flowRecordId: OriginBlocRecordDetail["flow_run_record_id"];
   succuess: OriginBlocRecordDetail["suc"];
-  isIntercepted: OriginBlocRecordDetail["intercept_below_function_run"]; // TODO 注释
+  mayInterceptDownstream: OriginBlocRecordDetail["intercept_below_function_run"]; // 可能会阻断下游节点运行
   errorMsg: OriginBlocRecordDetail["error_msg"];
   progressMsg: OriginBlocRecordDetail["progress_msg"];
   processStages: OriginBlocRecordDetail["process_stages"];
@@ -220,7 +220,7 @@ export function washRecordDetail(detail: OriginBlocRecordDetail | null): BlocRec
     start,
     end,
     succuess: suc,
-    isIntercepted: intercept_below_function_run, // TODO 注释
+    mayInterceptDownstream: intercept_below_function_run, // TODO 注释
     description,
     errorMsg: error_msg,
     ipt,

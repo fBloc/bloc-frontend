@@ -226,7 +226,9 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
                         }),
                       )}
                     >
-                      {getRunningIcon(item.latest_run?.status, "mr-1")}
+                      {getRunningIcon(item.latest_run?.status, {
+                        className: "mr-1",
+                      })}
                       {getRunningStateText(item.latest_run?.status)}
                     </span>
                   </Tooltip>
