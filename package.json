@@ -69,6 +69,7 @@
     "prettier": "^2.3.2",
     "react-icons": "^4.3.1",
     "recoilize": "^3.1.6",
+    "rollup-plugin-visualizer": "^5.6.0",
     "sass": "^1.43.5",
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^22.0.0",

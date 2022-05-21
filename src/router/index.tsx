@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthRoute } from "./auth";
 import Empty from "@/components/empty";
 import { ErrorBoundary } from "@/components";
@@ -25,7 +25,7 @@ const RouterView = () => {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Root />}>
-              <Route index element={<Home />}></Route>
+              <Route index element={<Navigate to="/flow" replace />}></Route>
               <Route path="flow">
                 <Route
                   index
