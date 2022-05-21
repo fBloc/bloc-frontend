@@ -5,7 +5,13 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { NodeProps } from "react-flow-renderer";
 import { IconButton, Tooltip } from "@mui/material";
-import { getRunningStateText, getRunningStateClass, getRunningIcon, FlowDisplayPage } from "@/shared/enums";
+import {
+  getRunningStateText,
+  getRunningStateClass,
+  getRunningIcon,
+  FlowDisplayPage,
+  RunningStatusEnum,
+} from "@/shared/enums";
 import { FaInfoCircle, FaDatabase, FaExclamationCircle } from "@/components/icons";
 import BaseNode from "./BaseNode";
 import { FnAtom } from "@/api/functions";
@@ -87,7 +93,7 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
     () =>
       [FlowDisplayPage.preview, FlowDisplayPage.history].includes(data.mode) &&
       !data.latestRunningInfo &&
-      !!flow?.latestRun,
+      flow?.latestRun?.status === RunningStatusEnum.success,
     [flow, data],
   );
   return (

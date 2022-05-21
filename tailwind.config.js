@@ -1,6 +1,6 @@
 const Color = require("color");
 
-const themeColor = "#09a6e9";
+const themeColor = "#4fc1e9";
 
 module.exports = {
   mode: "jit",

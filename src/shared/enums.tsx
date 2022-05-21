@@ -112,7 +112,9 @@ export const getTriggerLabel = (type?: TriggerTypes) => {
   const values = {
     [TriggerTypes.crontab]: "crontab",
     [TriggerTypes.key]: "key",
-    [TriggerTypes.user]: i18n.t("manually"),
+    [TriggerTypes.user]: i18n.t("run.manually", {
+      ns: "flow",
+    }),
   };
   return values[type];
 };

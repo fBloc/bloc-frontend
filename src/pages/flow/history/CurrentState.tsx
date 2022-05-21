@@ -106,7 +106,7 @@ const CurrentState = () => {
           )}
           <hr className="my-4" />
           <p className="flex justify-between items-center">
-            <span className="bloc-description">{t("triggerType")}</span>
+            <span className="bloc-description">{t("run.triggerType")}</span>
             <span>{getTriggerLabel(state?.trigger_type)}</span>
           </p>
           {state?.trigger_key && (

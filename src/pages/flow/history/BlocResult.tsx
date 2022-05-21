@@ -125,7 +125,7 @@ const BlocReresult: React.FC<Omit<DialogProps, "open">> = ({ TransitionProps, ..
           {resultDetail?.mayInterceptDownstream && (
             <p className="text-xs mt-2 text-warning font-medium bg-warning bg-opacity-10 p-2 rounded flex items-center">
               {/* <FaExclamationCircle className="flex-shrink-0 mr-2" /> */}
-              由于触发了特定条件，当前节点可能会阻断其下游节点的运行。
+              由于触发了特定条件，当前节点已阻断其下游节点的运行。
             </p>
           )}
           <div className="mt-4">

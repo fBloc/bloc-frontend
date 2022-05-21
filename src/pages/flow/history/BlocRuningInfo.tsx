@@ -5,6 +5,7 @@ import { useQuery } from "react-query";
 import { FaCheckCircle, FaCircleNotch, FaDotCircle } from "@/components/icons";
 import { getRunningInfo } from "@/api/bloc";
 import { useTranslation } from "react-i18next";
+
 const RunningInfo: React.FC<{ recordId: string }> = ({ recordId }) => {
   const [finished, setFinished] = useState(false);
   const { data, isFetching } = useQuery(["getRunningInfo", recordId], () => getRunningInfo(recordId), {
@@ -28,7 +29,23 @@ const RunningInfo: React.FC<{ recordId: string }> = ({ recordId }) => {
                 {(index < current || finished) && <FaCheckCircle className="text-green-400" />}
                 {index === current && !finished && <FaCircleNotch className="animate-spin text-warning" />}
                 {index > current && <FaDotCircle className="text-gray-300" />}
+                {/* {index === current && !finished && (
+                  <Tooltip title={`${info.progress}%`}>
+                    <span className="w-3 h-3 border-2 border-gray-200 rounded-full inline-flex relative">
+                      <CircularProgress
+                        size={12}
+                        variant="determinate"
+                        value={info.progress}
+                        className="!text-warning w-full h-full absolute -left-0.5 -top-0.5"
+                        thickness={8}
+                      />
+                    </span>
+                  </Tooltip>
+                )} */}
               </span>
+              {index === current && !finished && (
+                <span className="mr-2 text-warning">[{info.progress.toFixed(2)}%]</span>
+              )}
               <span className={classNames(index > current ? "opacity-40" : "")}>{item}</span>
             </div>
           ))}

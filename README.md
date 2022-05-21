@@ -16,9 +16,16 @@
 
 **docker**
 
-生成镜像： `docker build -t blocf .`
+生成镜像： 
+
+``` bash
+npm run build
+
+docker build -t blocf .
+```
 
 运行:
+
 ```bash
 docker run --name bloc -e BASE_URL="YOUR API BASE URL" -p 8083:80 blocf:latest
 
