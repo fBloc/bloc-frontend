@@ -21,6 +21,8 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const recordId = useMemo(() => nodeData.latestRunningInfo?.recordId || "", [nodeData]);
   const [recordDetail, setRecorDetail] = useRecoilState(runningRecord(recordId || ""));
+  const { t } = useTranslation("flow");
+
   const { isLoading } = useQuery(["getRunningDetail", recordId], () => getBlocRecordDetail(recordId), {
     enabled: !recordDetail && !!recordId && anchor !== null,
     refetchOnWindowFocus: false,
@@ -85,6 +87,14 @@ const SourceHandle: React.FC<{ detail: OptParam; nodeData: BlocNodeData } & Conn
         <div className="w-60 p-3">
           <p className="mt-1">{detail.description}</p>
           <p className="mb-2 text-xs text-gray-400">{detail.key}</p>
+          <p className="mb-2">
+            <span className="bg-gray-50 px-2 py-0.5 rounded text-gray-500 text-xs">{detail.valueType}</span>
+            {detail.isArray && (
+              <span className="ml-2 bg-gray-50 px-2 py-0.5 rounded text-gray-500 text-xs">
+                {t("function.multiple")}
+              </span>
+            )}
+          </p>
           {!readFlowMode && <Value className="rounded" isLoading={isLoading} valueResult={paramDetail} canViewAll />}
         </div>
       </Popover>

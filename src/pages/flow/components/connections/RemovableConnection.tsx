@@ -58,9 +58,6 @@ export default function CustomEdge({
       >
         {data?.mode === FlowDisplayPage.draft && (
           <div className="w-full h-full group flex items-center justify-center relative z-10">
-            {/* <button className="w-1/2 h-[30px] bg-gray-100 inline-flex justify-center items-center hover:bg-gray-200 group-hover:scale-0 transition-transform">
-              <FaEllipsisH size={12} />
-            </button> */}
             <div className="h-full flex items-center justify-between absolute w-full">
               <Tooltip title={t("params.disconnect")}>
                 <Button

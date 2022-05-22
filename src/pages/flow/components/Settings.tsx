@@ -2,13 +2,11 @@ import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useRecoilValue } from "recoil";
 import classNames from "classnames";
-import { TextField, Switch as MdSwitch, Button as MdButon, Tooltip, IconButton } from "@mui/material";
+import { TextField, Switch as MdSwitch, Button as MdButon, Tooltip, IconButton, Divider } from "@mui/material";
 import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useTranslation } from "react-i18next";
-
 import { showToast } from "@/components/toast";
-
 import { FaClipboard } from "@/components/icons";
 import { useTheme } from "@mui/material/styles";
 import { flowDetailState } from "@/recoil/flow/flow";
@@ -295,8 +293,7 @@ const Settings: React.FC<SettingsProps> = ({ className, ...rest }) => {
                     disabled={!canModifySettings}
                   />
                 </p>
-                <hr className="my-6" />
-
+                <Divider sx={{ my: 2 }} />
                 <MdButon
                   disabled={!dirty || !canModifySettings}
                   variant="contained"

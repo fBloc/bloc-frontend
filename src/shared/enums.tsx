@@ -34,6 +34,7 @@ export enum RunningStatusEnum {
    * 不被允许并行而取消
    */
   rejected,
+  waiting,
 }
 
 export enum FlowListType {
@@ -51,6 +52,7 @@ const textClasses: Record<RunningStatusEnum, string> = {
   [RunningStatusEnum.failed]: "text-red-400",
   [RunningStatusEnum.intercepted]: "text-red-400",
   [RunningStatusEnum.rejected]: "text-red-400",
+  [RunningStatusEnum.waiting]: "text-warning",
 };
 const bgClasses: Record<RunningStatusEnum, string> = {
   [RunningStatusEnum.created]: "bg-warning bg-opacity-10",
@@ -62,6 +64,7 @@ const bgClasses: Record<RunningStatusEnum, string> = {
   [RunningStatusEnum.failed]: "bg-red-50",
   [RunningStatusEnum.intercepted]: "bg-red-50",
   [RunningStatusEnum.rejected]: "bg-red-50",
+  [RunningStatusEnum.waiting]: "bg-warning bg-opacity-10",
 };
 const borderClasses: Record<RunningStatusEnum, string> = {
   [RunningStatusEnum.created]: "border-yellow-400",
@@ -73,6 +76,7 @@ const borderClasses: Record<RunningStatusEnum, string> = {
   [RunningStatusEnum.failed]: "border-red-400",
   [RunningStatusEnum.intercepted]: "border-red-400",
   [RunningStatusEnum.rejected]: "border-red-400",
+  [RunningStatusEnum.waiting]: "border-yellow-400",
 };
 export function getRunningStateClass(
   status?: RunningStatusEnum | null,
@@ -165,6 +169,9 @@ export const runningStateTexts: Record<RunningStatusEnum, string> = {
   [RunningStatusEnum.rejected]: i18n.t("status.rejected", {
     ns: "flow",
   }),
+  [RunningStatusEnum.waiting]: i18n.t("status.waiting", {
+    ns: "flow",
+  }),
 };
 
 export const getRunningStateText = (state?: RunningStatusEnum | null) => {
@@ -184,6 +191,7 @@ const icons: Record<RunningStatusEnum, JSX.Element> = {
   [RunningStatusEnum.failed]: <FaTimesCircle />,
   [RunningStatusEnum.intercepted]: <FaBan />,
   [RunningStatusEnum.rejected]: <FaTimesCircle />,
+  [RunningStatusEnum.waiting]: <FaPauseCircle />,
 };
 export const getRunningIcon = (state?: RunningStatusEnum | null, props: IconBaseProps = {}) => {
   if (!state) return null;

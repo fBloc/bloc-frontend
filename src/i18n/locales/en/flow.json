@@ -10,8 +10,8 @@
   "node": {
     "confirmDeleteTitle": "Are you sure？",
     "confirmDeleteBody": "this node will be deleted, it's connections will also be deleted",
-    "output": "output",
-    "input": "input",
+    "output": "process output",
+    "input": "process input",
     "noOutputParams": "no output params",
     "noInputParams": "no input params",
     "notConnectable": "当前节点不可匹配",
@@ -19,7 +19,8 @@
     "idle": "idle",
     "unableToRun": "unable to run",
     "progress": "progress",
-    "log": "log"
+    "log": "log",
+    "source": "origin function"
   },
   "params": {
     "selectAnItem": "select an item",
@@ -71,7 +72,8 @@
     "canceledByUser": "canceled by {{userName}}",
     "intercepted": "intercepted",
     "rejected": "parallel running disabled",
-    "neverRunned": "idle"
+    "neverRunned": "idle",
+    "waiting": "waiting"
   },
   "function": {
     "input": "input",
@@ -79,7 +81,8 @@
     "mayUnavaliable": "较长时间未收到此function的心跳，此function可能无法正常运行",
     "detail": "Function Detail",
     "providedBy": "provided by {{provider}}",
-    "size": "共{{groupSize}}个分组，{{functionSize}}个函数"
+    "size": "共{{groupSize}}个分组，{{functionSize}}个函数",
+    "multiple": "multiple" 
   },
   "info": {
     "crontabStr": "crontab",

@@ -2,7 +2,7 @@ import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Link } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { login } from "@/api/auth";
 import Logo from "@/assets/logo.png";
@@ -29,6 +29,11 @@ const Login: React.FC = () => {
     <div className="h-screen flex flex-col items-center bg-gray-50">
       <header className="p-6 flex items-center justify-between w-full">
         <img src={Logo} alt="logo" className="w-12" />
+        <Link href="https://fbloc.github.io/" target="_blank">
+          {t("whatsbloc", {
+            ns: "common",
+          })}
+        </Link>
       </header>
       <Formik
         initialValues={{
@@ -52,7 +57,9 @@ const Login: React.FC = () => {
               <div className="mb-10 text-3xl text-center">
                 <img src={LogoWithName} alt="logo" className="h-10 mx-auto" />
                 <p className="text-sm mt-2 text-gray-400 font-mono">
-                  you agree to the storing of cookies on your device
+                  {t("slogan", {
+                    ns: "common",
+                  })}
                 </p>
               </div>
               <TextField

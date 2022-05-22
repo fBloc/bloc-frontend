@@ -66,5 +66,8 @@
     "remove": "remove",
     "edit": "edit"
   },
-  "version": "version"
+  "version": "version",
+  "slogan": "Build and run your workflow by composing functions",
+  "whatsbloc": "what's bloc?",
+  "instruction": "Instructions"
 }

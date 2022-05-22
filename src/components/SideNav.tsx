@@ -2,9 +2,9 @@ import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useRecoilValue, useResetRecoilState } from "recoil";
-import { Menu, MenuItem, IconButton } from "@mui/material";
+import { Menu, MenuItem, IconButton, Link } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { FaEllipsisV } from "@/components/icons";
+import { FaEllipsisV, FaExternalLinkAlt } from "@/components/icons";
 import { PAGES } from "@/router/pages";
 import Logo from "@/assets/logo-name.png";
 import { identificationInstance } from "@/shared/Identification";
@@ -65,7 +65,19 @@ const SideNav = () => {
             </li>
           )}
         </ul>
-        <p className="mt-auto w-full cursor-default flex items-center justify-between">
+        <div className="mt-auto w-full">
+          <Link
+            target="_blank"
+            href="https://fbloc.github.io/docs/category/web%E7%AB%AF%E5%8A%9F%E8%83%BD%E7%AE%80%E4%BB%8B"
+            className="font-medium !text-gray-500 flex h-10 w-full !no-underline items-center bg-gray-50 rounded-lg px-2 justify-between hover:bg-gray-100"
+          >
+            {t("instruction", {
+              ns: "common",
+            })}
+            <FaExternalLinkAlt size={12} />
+          </Link>
+        </div>
+        <p className="mt-2 w-full cursor-default flex items-center justify-between">
           <span className="p-2 rounded flex flex-grow overflow-hidden">
             <span className="w-8 h-8 rounded-full bg-primary-300 inline-flex items-center justify-center text-white font-medium  flex-shrink-0">
               {user?.name[0]}
@@ -83,6 +95,7 @@ const SideNav = () => {
           </IconButton>
         </p>
       </div>
+
       <Menu
         transformOrigin={{
           horizontal: "right",

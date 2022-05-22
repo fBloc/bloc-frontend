@@ -19,7 +19,8 @@
     "idle": "节点未运行",
     "unableToRun": "当前节点未能运行",
     "progress": "进度",
-    "log": "日志"
+    "log": "日志",
+    "source": "源函数"
   },
   "params": {
     "selectAnItem": "选择一个子项",
@@ -71,7 +72,8 @@
     "canceledByUser": "{{userName}}取消了此次运行",
     "intercepted": "被拦截",
     "rejected": "禁止并行运行",
-    "neverRunned": "从未运行"
+    "neverRunned": "从未运行",
+    "waiting": "待运行"
   },
   "function": {
     "input": "输入",
@@ -79,7 +81,8 @@
     "mayUnavaliable": "较长时间未收到此function的心跳，此function可能无法正常运行",
     "detail": "函数详情",
     "providedBy": "由 {{provider}} 提供",
-    "size": "共{{groupSize}}个分组，{{functionSize}}个函数"
+    "size": "共{{groupSize}}个分组，{{functionSize}}个函数",
+    "multiple": "多" 
   },
   "info": {
     "crontabStr": "crontab命令",

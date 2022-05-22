@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { FaTimes, FaInfoCircle } from "@/components/icons";
+import { Dialog, DialogTitle, IconButton, Divider } from "@mui/material";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
 import { getRunningIcon, getRunningStateClass, getRunningStateText, getTriggerLabel } from "@/shared/enums";
 import { formatText } from "@/shared/tools";
 import { readableDuration, readableTime } from "@/shared/time";
 import { flowDetailState, isLatestRecordState } from "@/recoil/flow/flow";
-import { Dialog, DialogTitle, IconButton } from "@mui/material";
 
 // TODO 触发类型未设置
 const CurrentState = () => {
@@ -104,7 +104,7 @@ const CurrentState = () => {
               <span>{readableDuration(state?.start_time, state?.end_time)}</span>
             </p>
           )}
-          <hr className="my-4" />
+          <Divider sx={{ my: 2 }} />
           <p className="flex justify-between items-center">
             <span className="bloc-description">{t("run.triggerType")}</span>
             <span>{getTriggerLabel(state?.trigger_type)}</span>

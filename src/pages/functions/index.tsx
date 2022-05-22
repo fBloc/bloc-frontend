@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRecoilValue } from "recoil";
+import { Divider } from "@mui/material";
 import { functionGroupState } from "@/recoil/functions";
 import { FaUser } from "@/components/icons";
 import { Empty } from "@/components";
@@ -21,7 +22,7 @@ const Functions = () => {
               {group.functions.map((fn) => (
                 <div
                   key={fn.id}
-                  className="bg-white p-3 shadow rounded"
+                  className="bg-white p-3 shadow rounded hover:shadow-lg transition-shadow"
                   onClick={() => {
                     setVisible(true);
                     setFn(fn);
@@ -29,7 +30,7 @@ const Functions = () => {
                 >
                   <p>{fn.name}</p>
                   <p className="mt-2 text-gray-500 text-xs leading-5">{fn.description}</p>
-                  <hr className="my-2" />
+                  <Divider sx={{ my: 1 }} />
                   <p className="text-xs flex items-center text-gray-400">
                     <FaUser size={10} className="mr-1" />
                     {fn.provider}

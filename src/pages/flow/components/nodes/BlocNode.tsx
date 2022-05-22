@@ -1,10 +1,10 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { NodeProps } from "react-flow-renderer";
-import { IconButton, Tooltip } from "@mui/material";
+import { IconButton, Tooltip, Popover, Divider, Chip } from "@mui/material";
 import {
   getRunningStateText,
   getRunningStateClass,
@@ -64,7 +64,6 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
   const setOperationAttrs = useSetRecoilState(operationAttrs);
   const flow = useRecoilValue(flowDetailState);
   const navigate = useNavigate();
-
   const onClick = useCallback(
     async (operation: RunningHistoryOperation) => {
       switch (data.mode) {
@@ -96,73 +95,131 @@ const BlocNode: React.FC<BlocNodeProps> = ({ data, selected, isConnectable, id, 
       flow?.latestRun?.status === RunningStatusEnum.success,
     [flow, data],
   );
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const fn = useMemo(() => data.function, [data]);
   return (
-    <BaseNode
-      className={classNames(
-        "relative group px-2.5 pt-2.5 pb-4 bg-white rounded-lg w-64 border border-solid",
-        selected ? "border-primary-400" : "border-gray-200",
-      )}
-      onDoubleClick={() => {
-        showNodeViewer(id);
-      }}
-    >
-      {data.mode === FlowDisplayPage.draft && <EditNodeOpeations nodeId={id} selected={selected} />}
-      <div className={classNames("-translate-y-4 px-4 flex justify-center items-center")}>
-        {data.statefulMergedIpts.map((item) => (
-          <TargetHandle key={item.key} nodeData={data} detail={item} isConnectable={isConnectable} />
-        ))}
-        <VoidTargetHandle nodeData={data} isConnectable={isConnectable} />
-      </div>
-      <p className="leading-4">{data?.note || data.function?.name}</p>
-      <p className="mt-2 text-gray-400 leading-4 text-xs">{data?.function?.description}</p>
-      {[FlowDisplayPage.preview, FlowDisplayPage.history].includes(data.mode) && (
-        <RunningState latestRunningInfo={data.latestRunningInfo}>
-          <Tooltip title={t("viewLog")} placement="bottom">
-            <IconButton
-              onClick={() => {
-                onClick(RunningHistoryOperation.LOG);
-              }}
-              sx={{
-                ml: "auto",
-              }}
-            >
-              <FaDatabase size={12} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t("viewData")} placement="bottom">
-            <IconButton
-              onClick={() => {
-                onClick(RunningHistoryOperation.RESULT);
-              }}
-            >
-              <FaInfoCircle size={13} />
-            </IconButton>
-          </Tooltip>
-        </RunningState>
-      )}
-      {isIdleNode && (
-        <p className="text-warning mt-2 flex items-center text-xs font-medium">
-          <FaExclamationCircle className="mr-1" />
-          {t("node.unableToRun", {
-            ns: "flow",
-          })}
-        </p>
-      )}
-      <div
-        className={classNames("absolute left-0 w-full bottom-0 translate-y-1/2 px-4 flex justify-center items-center")}
+    <>
+      <BaseNode
+        className={classNames(
+          "relative group px-2.5 pt-2.5 pb-4 bg-white rounded-lg w-64 border border-solid",
+          selected ? "border-primary-400" : "border-gray-200",
+        )}
+        onDoubleClick={() => {
+          showNodeViewer(id);
+        }}
       >
-        <div
-          className={classNames(styles["source-handle-container"], {
-            "!hidden": data.function?.opt.length === 0,
-          })}
-        >
-          {data.function?.opt.map((item) => (
-            <Sourcehandle key={item.key} detail={item} isConnectable={isConnectable} nodeData={data} />
+        {data.mode === FlowDisplayPage.draft && <EditNodeOpeations nodeId={id} selected={selected} />}
+        <div className={classNames("-translate-y-4 px-4 flex justify-center items-center")}>
+          {data.statefulMergedIpts.map((item) => (
+            <TargetHandle key={item.key} nodeData={data} detail={item} isConnectable={isConnectable} />
           ))}
+          <VoidTargetHandle nodeData={data} isConnectable={isConnectable} />
         </div>
-        <VoidSourceHandle isConnectable={isConnectable} nodeData={data} />
-      </div>
-    </BaseNode>
+        <p
+          className="leading-4 hover:text-primary-400"
+          onMouseEnter={(e) => {
+            setAnchor(e.currentTarget);
+          }}
+          onMouseLeave={() => {
+            setAnchor(null);
+          }}
+        >
+          {data?.note || data.function?.name}
+        </p>
+
+        <p className="mt-2 text-gray-400 leading-4 text-xs">{data?.function?.description}</p>
+        {[FlowDisplayPage.preview, FlowDisplayPage.history].includes(data.mode) && (
+          <RunningState latestRunningInfo={data.latestRunningInfo}>
+            <Tooltip title={t("viewLog")} placement="bottom">
+              <IconButton
+                onClick={() => {
+                  onClick(RunningHistoryOperation.LOG);
+                }}
+                sx={{
+                  ml: "auto",
+                }}
+              >
+                <FaDatabase size={12} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t("viewData")} placement="bottom">
+              <IconButton
+                onClick={() => {
+                  onClick(RunningHistoryOperation.RESULT);
+                }}
+              >
+                <FaInfoCircle size={13} />
+              </IconButton>
+            </Tooltip>
+          </RunningState>
+        )}
+        {isIdleNode && (
+          <p className="text-warning mt-2 flex items-center text-xs font-medium">
+            <FaExclamationCircle className="mr-1" />
+            {t("node.unableToRun", {
+              ns: "flow",
+            })}
+          </p>
+        )}
+        <div
+          className={classNames(
+            "absolute left-0 w-full bottom-0 translate-y-1/2 px-4 flex justify-center items-center",
+          )}
+        >
+          <div
+            className={classNames(styles["source-handle-container"], {
+              "!hidden": data.function?.opt.length === 0,
+            })}
+          >
+            {data.function?.opt.map((item) => (
+              <Sourcehandle key={item.key} detail={item} isConnectable={isConnectable} nodeData={data} />
+            ))}
+          </div>
+          <VoidSourceHandle isConnectable={isConnectable} nodeData={data} />
+        </div>
+      </BaseNode>
+      <Popover
+        open={!!anchor}
+        anchorEl={anchor}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        sx={{
+          pointerEvents: "none",
+        }}
+      >
+        <div className="p-3 w-80">
+          <span className="bg-gray-100 rounded px-2 py-1 text-xs">
+            {t("node.source", {
+              ns: "flow",
+            })}
+          </span>
+          <p className="mt-2 my-1 flex items-center justify-between">
+            {fn?.name}
+            {!fn?.avaliable && (
+              <Tooltip title={t("function.mayUnavaliable")} placement="top">
+                <span>
+                  <FaExclamationCircle className="text-yellow-500" />
+                </span>
+              </Tooltip>
+            )}
+          </p>
+          <p className="text-gray-500 text-xs leading-5">{fn?.description}</p>
+          <Divider sx={{ my: 1, opacity: 0.5 }} />
+          <p className="text-xs text-gray-500">
+            {t("function.providedBy", {
+              provider: fn?.provider,
+              ns: "flow",
+            })}
+          </p>
+        </div>
+      </Popover>
+    </>
   );
 };
 export default BlocNode;

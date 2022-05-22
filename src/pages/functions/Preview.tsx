@@ -75,6 +75,7 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
                           </p>
                           <p className="mt-3 text-gray-500 text-xs">
                             <span>{atom.valueType}</span>
+                            {atom.isArray && <span className="ml-2">{t("function.multiple")}</span>}
                           </p>
                         </div>
                       ))}
@@ -90,16 +91,19 @@ const Preview: React.FC<DialogProps & { onExit: () => void; fn: FunctionItem | n
             {fn?.opt.map((param, paramIndex) => (
               <div className="mb-4 " key={param.key}>
                 <div className="flex">
-                  <span className="inline-flex h-8 w-8 rounded-full justify-center items-center bg-gray-100">
+                  <span className="inline-flex h-8 w-8 rounded-full justify-center items-center bg-gray-100 flex-shrink-0">
                     {paramIndex + 1}
                   </span>
                   <div className="ml-3 flex-grow flex justify-between items-center">
-                    <div>
+                    <div className="overflow-hidden break-all">
                       <p className="font-medium">{param.description}</p>
                       <p className="text-gray-400">{param.key}</p>
                     </div>
-                    <p>
-                      <span className="px-2 py-1 rounded-full bg-gray-100 text-xs">{param.valueType}</span>
+                    <p className="flex-shrink-0 ml-3">
+                      <span className="bg-gray-50 px-2 py-0.5 rounded text-gray-500 text-xs">{param.valueType}</span>
+                      {param.isArray && (
+                        <span className="ml-2 bg-gray-50 px-2 py-0.5 rounded text-gray-500 text-xs">multiple</span>
+                      )}
                     </p>
                   </div>
                 </div>

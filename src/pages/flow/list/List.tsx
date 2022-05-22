@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { TextField, IconButton, Box, Fab, Tabs, Tab } from "@mui/material";
+import { TextField, IconButton, Box, Fab, Tabs, Tab, Popover, Divider } from "@mui/material";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
@@ -25,6 +25,7 @@ import { Tooltip } from "@/components";
 import styles from "./index.module.scss";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
+import { OriginBaseFlow } from "@/api/flow/originTypes";
 const tabs = [
   {
     label: i18n.t("launched"),
@@ -44,6 +45,8 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
   const [apiContains, setApiContains] = useState("");
   const [tab, setTab] = useRecoilState(flowListTab);
   const resetFlow = useResetRecoilState(flowDetailState);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const [item, setItem] = useState<OriginBaseFlow | null>(null);
   const { t } = useTranslation("flow");
   const fullKeyWord = useMemo(
     () => (apiContains.length > 5 ? `${apiContains.slice(0, 5)}...` : apiContains),
@@ -171,67 +174,30 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
             >
               <div className="flex justify-between items-center">
                 {isLaunchedFlow(item) ? (
-                  <Tooltip
-                    title={
-                      item.latest_run?.status === RunningStatusEnum.success ? (
-                        <>
-                          <p className="mt-2 opacity-60">{t("run.latestRun")}</p>
-                          <hr className="my-3 opacity-10" />
-                          <p className="text-xs flex justify-between items-center">
-                            <span className="w-4 h-4 inline-flex justify-center items-center rounded-full  text-primary-400">
-                              <FaBolt size={10} />
-                            </span>
-                            <span className="opacity-60">{t("run.triggerAt")}</span>
-                            <span className="ml-6">{readableTime(item.latest_run.trigger_time)}</span>
-                          </p>
-                          <p className="my-2 text-xs flex justify-between">
-                            <span className="w-4 h-4 inline-flex justify-center items-center rounded-full  text-green-400">
-                              <FaPlay size={8} />
-                            </span>
-                            <span className="opacity-60">{t("run.startRunAt")}</span>
-                            <span className="ml-6">{readableTime(item.latest_run.start_time)}</span>
-                          </p>
-                          <p className="text-xs flex justify-between">
-                            <span className="w-4 h-4 inline-flex justify-center items-center rounded-full text-white-400">
-                              <FaStopCircle size={10} />
-                            </span>
-                            <span className="opacity-60">{t("run.endRunAt")}</span>
-                            <span className="ml-6">{readableTime(item.latest_run.end_time)}</span>
-                          </p>
-                          <hr className="my-4 opacity-10" />
-                          <p className="mb-2">
-                            <span className="px-2 mr-2 border-r border-solid border-gray-500 opacity-60">
-                              {getTriggerLabel(item.latest_run.trigger_type)}
-                            </span>
-                            {getTriggerValue({
-                              type: item.latest_run.trigger_type,
-                              user: item.latest_run.trigger_user_name,
-                              crontab: item.crontab,
-                              key: item.latest_run.trigger_key,
-                            })}
-                          </p>
-                        </>
-                      ) : (
-                        false
-                      )
-                    }
-                    placement="top-start"
+                  <span
+                    className={classNames(
+                      "rounded px-2 py-1 text-xs font-medium inline-flex items-center",
+                      getRunningStateClass(item.latest_run?.status, {
+                        bg: true,
+                        text: true,
+                      }),
+                    )}
+                    onMouseEnter={(e) => {
+                      if (item.latest_run?.status === RunningStatusEnum.success) {
+                        setItem(item);
+                        setAnchor(e.currentTarget);
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      setItem(null);
+                      setAnchor(null);
+                    }}
                   >
-                    <span
-                      className={classNames(
-                        "rounded px-2 py-1 text-xs font-medium inline-flex items-center",
-                        getRunningStateClass(item.latest_run?.status, {
-                          bg: true,
-                          text: true,
-                        }),
-                      )}
-                    >
-                      {getRunningIcon(item.latest_run?.status, {
-                        className: "mr-1",
-                      })}
-                      {getRunningStateText(item.latest_run?.status)}
-                    </span>
-                  </Tooltip>
+                    {getRunningIcon(item.latest_run?.status, {
+                      className: "mr-1",
+                    })}
+                    {getRunningStateText(item.latest_run?.status)}
+                  </span>
                 ) : (
                   <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-500 font-medium">
                     {t("draft")}
@@ -271,6 +237,59 @@ const List: React.FC<ItemsProps> = ({ className, children, style, ...rest }) => 
           <FaPlus size={14} />
         </Fab>
       </Tooltip>
+      <Popover
+        anchorEl={anchor}
+        open={!!anchor}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        sx={{
+          pointerEvents: "none",
+        }}
+      >
+        {item && item.latest_run && (
+          <div className="p-4">
+            <p className="text-gray-400 text-xs">{t("run.latestRun")}</p>
+            <Divider sx={{ my: 2 }} />
+            <p className="text-xs flex items-center">
+              <span className="w-4 h-4 inline-flex justify-center items-center rounded-full  text-primary-400">
+                <FaBolt size={10} />
+              </span>
+              <span className="text-gray-400">{t("run.triggerAt")}</span>
+              <span className="ml-auto">{readableTime(item.latest_run.trigger_time)}</span>
+            </p>
+            <p className="my-2 text-xs flex justify-between">
+              <span className="w-4 h-4 inline-flex justify-center items-center rounded-full  text-green-400">
+                <FaPlay size={8} />
+              </span>
+              <span className="text-gray-400">{t("run.startRunAt")}</span>
+              <span className="ml-6">{readableTime(item.latest_run.start_time)}</span>
+            </p>
+            <p className="text-xs flex justify-between">
+              <span className="w-4 h-4 inline-flex justify-center items-center rounded-full text-white-400">
+                <FaStopCircle size={10} />
+              </span>
+              <span className="text-gray-400">{t("run.endRunAt")}</span>
+              <span className="ml-6">{readableTime(item.latest_run.end_time)}</span>
+            </p>
+            <Divider sx={{ my: 2 }} />
+            <p className="text-xs">
+              <span className="mr-2 text-gray-400">{getTriggerLabel(item.latest_run.trigger_type)}</span>
+              {getTriggerValue({
+                type: item.latest_run.trigger_type,
+                user: item.latest_run.trigger_user_name,
+                crontab: item.crontab,
+                key: item.latest_run.trigger_key,
+              })}
+            </p>
+          </div>
+        )}
+      </Popover>
       {children}
     </div>
   );

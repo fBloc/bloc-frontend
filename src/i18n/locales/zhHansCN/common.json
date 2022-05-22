@@ -66,5 +66,8 @@
     "remove": "移除此节点",
     "edit": "编辑节点"
   },
-  "version": "版本"
+  "version": "版本",
+  "slogan": "通过组合函数构建、运行你的工作流程",
+  "whatsbloc": "了解bloc",
+  "instruction": "使用指引"
 }
